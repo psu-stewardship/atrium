@@ -1,0 +1,47 @@
+2011-07-21 14:03:34,921 [main] INFO  main org.solrmarc.marc.MarcImporter - Starting SolrMarc indexing.
+2011-07-21 14:03:34,969 [main] INFO  main org.solrmarc.tools.Utils - Opening file: /opt/nd/home/rjohns14/git_dir/atrium/config/SolrMarc/config.properties
+2011-07-21 14:03:35,023 [main] INFO  main org.solrmarc.marc.MarcImporter -  Updating to Solr index at /opt/nd/home/rjohns14/git_dir/atrium/jetty/solr
+2011-07-21 14:03:35,025 [main] INFO  main org.solrmarc.marc.MarcImporter -      Using Solr data dir /opt/nd/home/rjohns14/git_dir/atrium/jetty/solr/data
+2011-07-21 14:03:36,582 [main] INFO  main org.solrmarc.marc.MarcHandler - Attempting to open data file: /home/rjohns14/.rvm/gems/ruby-1.8.7-p302/gems/blacklight-3.0.0/test_support/data/test_data.utf8.mrc
+2011-07-21 14:03:36,996 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 1 read from file:    00282214 
+2011-07-21 14:03:37,015 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 2 read from file:    00282371 
+2011-07-21 14:03:37,091 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 3 read from file:    00313831 
+2011-07-21 14:03:37,151 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 4 read from file:    00314247 
+2011-07-21 14:03:37,170 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 5 read from file:    43037890 
+2011-07-21 14:03:37,192 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 6 read from file:    53029833 
+2011-07-21 14:03:37,221 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 7 read from file:    77826928 
+2011-07-21 14:03:37,246 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 8 read from file:    78908283 
+2011-07-21 14:03:37,280 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 9 read from file:    79930185 
+2011-07-21 14:03:37,313 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 10 read from file:    85910001 
+2011-07-21 14:03:37,365 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 11 read from file:    86207417 
+2011-07-21 14:03:37,434 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 12 read from file:    87931798 
+2011-07-21 14:03:37,462 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 13 read from file:    90142413 
+2011-07-21 14:03:37,488 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 14 read from file:    92117465 
+2011-07-21 14:03:37,598 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 15 read from file:    92828023 
+2011-07-21 14:03:37,627 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 16 read from file:    94120425 
+2011-07-21 14:03:37,656 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 17 read from file:    96933325 
+2011-07-21 14:03:37,673 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 18 read from file:   2001417245
+2011-07-21 14:03:37,693 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 19 read from file:   2003546302
+2011-07-21 14:03:37,707 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 20 read from file:   2004310986
+2011-07-21 14:03:37,728 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 21 read from file:   2005461726
+2011-07-21 14:03:37,774 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 22 read from file:   2005553155
+2011-07-21 14:03:37,790 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 23 read from file:   2007020969
+2011-07-21 14:03:37,805 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 24 read from file:   2008305903
+2011-07-21 14:03:37,825 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 25 read from file:   2008308175
+2011-07-21 14:03:37,842 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 26 read from file:   2008308201
+2011-07-21 14:03:37,857 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 27 read from file:   2008308202
+2011-07-21 14:03:37,872 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 28 read from file:   2008308478
+2011-07-21 14:03:37,898 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 29 read from file:   2008543486
+2011-07-21 14:03:37,915 [main] INFO  main org.solrmarc.marc.MarcImporter - Added record 30 read from file:   2009373513
+2011-07-21 14:03:37,916 [main] INFO  main org.solrmarc.marc.MarcImporter -  Adding 30 of 30 documents to index
+2011-07-21 14:03:37,916 [main] INFO  main org.solrmarc.marc.MarcImporter -  Deleting 0 documents from index
+2011-07-21 14:03:37,916 [main] INFO  main org.solrmarc.marc.MarcImporter - Calling commit
+2011-07-21 14:03:39,703 [main] INFO  main org.solrmarc.marc.MarcImporter - Done with the commit, closing Solr
+2011-07-21 14:03:39,705 [main] INFO  main org.solrmarc.marc.MarcImporter - Setting Solr closed flag
+2011-07-21 14:03:39,705 [main] INFO  main org.solrmarc.marc.MarcImporter - Connecting to solr server at URL: http://127.0.0.1:8983/solr/update
+2011-07-21 14:03:39,817 [main] WARN  main org.solrmarc.marc.MarcImporter - Unable to establish connection to solr server at URL: http://127.0.0.1:8983/solr/update
+2011-07-21 14:03:39,818 [main] INFO  main org.solrmarc.marc.MarcImporter - Finished indexing in 0:03.00
+2011-07-21 14:03:39,818 [main] INFO  main org.solrmarc.marc.MarcImporter - Indexed 30 at a rate of about 9.0 per sec
+2011-07-21 14:03:39,818 [main] INFO  main org.solrmarc.marc.MarcImporter - Deleted 0 records
+2011-07-21 14:03:39,832 [Thread-1] INFO  Thread-1 org.solrmarc.marc.MarcImporter - Starting Shutdown hook
+2011-07-21 14:03:39,832 [Thread-1] INFO  Thread-1 org.solrmarc.marc.MarcImporter - Finished Shutdown hook
