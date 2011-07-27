@@ -1,0 +1,29 @@
+# This Gemfile comes from hydra-head/test_support/etc/Gemfile
+# It's copied into the hydra-head test app by the rake hyhead:setup_test_app task
+
+source 'http://rubygems.org'
+
+gem 'rails', '>=3.0.4'
+
+gem 'sqlite3-ruby', :require => 'sqlite3'
+gem 'blacklight', '3.0.0'
+gem 'atrium', :path => '../../'
+gem 'devise'
+
+# For testing
+group :development, :test do 
+       gem 'solrizer-fedora', '>=1.1.0'
+       gem 'ruby-debug'
+       gem 'rspec'
+       gem 'rspec-rails', '>=2.5.0'
+       gem 'mocha'
+       #gem 'generator_spec'
+       gem 'cucumber-rails'
+       gem 'database_cleaner'
+       gem 'capybara'
+       #gem 'webrat'
+       #gem 'aruba'
+       gem 'factory_girl'
+       gem 'bcrypt-ruby'
+end
+

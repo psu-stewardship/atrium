@@ -1,7 +1,6 @@
-# Add your own tasks in files placed in lib/tasks ending in .rake,
-# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+require 'rake/testtask'
+require 'rake/rdoctask'
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-require File.expand_path('../config/application', __FILE__)
-require 'rake'
-
-Atrium::Application.load_tasks
+Dir.glob('tasks/*.rake').each { |r| import r }
