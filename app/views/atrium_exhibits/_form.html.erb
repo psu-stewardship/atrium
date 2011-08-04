@@ -1,0 +1,91 @@
+
+  <fieldset>
+    <legend> Settings </legend>
+<% form_for(@atrium_exhibit) do |f| %>
+  <%= f.error_messages %>
+    <dl>
+      <dt>
+	<%= f.label :title, 'Title:' %>
+      </dt>
+      <dd>
+	<%= f.text_field :title %>
+      </dd>
+      <%- @query = (@atrium_exhibit.queries.empty? ? Atrium::Filter::Query.new : @atrium_exhibit.queries.first)-%>
+      <% f.fields_for :queries, @query do |query_fields| %>
+      <dt>
+        <%= query_fields.label :value, 'Query Value:' %> 
+      </dt>
+      <dd>
+	<%= query_fields.text_field :value %>
+      </dd>
+      <% end %>
+    </dl>
+    <%- unless @atrium_exhibit.search_facets.empty? -%>
+      <table>
+	<tr><th>Search Facet</th><th>Delete</th></tr>
+        <%- @atrium_exhibit.search_facets.each do |facet| -%>
+        <tr>
+          <% f.fields_for :search_facets, facet do |facet_form| %>
+            <td><%=facet_field_labels[facet.name]%></td><td><%=facet_form.check_box :_destroy %></td>
+          <% end %>
+        </tr>
+        <%- end -%>
+      </table>
+    <%- end -%>
+
+    <%- unless @atrium_exhibit.browse_facets.empty? -%>
+      <table>
+	<tr><th>Browse Facet</th></tr>
+        <%- @atrium_exhibit.browse_facets.each_with_index do |facet,index| -%>
+        <tr>
+          <%(1..index).each do |i|%>
+            <td></td>
+          <% end %>
+          <% f.fields_for :browse_facets, facet do |facet_form| %>
+            <td>Level-<%=index+1%>: <%=facet_field_labels[facet.name]%></td><td><%=facet_form.check_box :_destroy %> Delete</td>
+          <% end %>
+        </tr>
+        <%- end -%>
+      </table>
+    <%- end -%>
+  <p>
+    <%= f.submit 'Save' %>
+  </p>
+<% end %>
+<fieldset>
+  <legend>Add New Search Facet</legend>
+<% form_for(@atrium_exhibit) do |f| %>
+    <%- @facet = Atrium::Filter::Facet.new-%>
+    <% f.fields_for :search_facets, @facet do |facet_fields| %>
+      <%- if @atrium_exhibit.search_facets.empty? -%>
+        <%- available_facets = facet_field_names -%>
+      <%- else -%>
+        <%- facet_names = @atrium_exhibit.search_facets.collect {|facet| facet.name}-%>
+        <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
+      <%- end -%>
+      <%= facet_fields.select(:name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
+    <% end %>
+   <p>
+    <%= f.submit 'Add Search Facet' %>
+  </p>
+<% end %>
+</fieldset>
+<fieldset>
+  <legend>Add New Browse Facet</legend>
+<% form_for(@atrium_exhibit) do |f| %>
+    <%- @facet = Atrium::Filter::Facet.new-%>
+    <% f.fields_for :browse_facets, @facet do |facet_fields| %>
+      <%- if @atrium_exhibit.browse_facets.empty? -%>
+        <%- available_facets = facet_field_names -%>
+      <%- else -%>
+        <%- facet_names = @atrium_exhibit.browse_facets.collect {|facet| facet.name}-%>
+        <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
+      <%- end -%>
+      <%= facet_fields.select(:name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
+    <% end %>
+   <p>
+    <%= f.submit 'Add Browse Facet' %>
+  </p>
+<% end %>
+</fieldset>
+</fieldset>

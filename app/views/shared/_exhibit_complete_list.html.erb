@@ -1,0 +1,33 @@
+<% # container for all documents in index view -%>
+<div id="documents" class="exhibit-listing">
+  <% # loop thru each doc -%>
+  <% document_list = @document_list if document_list.nil?%>
+  <% response = @response if response.nil?%>
+  <% document_list.each_with_index do |document,counter| %>
+    <div class="document<%= thumbnail_class( document ) %>">     
+      <% # header bar for doc items in index view -%>
+      <div class="documentHeader yui-g">
+        <% # main title container for doc partial view -%>
+        <div class="yui-u">
+          <%- af_model = get_af_model(document) -%>
+          <%- if af_model == "Collection" && document[Collection.title_solr_field_name] && !document[Collection.title_solr_field_name].empty?-%>
+            <%- title = document[Collection.title_solr_field_name].first -%>
+          <%- elsif af_model == "Component" && document["component_type_t"] && !document["component_type_t"].empty? && document[Component.title_solr_field_name] && !document[Component.title_solr_field_name].empty?-%>
+            <%- title = document[Component.title_solr_field_name].first -%>
+	  <%- elsif af_model == "Page" && document["name_t"] && !document["name_t"].empty? -%>
+            <%- title =  document["name_t"].first -%>
+          <%- else-%>
+            <%- title = document[:id] %>
+          <%- end %>
+            <!--<h2 class="index_title"><span class="title_count"><%# response.params[:start].to_i.eql?(0) ? counter + 1 + response.params[:start].to_i+new_counter : counter + 1 + response.params[:start].to_i-new_counter%>. </span> <%# link_to_document document, :label=>title.blank? ? document_show_link_field : title , :counter => (counter + 1 + response.params[:start].to_i) %></h2>-->
+            <h2 class="index_title"><span class="title_count"><%= counter + 1 + response.params[:start].to_i %>. </span> <%= link_to_document document, :label=>title.blank? ? document_show_link_field : title , :counter => (counter + 1 + response.params[:start].to_i) %></h2>
+        </div>
+      </div>
+      
+      <% # main container for doc partial view -%>
+      <%= render_document_index_partial document, document[:id], counter, :index %>
+
+    </div>
+    
+  <% end %>
+</div>

@@ -1,0 +1,58 @@
+<%- @atrium_exhibit ||= atrium_exhibit -%>
+<div id="showHead">
+  <div id="showUtils">
+    <span class="edit-browse">
+      <%# if editor? -%>
+        <%= edit_and_browse_exhibit_links(@atrium_exhibit) %>
+      <%# end -%>
+    </span>
+  </div>
+</div>
+
+<%=render :partial=>'shared/exhibit_title_header'%>
+
+<%- if false #@atrium_exhibit.descriptions.any? -%>
+  <h2>Description</h2>
+  <%- @atrium_exhibit.descriptions(:response_format=>:solr).each_with_index do |document, counter| -%>
+    <%- description = load_af_instance_from_solr(document) -%>
+    <%= render :partial=>'descriptions/show_description', :locals => {:description => description, :document=> SolrDocument.new(document), :exhibit_id => params[:id]}%>
+  <%- end -%>
+<%- end -%>
+
+<%- if false #@atrium_exhibit && @atrium_exhibit.collections.any? -%>
+  <h2>Collection details</h2>
+  <dl class="item-list featured">
+    <%- @atrium_exhibit.collections(:response_format=>:solr).each_with_index do |document, counter| -%>
+      <%- item = load_af_instance_from_solr(document) -%>      
+      <%= render_document_index_partial(SolrDocument.new(document), item.title, counter, :index) %>
+    <%- end -%>
+  </dl>
+    <%- collection = @atrium_exhibit.collections.first-%>
+    <%- if collection.descriptions.any? -%>
+      <em>Collection Description</em>
+      <%- collection.descriptions.each do |description| -%>
+        <h3><%= description.title %></h3>
+        <p class="collection_desc"> <%= load_description(description) %> </p>
+      <%- end -%>
+    <%- end -%>
+<%- end -%>
+
+<%# if @atrium_exhibit && @atrium_exhibit.featured.any? -%>
+  <!--<h2>Featured Sources</h2>
+  <dl class="item-list featured"> -->
+    <%#- @atrium_exhibit.featured(:response_format=>:solr).each_with_index do |document, counter| -%>
+      <%#- item = load_af_instance_from_solr(document) -%>
+      <%#-  item.item_title.blank? ? title = item.sub_collection_title : title = item.item_title -%>
+      <%# debug document.inspect %>
+      <%#= render_document_index_partial(SolrDocument.new(document), title, counter, :index) %>
+    <%#- end -%>
+  <!--</dl>-->
+<%#- end -%>
+
+<hr />
+
+<h2>Complete Sources</h2>
+<a id="toggle_sources" href="#" title="Hide the complete listing of sources.">Hide Complete Sources</a>
+<div id="complete_sources">
+  <%= render :partial=>'shared/complete_sources', :locals => {:asset => @atrium_exhibit}%>
+</div>

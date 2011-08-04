@@ -1,4 +1,5 @@
 .bundle/*
 jetty/*
 tmp/*
+coverage/*
 *~

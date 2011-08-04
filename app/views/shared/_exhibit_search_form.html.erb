@@ -1,0 +1,12 @@
+<div id="collection-search">
+  <% params[:exhibit_id] ? exhibit_id = params[:exhibit_id] : exhibit_id = params[:id]%>
+  <% form_tag catalog_index_path, :method => :get do %>
+    <fieldset> 
+      <h3><label for="q"><%= link_to("Search Complete Exhibit", catalog_index_path(:exhibit_id=>exhibit_id)) %></label></h3>
+      <%= text_field_tag :q, params[:q], :class => "search-box" %>
+      <%= hidden_field_tag :exhibit_id, exhibit_id%>
+      <%= search_as_hidden_fields(:omit_keys => [:q, :f, :search_field, :qt, :action, :id, :controller, :class]) %>        
+      <%= submit_tag 'Search', :class=>'button' %>
+    </fieldset>
+  <% end %>
+</div>
