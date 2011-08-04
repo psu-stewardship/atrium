@@ -6,5 +6,7 @@ class Atrium::Showcase < ActiveRecord::Base
   has_many :facet_selections, :class_name=>'Atrium::Filter::FacetSelection', :foreign_key=>"atrium_filter_facet_selection_id"
   has_many :facets, :through=>:facet_selections, :class_name=>'Atrium::Filter::Facet', :foreign_key=>"atrium_filter_facet_id"
 
+  valedates_presence_of :atrium_exhibit_id
+
   set_table_name :atrium_showcases
 end

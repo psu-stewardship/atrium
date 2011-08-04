@@ -50,5 +50,9 @@ describe Atrium::Filter::Facet do
       end
       threw_exception.should == true
     end
+
+    it "atrium exhibit should be correct" do
+      @filter_facet.atrium_exhibit.should == @exhibit
+    end
   end
 end

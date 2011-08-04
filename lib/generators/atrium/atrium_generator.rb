@@ -145,6 +145,9 @@ EOF
     better_migration_template "create_atrium_exhibits.rb"
     better_migration_template "create_atrium_filter_queries.rb"
     better_migration_template "create_atrium_filter_facets.rb"
+    better_migration_template "create_atrium_showcases.rb"
+    better_migration_template "create_atrium_items.rb"
+    better_migration_template "create_atrium_filter_facet_selections.rb"
   end
 
   private  
