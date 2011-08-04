@@ -143,6 +143,7 @@ EOF
   def copy_migrations
     # Can't get this any more DRY, because we need this order.
     better_migration_template "create_atrium_exhibits.rb"
+    better_migration_template "create_atrium_filter_queries.rb"
   end
 
   private  

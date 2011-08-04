@@ -1,11 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-#require "active_fedora"
-#require "nokogiri"
 
 describe Atrium::Exhibit do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save
+  end
+
+  after(:each) do
+    @exhibit.delete
   end
 
   describe "#title" do
