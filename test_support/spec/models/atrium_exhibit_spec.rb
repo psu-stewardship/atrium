@@ -11,7 +11,7 @@ describe Atrium::Exhibit do
   end
 
   describe "#title" do
-     it "should return empty string if no exhibit title defined" do
+    it "should return empty string if no exhibit title defined" do
       @exhibit.title.should == ""
     end
 
@@ -60,7 +60,14 @@ describe Atrium::Exhibit do
       @exhibit.browse_facet_names.include?("my_facet_2").should == true
     end
 
+    it "should remove associated showcases if a browse facet removed" do
+      #pending "need to test that associated showcases are removed if a browse facet is removed..."
+      val = true
+      val.should == ""
+    end
+
     it "if no browse facets defined it should return an empty array" do 
+      @exhibit.browse_facet_names.should == []
     end
   end
 
@@ -74,7 +81,11 @@ describe Atrium::Exhibit do
 
   describe "showcases" do
     it "should return array of showcases defined" do
-      pending "Need to define a test for checking showcases..."
+      @showcase = @exhibit.showcases.create
+      @showcase2 = @exhibit.showcases.create
+      @exhibit.showcases.size.should == 2
+      @exhibit.showcases.include?(@showcase).should == true
+      @exhibit.showcases.include?(@showcase2).should == true
     end
   end
 end

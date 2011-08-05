@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::Filter::Query do
+
   before(:each) do
     @filter_query = Atrium::Filter::Query.new
     @filter_query.save
