@@ -59,7 +59,7 @@ describe Atrium::Filter::Facet do
     end
 
     it "atrium exhibit should be correct" do
-      @filter_facet.atrium_exhibit.should == @exhibit
+      @filter_facet.exhibit.should == @exhibit
     end
   end
 end

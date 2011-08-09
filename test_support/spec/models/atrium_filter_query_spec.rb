@@ -28,11 +28,11 @@ describe Atrium::Filter::Query do
   describe "#atrium_exhibit" do
     it "should return the exhibit this belongs to" do
       @exhibit.queries << @filter_query
-      @filter_query.atrium_exhibit.should == @exhibit
+      @filter_query.exhibit.should == @exhibit
     end
 
     it "should return nil if no exhibit defined" do
-      @filter_query.atrium_exhibit.nil?.should == true
+      @filter_query.exhibit.nil?.should == true
     end
   end
 end

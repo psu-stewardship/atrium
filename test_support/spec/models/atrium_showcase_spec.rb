@@ -166,9 +166,8 @@ describe Atrium::Showcase do
       @exhibit2.save
       threw_exception = false
       begin
-        
-        @facet_selection2 = @showcase.facet_selections.create({:atrium_filter_facet_id => @facet2.id}) 
-        @facet_selection2.save!
+        @facet_selection2 = @showcase.facet_selections.create({:atrium_filter_facet_id => @facet2.id})
+        @showcase.save!
       rescue
         threw_exception = true
       end
