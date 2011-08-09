@@ -1,17 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::Filter::FacetSelection do
+describe Atrium::Showcase::FacetSelection do
   before(:each) do
-    @facet = Atrium::Filter::Facet.new
-    @facet.save
     @showcase = Atrium::Showcase.new
     @showcase.save
-    @facet_selection = Atrium::Filter::FacetSelection.new({:atrium_showcase_id=>@showcase.id, :atrium_filter_facet_id=>@facet.id})
+    @facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id, :value=>"connecticut", :solr_facet_name=>"publisher_facet"})
   end
 
   after(:each) do
     @facet_selection.delete
-    @facet.delete
     @showcase.delete
     begin
       @fail_facet_selection.delete
@@ -20,19 +17,8 @@ describe Atrium::Filter::FacetSelection do
   end
 
   describe "#value" do
-    it "should return an empty string if no value set" do
-      @facet_selection.value.should == ""
-    end
-
-    it "should return the correct value if set" do
-      @facet_selection.value = "connecticut"
-      @facet_selection.value.should == "connecticut"
-    end
-  end
-
-  describe "#facet" do
-    it "facet cannot be null" do
-      @fail_facet_selection = Atrium::Filter::FacetSelection.new({:atrium_showcase_id=>@showcase.id})
+    it "value cannot be nil" do
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet"})
       threw_exception = false
       begin
         @fail_facet_selection.save!
@@ -41,11 +27,32 @@ describe Atrium::Filter::FacetSelection do
       end
       threw_exception.should == true
     end
+
+    it "should return the correct value if set" do
+      @facet_selection.value.should == "connecticut"
+    end
+  end
+
+  describe "#solr_facet_name" do
+    it "facet cannot be null" do
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id})
+      threw_exception = false
+      begin
+        @fail_facet_selection.save!
+      rescue
+        threw_exception = true
+      end
+      threw_exception.should == true
+    end
+
+    it "should return the correct value if set" do
+      @facet_selection.solr_facet_name.should == "publisher_facet"
+    end
   end
 
   describe "#showcase" do
     it "showcase cannot be null" do
-      @fail_facet_selection = Atrium::Filter::FacetSelection.new({:atrium_filter_facet_id=>@facet.id})
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:solr_facet_name=>"my_facet"})
       threw_exception = false
       begin
         @fail_facet_selection.save!

@@ -4,8 +4,6 @@ describe Atrium::Showcase do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save
-    @facet = @exhibit.browse_facets.create({:name=>"my_facet"})
-    @exhibit.save
     @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id)
     @showcase.save
   end
@@ -23,14 +21,6 @@ describe Atrium::Showcase do
     end
     begin
       @showcase2.delete
-    rescue
-    end
-    begin
-      @facet.delete
-    rescue
-    end
-    begin
-      @facet2.delete
     rescue
     end
     begin
@@ -63,7 +53,7 @@ describe Atrium::Showcase do
       @item = @showcase.featured_items.create(:solr_doc_id=>"ns:46")
       @showcase.featured_items.should == [@item]
       @showcase.featured_items.first.solr_doc_id.should == "ns:46"
-      @showcase.featured_items.first.type.should == "Atrium::Item::Featured"
+      @showcase.featured_items.first.type.should == "Atrium::Showcase::Item::Featured"
     end
 
     it "should be able to delete an existing featured item" do
@@ -93,7 +83,7 @@ describe Atrium::Showcase do
       @showcase.save!
       @showcase.related_items.should == [@item]
       @showcase.related_items.first.solr_doc_id.should == "ns:46"
-      @showcase.related_items.first.type.should == "Atrium::Item::Related"
+      @showcase.related_items.first.type.should == "Atrium::Showcase::Item::Related"
     end
 
     it "should be able to delete an existing related item" do
@@ -122,7 +112,7 @@ describe Atrium::Showcase do
       @item = @showcase.descriptions.create(:solr_doc_id=>"ns:46")
       @showcase.descriptions.should == [@item]
       @showcase.descriptions.first.solr_doc_id.should == "ns:46"
-      @showcase.descriptions.first.type.should == "Atrium::Item::Description"
+      @showcase.descriptions.first.type.should == "Atrium::Showcase::Item::Description"
     end
 
     it "should be able to delete an existing description" do
@@ -160,32 +150,21 @@ describe Atrium::Showcase do
     end
 
     it "should only allow setting showcase facet selection associated with facets that are defined within exhibit" do
-      @exhibit2 = Atrium::Exhibit.new
-      @exhibit2.save
-      @facet2 = @exhibit2.browse_facets.create({:name=>"my_facet2"})
-      @exhibit2.save
-      threw_exception = false
+       threw_exception = false
       begin
-        @facet_selection2 = @showcase.facet_selections.create({:atrium_filter_facet_id => @facet2.id})
+        @facet_selection2 = @showcase.facet_selections.create({:solr_facet_name=>"my_facet2"})
         @showcase.save!
       rescue
         threw_exception = true
       end
       threw_exception.should == true
+      false.should == true
     end
 
     it "should be able to set the facet selection for a showcase" do
-      @facet_selection = @showcase.facet_selections.create({:atrium_filter_facet_id => @facet.id}) 
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"}) 
       @showcase.save!
       @showcase.facet_selections.should == [@facet_selection]
-    end
-  end
-
-  describe "#facets" do
-    it "should be able to see facet objects associated with this showcase" do
-      @facet_selection = @showcase.facet_selections.create({:atrium_filter_facet_id => @facet.id}) 
-      @showcase.save!
-      @showcase.facets.should == [@facet]
     end
   end
 
@@ -194,7 +173,6 @@ describe Atrium::Showcase do
       @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
       @showcase.save!
       @showcase.facet_selections.should == []
-      @showcase.facets.should == []
     end
   end
 end

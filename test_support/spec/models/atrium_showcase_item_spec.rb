@@ -1,12 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::Item do
+describe Atrium::Showcase::Item do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save!
     @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
     @showcase.save!
-    @item = Atrium::Item.new({:atrium_showcase_id=>@showcase.id})
+    @item = Atrium::Showcase::Item.new({:atrium_showcase_id=>@showcase.id})
     @item.save
   end
 
@@ -49,7 +49,7 @@ describe Atrium::Item do
 
   describe "#showcase" do
     it "showcase cannot be null" do
-      @fail_item = Atrium::Item.new({:solr_doc_id=>"ns:20"})
+      @fail_item = Atrium::Showcase::Item.new({:solr_doc_id=>"ns:20"})
       threw_exception = false
       begin
         @fail_item.save!

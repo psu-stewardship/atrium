@@ -1,10 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::Item::Featured do
+describe Atrium::Showcase::Item::Description do
   before(:each) do
     @showcase = Atrium::Showcase.new
     @showcase.save
-    @item = Atrium::Item::Featured.new({:atrium_showcase_id=>@showcase.id})
+    @item = Atrium::Showcase::Item::Description.new({:atrium_showcase_id=>@showcase.id})
     @item.save
   end
 
@@ -14,8 +14,8 @@ describe Atrium::Item::Featured do
   end
 
   describe "#type" do
-    it "should return type Atrium::Item::Featured" do
-      @item.type.should == "Atrium::Item::Featured"
+    it "should return type Atrium::Showcase::Item::Description" do
+      @item.type.should == "Atrium::Showcase::Item::Description"
     end
   end
 end

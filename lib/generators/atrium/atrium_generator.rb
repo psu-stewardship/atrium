@@ -143,11 +143,11 @@ EOF
   def copy_migrations
     # Can't get this any more DRY, because we need this order.
     better_migration_template "create_atrium_exhibits.rb"
-    better_migration_template "create_atrium_filter_queries.rb"
-    better_migration_template "create_atrium_filter_facets.rb"
+    better_migration_template "create_atrium_search_facets.rb"
     better_migration_template "create_atrium_showcases.rb"
-    better_migration_template "create_atrium_items.rb"
-    better_migration_template "create_atrium_filter_facet_selections.rb"
+    better_migration_template "create_atrium_showcase_items.rb"
+    better_migration_template "create_atrium_showcase_facet_selections.rb"
+    better_migration_template "create_atrium_browse_levels.rb"
   end
 
   private  
