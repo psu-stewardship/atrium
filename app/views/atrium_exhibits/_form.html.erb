@@ -2,7 +2,14 @@
   <fieldset>
     <legend> Settings </legend>
 <% form_for(@atrium_exhibit) do |f| %>
-  <%= f.error_messages %>
+  <% if @atrium_exhibit.errors.any? %>
+    <ul>
+    <% @atrium_exhibit.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
     <dl>
       <dt>
 	<%= f.label :title, 'Title:' %>
@@ -10,15 +17,12 @@
       <dd>
 	<%= f.text_field :title %>
       </dd>
-      <%- @query = (@atrium_exhibit.queries.empty? ? Atrium::Filter::Query.new : @atrium_exhibit.queries.first)-%>
-      <% f.fields_for :queries, @query do |query_fields| %>
       <dt>
-        <%= query_fields.label :value, 'Query Value:' %> 
+        <%= f.label :solr_filter_query, 'Exhibit Scope Query:' %> 
       </dt>
       <dd>
-	<%= query_fields.text_field :value %>
+	<%= f.text_field :solr_filter_query %>
       </dd>
-      <% end %>
     </dl>
     <%- unless @atrium_exhibit.search_facets.empty? -%>
       <table>
@@ -33,16 +37,21 @@
       </table>
     <%- end -%>
 
-    <%- unless @atrium_exhibit.browse_facets.empty? -%>
+    <%- unless @atrium_exhibit.browse_levels.empty? -%>
       <table>
-	<tr><th>Browse Facet</th></tr>
-        <%- @atrium_exhibit.browse_facets.each_with_index do |facet,index| -%>
+	<tr><th>Browse Level</th></tr>
+        <%- @atrium_exhibit.browse_levels.each_with_index do |level,index| -%>
         <tr>
           <%(1..index).each do |i|%>
             <td></td>
           <% end %>
-          <% f.fields_for :browse_facets, facet do |facet_form| %>
-            <td>Level-<%=index+1%>: <%=facet_field_labels[facet.name]%></td><td><%=facet_form.check_box :_destroy %> Delete</td>
+          <% f.fields_for :browse_levels, level do |level_form| %>
+            <%=debug level.inspect%>
+            <td>Level-<%=level.level_number%>: </td> 
+            <td><%#facet_field_names[level.solr_facet_name]%></td>
+	    <td><%# level_form.label :label, 'Label:' %><%=level_form.text_field :label%></td>
+	    <td><%# level_form.solr_facet_name :solr_facet_name, 'Label:' %><%=level_form.text_field :label%></td>
+	    <td><%=level_form.check_box :_destroy %> Delete</td>
           <% end %>
         </tr>
         <%- end -%>
@@ -55,7 +64,7 @@
 <fieldset>
   <legend>Add New Search Facet</legend>
 <% form_for(@atrium_exhibit) do |f| %>
-    <%- @facet = Atrium::Filter::Facet.new-%>
+    <%- @facet = Atrium::Search::Facet.new-%>
     <% f.fields_for :search_facets, @facet do |facet_fields| %>
       <%- if @atrium_exhibit.search_facets.empty? -%>
         <%- available_facets = facet_field_names -%>
@@ -70,18 +79,19 @@
   </p>
 <% end %>
 </fieldset>
+
 <fieldset>
-  <legend>Add New Browse Facet</legend>
+  <legend>Add New Browse Level</legend>
 <% form_for(@atrium_exhibit) do |f| %>
-    <%- @facet = Atrium::Filter::Facet.new-%>
-    <% f.fields_for :browse_facets, @facet do |facet_fields| %>
-      <%- if @atrium_exhibit.browse_facets.empty? -%>
+    <%- @level = Atrium::BrowseLevel.new-%>
+    <% f.fields_for :browse_levels, @level do |level_fields| %>
+      <%- if @atrium_exhibit.browse_levels.empty? -%>
         <%- available_facets = facet_field_names -%>
       <%- else -%>
-        <%- facet_names = @atrium_exhibit.browse_facets.collect {|facet| facet.name}-%>
+        <%- facet_names = @atrium_exhibit.browse_levels.collect {|level| level.solr_facet_name}-%>
         <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
       <%- end -%>
-      <%= facet_fields.select(:name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
+      <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
     <% end %>
    <p>
     <%= f.submit 'Add Browse Facet' %>

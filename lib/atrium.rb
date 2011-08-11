@@ -28,3 +28,6 @@ module Atrium
   end
   
 end
+
+require 'atrium/catalog.rb'
+require 'atrium/exhibits_helper.rb'

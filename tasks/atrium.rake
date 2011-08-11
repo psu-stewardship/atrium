@@ -198,7 +198,7 @@ namespace :atrium do
       #errors << 'Error generating default hydra-head install' unless $?.success?
 
       puts "generating default atrium install"
-      %x[rails generate atrium --devise]
+      %x[rails generate atrium -df] # using -f to force overwriting of solr.yml
       errors << 'Error generating default atrium install' unless $?.success?
 
       puts "Running rake db:migrate"

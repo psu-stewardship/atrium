@@ -1,8 +1,0 @@
-
-<ul class="collection-list">
-  <%- get_exhibits_list.each do |exhibit| -%>
-    <li>
-      <h2><%=link_to exhibit.title.blank? ? "Unnamed Exhibit" : exhibit.title, atrium_exhibit_path(exhibit) %></h2>
-    </li>
-  <%- end -%>
-</ul>

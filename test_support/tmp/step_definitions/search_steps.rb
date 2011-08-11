@@ -1,27 +1,26 @@
-# -*- encoding : utf-8 -*-
 # User added
 Then /^I should see a search field$/ do
-  page.should have_selector("input#q")
+  response.should have_tag("input#q")
 end
 
 Then /^I should see a selectable list with field choices$/ do
-  page.should have_selector("select#search_field")
+  response.should have_tag("select#search_field")
 end
 
 Then /^I should see a selectable list with per page choices$/ do
-  page.should have_selector("select#per_page")
+  response.should have_tag("select#per_page")
 end
 
 Then /^I should see a "([^\"]*)" button$/ do |label|
-  page.should have_selector("input[type='submit'][value='#{label}']")
+  response.should have_tag("input[type=?][value=?]", 'submit', label)
 end
 
 Then /^I should not see the "([^\"]*)" element$/ do |id|
-  page.should_not have_selector("##{id}")
+  response.should_not have_tag("##{id}")
 end
 
 Then /^I should see the "([^\"]*)" element$/ do |id|
-  page.should have_selector("##{id}")
+  response.should have_tag("##{id}")
 end
 
 Given /^the application is configured to have searchable fields "([^\"]*)" with values "([^\"]*)"$/ do |fields, values|
@@ -35,7 +34,7 @@ Given /^the application is configured to have searchable fields "([^\"]*)" with 
 end
 
 Then /^I should see select list "([^\"]*)" with field labels "([^\"]*)"$/ do |list_css, names|
-  page.should have_selector(list_css) do
+  response.should have_tag(list_css) do
     labels = names.split(", ")
     labels.each do |label|
       with_tag('option', label)
@@ -44,7 +43,7 @@ Then /^I should see select list "([^\"]*)" with field labels "([^\"]*)"$/ do |li
 end
 
 Then /^I should see select list "([^\"]*)" with "([^\"]*)" selected$/ do |list_css, label|
-  page.should have_selector(list_css) do |e|
+  response.should have_tag(list_css) do |e|
     with_tag("[selected=selected]", {:count => 1}) do
       with_tag("option", {:count => 1, :text => label})
     end
@@ -63,39 +62,23 @@ Given /^the application is configured to have sort fields "([^\"]*)" with values
 end
 
 Then /^I should get results$/ do 
-  page.should have_selector("div.document")
+  response.should have_selector("div.document")
 end
 
 Then /^I should not get results$/ do 
-  page.should_not have_selector("div.document")
+  response.should_not have_selector("div.document")
 end
 
 Then /^I should see the applied filter "([^\"]*)" with the value "([^\"]*)"$/ do |filter, text|
-  page.should have_selector("div#facets div h3", :content => filter)
-  page.should have_selector("div#facets div span.selected", :content => text)
-end
-
-Then /^I should see an rss discovery link/ do
-  page.should have_selector("link[rel=alternate][type='application/rss+xml']")
-end
-
-Then /^I should see an atom discovery link/ do
-  page.should have_selector("link[rel=alternate][type='application/atom+xml']")
-end
-
-Then /^I should see an unAPI discovery link/ do
-  page.should have_selector("link[rel=unapi-server][type='application/xml']")
-end
-
-Then /^I should see opensearch response metadata tags/ do
-  page.should have_selector("meta[name=totalResults]")
-  page.should have_selector("meta[name=startIndex]")
-  page.should have_selector("meta[name=itemsPerPage]")
+  response.should have_tag("div#facets div") do |node|
+    node.should have_selector("h3", :content => filter)
+    node.should have_selector("span.selected", :content => text)
+  end
 end
 
 # Then /^I should see the applied filter "([^\"]*)" with the value
 # "([^\"]*)"$/ do |filter, text|
-#  page.should have_tag("div#facets div") do |node|
+#  response.should have_tag("div#facets div") do |node|
 #    node.should have_selector("h3", :content => filter)
 #    node.should have_selector("span.selected", :content => /#{text}.*/)
 #  end

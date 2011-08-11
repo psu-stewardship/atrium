@@ -1,0 +1,15 @@
+<%- exhibits = get_exhibits_list -%>
+<%- if exhibits.size > 0 -%>
+  <ul class="collection-list">
+    <%- exhibits.each do |exhibit| -%>
+      <li>
+        <h2><%=link_to exhibit.title.blank? ? "Unnamed Exhibit" : exhibit.title, atrium_exhibit_path(exhibit) %></h2>
+      </li>
+    <%- end -%>
+<%- else -%>
+  <p>No exhibits found.</p>
+<%- end -%>
+
+<%- if current_user -%>
+    <input type="button" onclick=" location.href='<%=url_for(:action => "new", :controller => "atrium_exhibits", :content_type => "exhibit", :label => "exhibit")%>'" value='Create New Exhibit'>
+<%- end -%>
