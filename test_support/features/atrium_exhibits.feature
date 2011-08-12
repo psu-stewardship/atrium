@@ -11,69 +11,16 @@ Feature: Exhibits
     And I should see "No exhibits found."
 
   Scenario: Editor views the search results page and sees the add exhibit button
-    Given I am logged in as "archivist1@example.com"
+    Given I am logged in as "archivist1"
     Given I am on the home page
-    Then I should see "No exhibits found."
-    And I should see a "input" element containing "Create New Exhibit"
+    Then I should see a "Create New Exhibit" button
 
-  Scenario: Adding an exhibit
+  Scenario: Adding an Exhibit
     Given I am logged in as "archivist1"
-    And I am on the new exhibit page
-    Then I should see a "dt" element containing "Title:"
-    And I should see a "dd" element containing ""
-    And I should see a "dt" element containing "Query Value:"
-    And I should see a "dd" element containing ""
-    And I should see a "Save" button
-    Then I should see select list "select#atrium_exhibit_browse_facets_attributes_0_name" with field labels "Publisher, Print Date, Printing Location, Printer, Engraver, Signers, Print Year"
-    And I should see a "Add Browse Facet" button 
-    And I press "Save"
-    Then I should see "Exhibit was successfully created."
-
-  Scenario: Editing an exhibit and apply query filter
-    Given I am logged in as "archivist1"
-    And I am on the edit exhibit page for id 1
-    And I fill in "title" with "My Exhibit"
-    And I fill in "atrium_exhibit_queries_attributes_0_value" with "date_s:1775"
-    And I press "Save"
-    Then I should see "Exhibit was successfully updated."
-    And I should see "View" within "a.browse" 
-    Then I follow "View"
-    And I should see "3 documents found"
-    Then I follow "Edit"
-    And I fill in "atrium_exhibit_queries_attributes_0_value" with "id:ead*"
-    And I press "Save"
-    Then I should see "Exhibit was successfully updated."
-    Then I follow "View"
-    And I should see "8 documents found"
-    
-
-  Scenario: Adding and deleting browse facet from exhibit
-    Given I am logged in as "archivist1"
-    And I am on the edit exhibit page for id 1
-    When I select "Print Date" from "atrium_exhibit_browse_facets_attributes_0_name"
-    And I press "Add Browse Facet"
-    Then I should see "Exhibit was successfully updated."
-    And I should see a "td" element containing "Print Date"
-    And I should not see select list "select#atrium_exhibit_browse_facets_attributes_0_name" with field labels "Print Date"
-    When I check "atrium_exhibit_browse_facets_attributes_0__destroy"
-    And I press "Save"
-    Then I should see "Exhibit was successfully updated."
-    Then I should not see a "td" element containing "Print Date"
-    And I should see select list "select#atrium_exhibit_browse_facets_attributes_0_name" with field labels "Print Date"
-
-  Scenario: Adding and deleting search facet from exhibit
-    Given I am logged in as "archivist1"
-    And I am on the edit exhibit page for id 1
-    When I select "Print Date" from "atrium_exhibit_search_facets_attributes_0_name"
-    And I press "Add Search Facet"
-    Then I should see "Exhibit was successfully updated."
-    And I should see a "td" element containing "Print Date"
-    And I should not see select list "select#atrium_exhibit_search_facets_attributes_0_name" with field labels "Print Date"
-    When I check "atrium_exhibit_search_facets_attributes_0__destroy"
-    And I press "Save"
-    Then I should see "Exhibit was successfully updated."
-    Then I should not see a "td" element containing "Print Date"
-    And I should see select list "select#atrium_exhibit_search_facets_attributes_0_name" with field labels "Print Date"
-    
-
-  
+    Given I am on the home page
+    When I press "Create New Exhibit"
+    Then I should be on the new exhibit page
+    And I should see a "label" element containing "Title:"
+    And I should see a "input#atrium_exhibit[title]" element containing ""
+    And I should see a "label" element containing "Exhibit Scope Query:"
+    And I should see a "input#atrium_exhibit[solr_fitler_query]" element containing ""

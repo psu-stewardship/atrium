@@ -11,5 +11,7 @@
 <%- end -%>
 
 <%- if current_user -%>
-    <input type="button" onclick=" location.href='<%=url_for(:action => "new", :controller => "atrium_exhibits", :content_type => "exhibit", :label => "exhibit")%>'" value='Create New Exhibit'>
+<form action="<%=url_for(:action => "new", :controller => "atrium_exhibits")%>">
+    <input type="submit" value='Create New Exhibit'>
+</form>
 <%- end -%>

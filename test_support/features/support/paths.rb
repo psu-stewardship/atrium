@@ -12,6 +12,9 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
+    when /the new exhibit page/
+      new_atrium_exhibit_path
+
       
     when /the catalog page/
       catalog_index_path

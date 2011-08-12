@@ -23,6 +23,7 @@ namespace :atrium do
     # does this make jetty run in TEST environment???
     error = Jettywrapper.wrap(jetty_params) do
       Rake::Task['atrium:setup_test_app'].invoke
+      Rake::Task['solr:marc:index_test_data'].invoke
       #puts %x[rake atrium:fixtures:refresh RAILS_ENV=test] # calling hydra:fixtures:refresh from the root of the test app
       Rake::Task['atrium:test'].invoke
     end
