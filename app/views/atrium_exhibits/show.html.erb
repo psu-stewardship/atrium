@@ -1,9 +1,8 @@
-<%- @atrium_exhibit ||= atrium_exhibit -%>
 <div id="showHead">
   <div id="showUtils">
     <span class="edit-browse">
       <%# if editor? -%>
-        <%= edit_and_browse_exhibit_links(@atrium_exhibit) %>
+        <%= raw(edit_and_browse_exhibit_links(@atrium_exhibit)) %>
       <%# end -%>
     </span>
   </div>
