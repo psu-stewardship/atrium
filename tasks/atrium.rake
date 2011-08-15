@@ -193,7 +193,9 @@ namespace :atrium do
       puts "generating default blacklight install"
       %x[rails generate blacklight --devise]
       errors << 'Error generating default blacklight install' unless $?.success?
-      
+
+      puts "loading blacklight marc test data into Solr"
+      %x[rake solr:marc:index_test_data]      
       #puts "generating default hydra-head install"
       #%x[rails generate hydra:head -df]  # using -f to force overwriting of solr.yml
       #errors << 'Error generating default hydra-head install' unless $?.success?
