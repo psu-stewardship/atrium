@@ -9,69 +9,6 @@ module ApplicationHelper
   #include Hydra::AccessControlsEnforcement
   #include HydraHelper
   
-
-
-
-  # Standard display of a facet value in a list. Used in both _facets sidebar
-  # partial and catalog/facet expanded list. Will output facet value name as
-  # a link to add that to your restrictions, with count in parens. 
-  # first arg item is a facet value item from rsolr-ext.
-  # options consist of:
-  # :suppress_link => true # do not make it a link, used for an already selected value for instance
-  def render_browse_facet_value(facet_solr_field, item, options ={})
-    p = params.dup
-    #p.delete(:f)
-    p.delete(:q)
-    p.delete(:commit)
-    p.delete(:search_field)
-    p.delete(:controller)
-    p.merge!(:id=>params[:exhibit_id]) if p[:exhibit_id]
-    p = add_facet_params(facet_solr_field,item.value,p)
-    link_to(item.value, atrium_exhibit_path(p.merge!({:class=>"browse_facet_select", :action=>"show"})))
-  end
-
-  # Standard display of a SELECTED facet value, no link, special span
-  # with class, and 'remove' button.
-  def render_selected_browse_facet_value(facet_solr_field, item, browse_facets)
-    logger.debug("catalog params: #{params.inspect}")
-    logger.debug("render_selected_browse_facet_value: #{facet_solr_field.inspect}, #{item.inspect}, #{browse_facets.inspect}")
-    remove_params = remove_browse_facet_params(facet_solr_field, item.value, params, browse_facets)
-    remove_params.delete(:render_search) #need to remove if we are in search view and click takes back to browse
-    remove_params.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
-    remove_params.delete(:controller)
-    '<span class="selected">' +
-      link_to("-", atrium_exhibit_path(remove_params.merge!(:action=>"show")), :class=>"remove") + 
-      link_to("#{item.value}", atrium_exhibit_path(remove_params.merge!(:action=>"show")), :class=>"browse_facet") +
-    '</span>'
-      
-  end
-
-  #Remove current selected facet plus any child facets selected
-  def remove_browse_facet_params(solr_facet_field, value, params, browse_facets)
-    logger.debug("Solr facet field: #{solr_facet_field.inspect}")
-    new_params = remove_facet_params(solr_facet_field, value, params)
-    #iterate through browseable facets from current on down
-    selected_browse_facets = get_selected_browse_facets(browse_facets)
-    index = browse_facets.index(solr_facet_field)
-    browse_facets.slice(index + 1, browse_facets.length - index + 1).each do |f|
-      new_params = remove_facet_params(f, selected_browse_facets[f.to_sym], new_params) if selected_browse_facets[f.to_sym]
-    end
-    logger.debug("new_params: #{new_params.inspect}")
-    new_params
-  end
-
-  def edit_and_browse_exhibit_links(exhibit)
-    result = ""
-    if params[:action] == "edit" || params[:action] == "update"
-      result << "<a href=\"#{atrium_exhibit_path(params[:exhibit_id])}\" class=\"browse toggle\">View</a>"
-      result << "<span class=\"edit toggle active\">Edit</span>"
-    else
-      result << "<span class=\"browse toggle active\">View</span>"
-      result << "<a href=\"#{edit_atrium_exhibit_path(params[:id], :class => "edit_exhibit", :render_search=>"false")}\" class=\"edit toggle\">Edit</a>"
-    end
-    return result
-  end
-
   def edit_and_browse_subexhibit_links(subexhibit)
     result = ""
     if params[:action] == "edit"
