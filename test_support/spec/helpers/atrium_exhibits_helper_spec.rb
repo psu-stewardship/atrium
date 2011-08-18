@@ -1,13 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::ExhibitsHelper do
-  include Blacklight::SolrHelper
-  include Atrium::ExhibitsHelper
 
-  class MockExhibitsHelper
-    include Atrium::ExhibitsHelper
+  before(:each) do
+    @exhibit = Atrium::Exhibit.new
   end
 
+  after(:each) do
+    begin
+      @exhibit.delete
+    rescue
+    end
+  end
   describe "get_exhibits_list" do
     it "should call find with all on Atrium::Exhibit class" do
       Atrium::Exhibit.expects(:find).with(:all)
@@ -120,7 +124,6 @@ describe Atrium::ExhibitsHelper do
 
   describe "initialize_exhibit" do
     it "atrium_exhibit should be nil if both :id (if atrium_exhibits controller) and :exhibit_id not in params" do
-      helper = MockExhibitsHelper.new
       helper.stubs(:params).returns({:id=>"test_id"})
       helper.initialize_exhibit
       helper.atrium_exhibit.should == nil
@@ -129,42 +132,38 @@ describe Atrium::ExhibitsHelper do
     end
 
     it "should raise an exception if the exhibit_id passed in does not exist" do
-      helper = MockExhibitsHelper.new
       helper.expects(:params).returns({:id=>"test_id",:controller=>"atrium_exhibits"}).at_least_once
       #these only get called once if an exhibit is found
       helper.expects(:build_lucene_query).returns("_query_:id\:test_id")
       helper.expects(:get_search_results)
-      exhibit = Atrium::Exhibit.new
-      exhibit.save!
+      @exhibit.save!
       logger.expects(:error).once
       helper.initialize_exhibit
       #check valid case as well
-      helper.expects(:params).returns({:id=>exhibit.id,:controller=>"atrium_exhibits"}).at_least_once
+      helper.expects(:params).returns({:id=>@exhibit.id,:controller=>"atrium_exhibits"}).at_least_once
       helper.initialize_exhibit
     end
 
     it "should call get_search_results with correct params and query and all variables initialized correctly" do
-      helper = MockExhibitsHelper.new
       helper.expects(:params).returns({:id=>"test_id",:controller=>"atrium_exhibits"}).at_least_once
-      exhibit = Atrium::Exhibit.new
-      exhibit.expects(:id).returns("test_id").at_least(0)
-      exhibit.expects(:browse_levels).returns(["test","test1"])
-      exhibit.expects(:build_members_query).returns("_query_:id\:namespace").at_least_once
-      Atrium::Exhibit.expects(:find).with("test_id").returns(exhibit)
+      @exhibit.expects(:id).returns("test_id").at_least(0)
+      @exhibit.expects(:browse_levels).returns(["test","test1"])
+      @exhibit.expects(:build_members_query).returns("_query_:id\:namespace").at_least_once
+      Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       helper.expects(:build_lucene_query).returns("_query_:id\:test_id").at_least_once
       helper.expects(:get_search_results)
       helper.initialize_exhibit
-      helper.atrium_exhibit.should == exhibit
+      helper.atrium_exhibit.should == @exhibit
       helper.stubs(:params).returns({:exhibit_id=>"test_id"})
-      exhibit.stubs(:id).returns("test_id")
-      exhibit.expects(:browse_levels).returns(["test","test1"]).at_least_once
-      Atrium::Exhibit.expects(:find).with("test_id").returns(exhibit)
+      @exhibit.stubs(:id).returns("test_id")
+      @exhibit.expects(:browse_levels).returns(["test","test1"]).at_least_once
+      Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       response = mock()
       document_list = mock()
       helper.expects(:get_search_results).with({:q=>"_query_:id\:namespace AND _query_:id\:test_id"}).returns([response,document_list])
       helper.initialize_exhibit
-      helper.atrium_exhibit.should == exhibit
-      helper.browse_levels.should == exhibit.browse_levels
+      helper.atrium_exhibit.should == @exhibit
+      helper.browse_levels.should == @exhibit.browse_levels
       helper.extra_controller_params.should == {:q=>"_query_:id\:namespace AND _query_:id\:test_id"}
       helper.browse_response.should == response
       helper.browse_document_list.should == document_list
@@ -174,15 +173,13 @@ describe Atrium::ExhibitsHelper do
   describe "get_browse_level_navigation_data" do
     it "should call initialize_exhibit only if @atrium_exhibit is nil" do
       #it should only call it the first time
-      helper = MockExhibitsHelper.new
-      exhibit = Atrium::Exhibit.new
-      Atrium::Exhibit.expects(:find).with("test_id").returns(exhibit)
+      Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       helper.expects(:params).returns({:exhibit_id=>"test_id"}).at_least_once
       helper.expects(:build_lucene_query)
       helper.expects(:get_search_results)
       helper.expects(:get_browse_level_data).once
       helper.get_browse_level_navigation_data
-      helper.atrium_exhibit.should == exhibit
+      helper.atrium_exhibit.should == @exhibit
       #now should be not call initialize_exhibit if it is not nil
       helper.expects(:initialize_exhibit).times(0)
       helper.expects(:get_browse_level_data).once
@@ -190,8 +187,6 @@ describe Atrium::ExhibitsHelper do
     end
 
     it "if atrium exhibit still nil after calling initialize exhibit than should return empty array" do
-      helper = MockExhibitsHelper.new
-      exhibit = Atrium::Exhibit.new
       helper.expects(:params).returns({:exhibit_id=>"test_id"}).at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(nil)
       helper.expects(:get_browse_level_data).times(0)
@@ -199,9 +194,7 @@ describe Atrium::ExhibitsHelper do
     end
 
     it "if atrium exhibit is not nil it should call get_browse_level_data" do
-      helper = MockExhibitsHelper.new
-      exhibit = Atrium::Exhibit.new
-      Atrium::Exhibit.expects(:find).with("test_id").returns(exhibit)
+      Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       helper.expects(:params).returns({:exhibit_id=>"test_id"}).at_least_once
       helper.expects(:build_lucene_query)
       helper.expects(:get_search_results)
@@ -211,34 +204,96 @@ describe Atrium::ExhibitsHelper do
   end
 
   describe "get_browse_level_data" do
+    #since this method is private need to do a few things to make sure it gets called by get_browse_level_navigation_data
+    before(:each) do
+      @exhibit.save
+      Atrium::Exhibit.expects(:find).returns(@exhibit).at_least_once
+      @response = mock()
+      @document_list = mock()
+      helper.stubs(:params).returns({:exhibit_id=>@exhibit.id})
+      helper.expects(:build_lucene_query).at_least_once
+      helper.expects(:get_search_results).returns([@response,@document_list]).at_least_once
+    end
+
     it "if browse levels not defined it should return an empty array" do
-      exhibit = Atrium::Exhibit.new
-      exhibit.save
-      helper = MockExhibitsHelper.new
-      helper.expects(:params).returns({:exhibit_id=>exhibit.id}).at_least_once
-      helper.expects(:build_lucene_query)
-      helper.expects(:get_search_results)
       helper.get_browse_level_navigation_data.should == []
-      exhibit.browse_levels.should == []
+      @exhibit.browse_levels.should == []
     end
 
     it "should use the blacklight facet field label if no label defined in a browse level" do
-      pending
+      helper.expects(:facet_field_labels).returns("my_label").twice()
+      #label will be nil
+      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet"})
+      @exhibit.browse_levels << browse_level
+      @facet = mock()
+      @facet.expects(:name).returns("other_facet").at_least_once
+      @response.expects(:facets).returns([@facet]).at_least_once
+      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>[]}]
+      #check if label is blank instead
+      browse_level.label = ""
+      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>[]}]
+    end
+
+    it "should use the label in a browse level if defined" do
+      helper.expects(:facet_field_labels).returns("my_label").times(0)
+      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label_2"})
+      @exhibit.browse_levels << browse_level
+      @facet = mock()
+      @facet.expects(:name).returns("other_facet").at_least_once
+      @response.expects(:facets).returns([@facet]).at_least_once
+      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label_2",:values=>[]}]
     end
 
     it "if no f param is defined it should set the response without f param to be response" do
-      pending
+      #if they are the same then response.facets should be called twice
+      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      @exhibit.browse_levels << browse_level
+      @facet = mock()
+      @facet.expects(:name).returns("other_facet").at_least_once
+      @response.expects(:facets).returns([@facet]).twice
+      helper.get_browse_level_navigation_data
     end
 
     it "should return browse navigation hash with values filled in if a browse facet exists and f param not defined (nothing selected)" do
-      pending
+      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      @exhibit.browse_levels << browse_level
+      facet = mock()
+      facet.expects(:name).returns("my_facet").at_least_once
+      item = mock()
+      item.expects(:value).returns("my_val").at_least_once
+      item2 = mock()
+      item2.expects(:value).returns("my_val2").at_least_once
+      facet.expects(:items).returns([item,item2]).at_least_once
+      @response.expects(:facets).returns([facet]).twice
+      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"]}]
     end
 
     it "if f param is defined it should make the value provided as selected and return a second browse level of data in results if more than one level defined" do
-      pending
+      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
+      @exhibit.browse_levels << browse_level
+      @exhibit.browse_levels << browse_level2
+      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"]}}).at_least_once
+      facet = mock()
+      facet.expects(:name).returns("my_facet").at_least_once
+      item = mock()
+      item.expects(:value).returns("my_val").at_least_once
+      item2 = mock()
+      item2.expects(:value).returns("my_val2").at_least_once
+      facet.expects(:items).returns([item,item2]).at_least_once
+      facet2 = mock()
+      facet2.expects(:name).returns("my_facet2").at_least_once
+      item3 = mock()
+      item3.expects(:value).returns("my_val3").at_least_once
+      item4 = mock()
+      item4.expects(:value).returns("my_val4").at_least_once
+      facet2.expects(:items).returns([item3,item4]).at_least_once
+      @response.expects(:facets).returns([facet2,facet]).at_least_once
+      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"],:selected=>"my_val2"},
+                                                         {:solr_facet_name=>"my_facet2", :label=>"my_label2", :values=>["my_val3","my_val4"]}]
     end
 
-    it "if multiple browse levels defined but nothing selected it should only return a browse level element for top level" do
+    it "if multiple browse levels defined and f defined but nothing selected it should only return a browse level element for top level" do
       pending
     end
 

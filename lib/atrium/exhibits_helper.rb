@@ -4,19 +4,6 @@ module Atrium::ExhibitsHelper
   def get_exhibits_list
     Atrium::Exhibit.find(:all)
   end
-=begin
-  def edit_and_browse_exhibit_links(exhibit)
-    result = ""
-    if params[:action] == "edit" || params[:action] == "update"
-      result << "<a href=\"#{atrium_exhibit_path(params[:exhibit_id])}\" class=\"browse toggle\">View</a>"
-      result << "<span class=\"edit toggle active\">Edit</span>"
-    else
-      result << "<span class=\"browse toggle active\">View</span>"
-      result << "<a href=\"#{edit_atrium_exhibit_path(params[:id], :class => "edit_exhibit", :render_search=>"false")}\" class=\"edit toggle\">Edit</a>"
-    end
-    return result
-  end
-=end
 
   # Return the link to browse an exhibit
   # @return [String] a formatted url to be used in href's etc.
@@ -214,6 +201,7 @@ module Atrium::ExhibitsHelper
           params[:f].delete(browse_level.solr_facet_name)
         end
         (response_without_f_param, @new_document_list) = get_search_results(extra_controller_params)
+        params[:f] = temp
       else
         response_without_f_param = response
       end
@@ -222,27 +210,30 @@ module Atrium::ExhibitsHelper
       unless display_facet.nil?
         if display_facet.items.any?
           display_facet.items.each do |item|
-            params[:f]=temp if temp
+            #params[:f]=temp if temp
             if facet_in_params?(display_facet.name, item.value )
-              if display_facet_with_f.items.any?
-                display_facet_with_f.items.each do |item_with_f|
-                  browse_level_data.first[:values] << item_with_f
-                  browse_level_data.first.merge!({:selected=>item_with_f})
-                  if browse_levels.length > 1
-                    browse_level_data << get_browse_level_navigation_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
-                  end
-                end
+              browse_level_data.first.merge!({:selected=>item.value})
+              #if display_facet_with_f.items.any?
+              #  display_facet_with_f.items.each do |item_with_f|
+              #    browse_level_data.first[:values] << item_with_f.value
+                  #browse_level_data.first.merge!({:selected=>item_with_f.value})
+                  #if browse_levels.length > 1
+                  #  browse_level_data << get_browse_level_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
+                  #end
+              #  end
+              #end
+              if browse_levels.length > 1
+                browse_level_data << get_browse_level_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
+                browse_level_data.flatten!(1)
               end
-            else
-              browse_levels.each do |browse_level|
-                params[:f].delete(browse_level.solr_facet_name) if params[:f]
-              end
-              browse_level_data.first[:values] << item
             end
+            #else
+            browse_level_data.first[:values] << item.value
+            #end
           end
         end
       end
-      params[:f]=temp if temp 
+      #params[:f]=temp if temp 
     end
     browse_level_data
   end
