@@ -75,10 +75,8 @@ module Atrium::ExhibitsHelper
 
   def get_selected_browse_facets(browse_facets)
     selected = {}
-    puts "params are: #{params.inspect}"
     if params[:f]
       browse_facets.each do |facet|
-        puts "facet is: #{facet.inspect}"
         selected.merge!({facet.to_sym=>params[:f][facet].first}) if params[:f][facet]
       end
     end
@@ -123,7 +121,7 @@ module Atrium::ExhibitsHelper
     end
 
     unless exhibit_id
-      logger.error("Could not initialize exhibit because neither :id for controller atrium_exhibits nor :exhibit_id params are defined with Params: #{params.inspect}")
+      logger.error("Could not initialize exhibit. If controller is 'atrium_exhibits' than :id must be defined.  Otherwise, :exhibit_id must be defined.  Params were: #{params.inspect}")
       return
     end
 
@@ -139,7 +137,7 @@ module Atrium::ExhibitsHelper
       @browse_response = @response
       @browse_document_list = @document_list
     rescue Exception=>e
-      logger.error("Could not initialize exhibit information for id #{exhibit_id}: #{e.to_s}")
+      logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
     end
   end
 
@@ -194,7 +192,7 @@ module Atrium::ExhibitsHelper
       browse_level_hash = {:solr_facet_name => browse_facet_name}
       (browse_level.label.nil? || browse_level.label.blank?) ? browse_level_hash.merge!(:label=>facet_field_labels(browse_facet_name)) : browse_level_hash.merge!(:label=>browse_level.label)
       browse_level_hash.merge!(:values=>[])
-      browse_level_data << browse_level_hash
+      
       if params.has_key?(:f) && !params[:f].nil? && params[:f][browse_facet_name]
         temp = params[:f].dup
         browse_levels.each do |browse_level|
@@ -209,31 +207,20 @@ module Atrium::ExhibitsHelper
       display_facet_with_f = response.facets.detect {|f| f.name == browse_facet_name}
       unless display_facet.nil?
         if display_facet.items.any?
+          browse_level_data << browse_level_hash
           display_facet.items.each do |item|
-            #params[:f]=temp if temp
             if facet_in_params?(display_facet.name, item.value )
               browse_level_data.first.merge!({:selected=>item.value})
-              #if display_facet_with_f.items.any?
-              #  display_facet_with_f.items.each do |item_with_f|
-              #    browse_level_data.first[:values] << item_with_f.value
-                  #browse_level_data.first.merge!({:selected=>item_with_f.value})
-                  #if browse_levels.length > 1
-                  #  browse_level_data << get_browse_level_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
-                  #end
-              #  end
-              #end
               if browse_levels.length > 1
                 browse_level_data << get_browse_level_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
+                #make sure to flatten any nested arrays from recursive calls
                 browse_level_data.flatten!(1)
               end
             end
-            #else
             browse_level_data.first[:values] << item.value
-            #end
           end
         end
       end
-      #params[:f]=temp if temp 
     end
     browse_level_data
   end
