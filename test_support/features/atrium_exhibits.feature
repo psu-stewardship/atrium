@@ -21,6 +21,6 @@ Feature: Exhibits
     When I press "Create New Exhibit"
     Then I should be on the new exhibit page
     And I should see a "label" element containing "Title:"
-    And I should see a "input#atrium_exhibit[title]" element containing ""
+    And I should see "" within  "#atrium_exhibit_title"
     And I should see a "label" element containing "Exhibit Scope Query:"
-    And I should see a "input#atrium_exhibit[solr_fitler_query]" element containing ""
+    And I should see "" within "#atrium_exhibit_solr_filter_query"
