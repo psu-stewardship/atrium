@@ -24,16 +24,17 @@ module Atrium::ExhibitsHelper
   # first arg item is a facet value item from rsolr-ext.
   # options consist of:
   # :suppress_link => true # do not make it a link, used for an already selected value for instance
-  def get_browse_facet_path(facet_solr_field, value, options ={})
+  def get_browse_facet_path(facet_solr_field, value, browse_facets)
     p = params.dup
-    #p.delete(:f)
     p.delete(:q)
     p.delete(:commit)
     p.delete(:search_field)
     p.delete(:controller)
     p.merge!(:id=>params[:exhibit_id]) if p[:exhibit_id]
-    value = [value] unless value.is_a? Array
+    p = remove_related_facet_params(facet_solr_field, p, browse_facets)
     p = add_facet_params(facet_solr_field,value,p)
+    
+    #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
     atrium_exhibit_path(p.merge!({:class=>"browse_facet_select", :action=>"show"}))
   end
 
@@ -49,7 +50,7 @@ module Atrium::ExhibitsHelper
   # with class, and 'remove' button.
   def get_selected_browse_facet_path(facet_solr_field, value, browse_facets)
     value = [value] unless value.is_a? Array
-    remove_params = remove_browse_facet_params(facet_solr_field, value, params, browse_facets)
+    remove_params = remove_related_facet_params(facet_solr_field, params, browse_facets)
     remove_params.delete(:render_search) #need to remove if we are in search view and click takes back to browse
     remove_params.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
     remove_params.delete(:controller)
@@ -57,20 +58,17 @@ module Atrium::ExhibitsHelper
   end
 
   #Remove current selected facet plus any child facets selected
-  def remove_browse_facet_params(solr_facet_field, value, params, browse_facets)
+  def remove_related_facet_params(solr_facet_field, params, browse_facets)
     if browse_facets.include?(solr_facet_field)
-      new_params = remove_facet_params(solr_facet_field, value, params)
       #iterate through browseable facets from current on down
       selected_browse_facets = get_selected_browse_facets(browse_facets)
     
       index = browse_facets.index(solr_facet_field)
-      browse_facets.slice(index + 1, browse_facets.length - index + 1).each do |f|
-        new_params = remove_facet_params(f, selected_browse_facets[f.to_sym], new_params) if selected_browse_facets[f.to_sym]
+      browse_facets.slice(index, browse_facets.length - index).each do |f|
+        params[:f].delete(f)
       end
-    else
-      new_params = params
     end
-    new_params
+    params
   end
 
   def get_selected_browse_facets(browse_facets)
