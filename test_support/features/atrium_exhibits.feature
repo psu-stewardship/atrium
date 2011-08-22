@@ -30,8 +30,8 @@ Feature: Exhibits
     #browse level edit section
     #search facet edit section
     And I should see "Back to Search"
-    When I fill in "#atrium_exhibit_title" with "My Test Title"
-    And I fill in "#atrium_exhibit_solr_filter_query" with "id:test"
+    When I fill in "atrium_exhibit_title" with "My Test Title"
+    And I fill in "atrium_exhibit_solr_filter_query" with "id:test"
     And I press "Update"
     Then I should be on the edit exhibit page
     And I should see "Exhibit created successfully."

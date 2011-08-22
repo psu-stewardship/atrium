@@ -1,40 +1,72 @@
 # This module is a controller level mixin that uses Blacklight::SolrHelper to make calls to solr in an exhibit context
 module Atrium::SolrHelper
-  extend ActiveSupport::Concern
-
-  include Blacklight::SolrHelper
-
-
+  
+  def grouped_result_count(response, facet_name=nil, facet_value=nil)
+    if facet_name && facet_value
+      facet = response.facets.detect {|f| f.name == facet_name}
+      facet_item = facet.items.detect {|i| i.value == facet_value} if facet
+      count = facet_item ? facet_item.hits : 0
+    else
+      count = response.docs.total
+    end
+    pluralize(count, 'document')
+  end
+  
+  def get_exhibits_list
+    Atrium::Exhibit.find(:all)
+  end
+  
+  # Return the link to browse an exhibit
+  # @return [String] a formatted url to be used in href's etc.
+  def browse_exhibit_link
+    atrium_exhibit_path(get_exhibit_id)
+  end
+  
+  # Returns the current exhibit id in the parameters.
+  # If the current controller is atrium_exhibits it expects the exhibit id to be in params[:id]
+  # Otherwise, it expects it to be in params[:exhibit_id]
+  # @return [String] the exhibit id
+  def get_exhibit_id
+    params[:controller] == "atrium_exhibits" ? params[:id] : params[:exhibit_id]
+  end
+  
+  # Return the link to edit an exhibit
+  # @param [String] a css class to use in the link if necessary
+  # @return [String] a formatted url to be used in href's etc.
+  def edit_exhibit_link(css_class=nil)
+    edit_atrium_exhibit_path(get_exhibit_id, :class => css_class, :render_search=>"false")
+  end
+  
   # Returns the current atrium_exhibit instance variable
   # @return [Atrium::Exhibit]
   def atrium_exhibit
     @atrium_exhibit
   end
-
+  
   # Returns the current browse_levels instance variable
   # @return [Array] Array of Atrium::BrowseLevel for current Atrium::Exhibit
   def browse_levels
     @browse_levels
   end
-
+  
   # Returns the current Blacklight solr response for results that should be displayed in current browse navigation scope
   # @return [RSolr::Ext::Response]
   def browse_response
     @browse_response
   end
-
+  
   # Returns the current document list from Blacklight solr response for results that should be displayed in current browse navigation scope
   # @return [Array] array of SolrDocument returned by search result
   def browse_document_list
     @browse_document_list
   end
-
+  
   # Returns the current extra controller params used in the query to Solr for Browsing response results
   # @return [Hash]
   def extra_controller_params
     @extra_controller_params
   end
-
+  
   # Initialize the exhibit and browse instance variables for a current exhibit scope. To initialize
   # anything it expects params[:id] to the be exhibit id if the current controller is "atrium_exhibits".
   # If it sees params[:exhibit_id] defined that will be used.  If neither are present then nothing will
@@ -51,12 +83,12 @@ module Atrium::SolrHelper
     else
       exhibit_id = params[:exhibit_id]
     end
-
+    
     unless exhibit_id
       logger.error("Could not initialize exhibit. If controller is 'atrium_exhibits' than :id must be defined.  Otherwise, :exhibit_id must be defined.  Params were: #{params.inspect}")
       return
     end
-
+    
     begin
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
@@ -75,7 +107,7 @@ module Atrium::SolrHelper
       logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
     end
   end
-
+  
   # Returns an array of browse level data that is used for generating current
   # navigation controls when browsing an exhibit.  It will return an array of
   # hashes.  The first hash in the array represents the first level.  If an item
@@ -96,9 +128,9 @@ module Atrium::SolrHelper
     initialize_exhibit if @atrium_exhibit.nil?
     @atrium_exhibit.nil? ? [] : get_browse_level_data(@browse_levels,@browse_response,@extra_controller_params)
   end
-
+  
   private
-
+  
   # This is a private method and should not be called directly.
   # get_browse_level_navigation_data calls this method to fill out the browse_level_navigation_data array
   # This method calls itself recursively as it generates the current browse state data.

@@ -1,5 +1,6 @@
 class AtriumExhibitsController < ApplicationController
 
+  include Blacklight::SolrHelper
   include Atrium::ExhibitsHelper
   include Atrium::SolrHelper
   include CatalogHelper

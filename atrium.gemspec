@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Atrium Rails Engine (requires Rails3) }
   s.description = %q{Atrium is a Rails Engine for for creating exhibits in either a Blacklight or Hydra context. The full hydra stack includes: Blacklight, Fedora, Solr, active-fedora, solrizer, and om}
 
-  s.add_dependency "rails", '>= 3.0'
+  s.add_dependency "rails", '~> 3.0'
   s.add_dependency "blacklight", '3.0.0'  
   s.add_dependency "active-fedora", '>= 2.3.3'
   s.add_dependency 'builder'
