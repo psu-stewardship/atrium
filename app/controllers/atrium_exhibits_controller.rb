@@ -1,12 +1,12 @@
-require 'net/http'
-
 class AtriumExhibitsController < ApplicationController
 
-  #before_filter :initialize_exhibit, :except=>[:index, :new, :create]
-  #before_filter :set_page_style, :only => :show
-
   include Atrium::ExhibitsHelper
+  include Atrium::SolrHelper
+  include CatalogHelper
   include BlacklightHelper
+
+  before_filter :initialize_exhibit, :except=>[:index, :new, :create]
+  #before_filter :set_page_style, :only => :show
 
   def new
     @atrium_exhibit = Atrium::Exhibit.new
@@ -50,6 +50,7 @@ class AtriumExhibitsController < ApplicationController
 
   def show
     @atrium_exhibit = Atrium::Exhibit.find(params[:id])
+    @browse_level_navigation_data = get_browse_level_navigation_data
   end
 
   def edit

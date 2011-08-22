@@ -1,17 +1,10 @@
 
-<div id="showHead">
-  <div id="showUtils">
-    <span class="edit-browse">
-      <%# if editor? -%>
-        <%= raw(edit_and_browse_exhibit_links(@atrium_exhibit)) %>
-      <%# end -%>
-    </span>
-  </div>
-</div>
+<%= link_to 'Show', @atrium_exhibit %> |
+<%= link_to 'Back to Search', catalog_index_path %>
 
 <h1>Editing exhibit</h1>
 
 <%= render :partial => "form" %>
 
 <%= link_to 'Show', @atrium_exhibit %> |
-<%= link_to 'Back', atrium_exhibits_path %>
+<%= link_to 'Back to Search', catalog_index_path %>

@@ -2,11 +2,13 @@
   <div id="showUtils">
     <span class="edit-browse">
       <%# if editor? -%>
-        <%= raw(edit_and_browse_exhibit_links(@atrium_exhibit)) %>
+        <%= link_to 'Edit', {:action=>"edit", :id=>@atrium_exhibit.id} %> |
+        <%= link_to 'Back to Search', catalog_index_path %>
       <%# end -%>
     </span>
   </div>
 </div>
+
 
 <%=render :partial=>'shared/exhibit_title_header'%>
 
@@ -53,5 +55,5 @@
 <h2>Complete Sources</h2>
 <a id="toggle_sources" href="#" title="Hide the complete listing of sources.">Hide Complete Sources</a>
 <div id="complete_sources">
-  <%= render :partial=>'shared/complete_sources', :locals => {:asset => @atrium_exhibit}%>
+  <%= render :partial=>'browse_index'%>
 </div>

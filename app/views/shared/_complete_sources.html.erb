@@ -2,7 +2,7 @@
 <%- if @browse_response.nil? -%>
   <h3><em>0 items found</em></h3>
 <%- else -%>
-<h3><em><%= grouped_result_count(@browse_response, nil, nil) %> found</em></h3>
+<h3><em><%# grouped_result_count(@browse_response, nil, nil) %> found</em></h3>
 <%# asset && asset.featured.any? ? featured_list = asset.featured(:response_format=>:solr) : featured_list=nil-%>
 <%# featured_list.blank? ? featured_list_count = 0 : featured_list_count=featured_list.count  -%>
 <%#unless featured_list.blank? -%>

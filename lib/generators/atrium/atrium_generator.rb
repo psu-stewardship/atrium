@@ -85,7 +85,17 @@ EOF
     def inject_atrium_helper_behavior
       insert_into_file "app/helpers/application_helper.rb", :after => 'module ApplicationHelper' do
         "\n  # Adds a atrium exhibits behaviors into the application helper \n " +        
-          "  include Atrium::ExhibitsHelper\n"
+          "  include Atrium::ExhibitsHelper\n" +
+          "  include CatalogHelper\n"
+      end
+    end
+
+    # Add Hydra to the application controller
+    def inject_atrium_controller_behavior    
+      inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
+        "  # Adds Atrium behaviors into the application controller \n " +        
+          "  include Atrium::Controller\n"
+          
       end
     end
 
