@@ -7,21 +7,16 @@ module Atrium::ExhibitsHelper
   # options consist of:
   # :suppress_link => true # do not make it a link, used for an already selected value for instance
   def get_browse_facet_path(facet_solr_field, value, browse_facets)
-    p = params.dup
-    p.delete(:q)
-    p.delete(:commit)
-    p.delete(:search_field)
-    p.delete(:controller)
-    p.merge!(:id=>params[:exhibit_id]) if p[:exhibit_id]
+    p = HashWithIndifferentAccess.new
+    p.merge!(:f=>params[:f].dup) if params[:f]
+    p.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
     p = remove_related_facet_params(facet_solr_field, p, browse_facets)
-    p = add_facet_params(facet_solr_field,value,p)
-    
+    p = add_browse_facet_params(facet_solr_field,value,p)
     #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
     atrium_exhibit_path(p.merge!({:class=>"browse_facet_select", :action=>"show"}))
   end
 
-  def add_facet_params(field, value, p=nil)
-    p = params.dup if p.nil?
+  def add_browse_facet_params(field, value, p=HashWithIndifferentAccess.new)
     p[:f]||={}
     p[:f][field] ||= []
     p[:f][field].push(value)
@@ -32,27 +27,27 @@ module Atrium::ExhibitsHelper
   # with class, and 'remove' button.
   def get_selected_browse_facet_path(facet_solr_field, value, browse_facets)
     value = [value] unless value.is_a? Array
-    remove_params = remove_related_facet_params(facet_solr_field, params, browse_facets)
-    remove_params.delete(:render_search) #need to remove if we are in search view and click takes back to browse
-    remove_params.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
-    remove_params.delete(:controller)
-    atrium_exhibit_path(remove_params.merge!(:action=>"show"))  
+    p = HashWithIndifferentAccess.new
+    p.merge!(:f=>params[:f].dup) if params[:f]
+    p = remove_related_facet_params(facet_solr_field, p, browse_facets)
+    p.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
+    atrium_exhibit_path(p.merge!(:action=>"show"))  
   end
 
   #Remove current selected facet plus any child facets selected
-  def remove_related_facet_params(solr_facet_field, params, browse_facets)
+  def remove_related_facet_params(solr_facet_field, p, browse_facets)
     if browse_facets.include?(solr_facet_field)
       #iterate through browseable facets from current on down
       selected_browse_facets = get_selected_browse_facets(browse_facets)
     
       index = browse_facets.index(solr_facet_field)
-      if params[:f]
+      if p[:f]
         browse_facets.slice(index, browse_facets.length - index).each do |f|
-          params[:f].delete(f)
+          p[:f].delete(f)
         end
       end
     end
-    params
+    p
   end
 
   def get_selected_browse_facets(browse_facets)
@@ -100,4 +95,5 @@ module Atrium::ExhibitsHelper
   def edit_exhibit_link(css_class=nil)
     edit_atrium_exhibit_path(get_exhibit_id, :class => css_class, :render_search=>"false")
   end
+
 end
