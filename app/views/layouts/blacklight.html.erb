@@ -54,7 +54,6 @@
         <div class="yui-b sidebar">
           <%- if params[:controller] == "catalog" -%>
             <%- if params[:render_search].blank? || params[:class] == "edit_exhibit" -%>
-              <%= sidebar_items.join('') %>
               <%- if params[:exhibit_id] -%>
                 <h3><%= link_to_exhibit(:label=>"Back to Browse Exhibit") %></h3>
               <%- end -%>
@@ -66,13 +65,8 @@
             <%# render :partial => 'shared/exhibit_search_form' %> 
             <%= render :partial => 'shared/navigation' -%>
           <%- end -%>
-          <%= yield :sidebar %>
+          <%= sidebar_items.join('').html_safe %>
         </div>
-        
-	    </div>
-        <div class="yui-b sidebar"><%= sidebar_items.join('').html_safe %></div>
-        
-	    </div>
 	    <div id="ft"><%= raw(@footer) %></div>
 	  </div>
     </body>
