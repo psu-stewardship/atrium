@@ -100,7 +100,8 @@ module Atrium::SolrHelper
       queries << build_lucene_query(params[:q]) if respond_to?(:build_lucene_query)
       queries << exhibit_members_query unless exhibit_members_query.empty?
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
-      (@response, @document_list) = get_search_results( @extra_controller_params.merge!(:q=>q))
+      puts "\r\n\r\nCalling get_search_results with params: #{params.inspect}\r\n\r\n"
+      (@response, @document_list) = get_search_results(params, @extra_controller_params.merge!(:q=>q))
       @browse_response = @response
       @browse_document_list = @document_list
     rescue Exception=>e
