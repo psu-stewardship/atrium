@@ -100,7 +100,6 @@ module Atrium::SolrHelper
       queries << build_lucene_query(params[:q]) if respond_to?(:build_lucene_query)
       queries << exhibit_members_query unless exhibit_members_query.empty?
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
-      puts "\r\n\r\nCalling get_search_results with params: #{params.inspect}\r\n\r\n"
       (@response, @document_list) = get_search_results(params, @extra_controller_params.merge!(:q=>q))
       @browse_response = @response
       @browse_document_list = @document_list
@@ -166,7 +165,7 @@ module Atrium::SolrHelper
         browse_levels.each do |browse_level|
           params[:f].delete(browse_level.solr_facet_name)
         end
-        (response_without_f_param, @new_document_list) = get_search_results(extra_controller_params)
+        (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
         params[:f] = temp
       else
         response_without_f_param = response
