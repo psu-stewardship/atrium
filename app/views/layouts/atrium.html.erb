@@ -18,15 +18,15 @@
   <body class="<%= render_body_class.html_safe %>">
     <% end %>
       <div id="doc4" class="yui-t2">
-	
-	    <div id="hd">
+
+<div id="hd">
         <div class="yui-g">
           <div class="yui-u first">
             <%- if params[:exhibit_id] || (params[:controller] == "exhibits" && params[:id]) -%>
               <table>
                 <tr>
                   <td>
-                    <%- params[:exhibit_id] ? exhibit_id = params[:exhibit_id] : exhibit_id = params[:id] -%> 
+                    <%- params[:exhibit_id] ? exhibit_id = params[:exhibit_id] : exhibit_id = params[:id] -%>
                     <%- @atrium_exhibit.nil? ? exhibit = Atrium::Exhibit.find(exhibit_id) : exhibit = @atrium_exhibit -%>
                     <h3><%= link_to_exhibit :exhibit_id=>exhibit_id, :label=>"#{exhibit.title}", :style=>"text-decoration:none;border-bottom:medium none" %></h3>
                   </td>
@@ -41,37 +41,34 @@
           </div>
         </div>
       </div>
-	    
-	    <div id="bd">
-      	
-      	<div id="yui-main">
+
+<div id="bd">
+      
+       <div id="yui-main">
           <div class="yui-b">
             <%= render :partial=>'/flash_msg' %>
             <%= yield %>
           </div>
         </div>
         
-        <div class="yui-b sidebar"> <%= debug " In side bar: #{sidebar_items.inspect}" %>
+        <div class="yui-b sidebar">
           <%- if params[:controller] == "catalog" -%>
             <%- if params[:render_search].blank? || params[:class] == "edit_exhibit" -%>
               <%- if params[:exhibit_id] -%>
                 <h3><%= link_to_exhibit(:label=>"Back to Browse Exhibit") %></h3>
               <%- end -%>
             <%- else -%>
-              <%# render :partial => 'shared/exhibit_search_form' %> 
+              <%# render :partial => 'shared/exhibit_search_form' %>
               <%= render :partial => 'atrium_exhibits/navigation' %>
-            <%- end -%>  
+            <%- end -%>
           <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "exhibits" && params[:action] == "index")-%>
-            <%# render :partial => 'shared/exhibit_search_form' %> 
+            <%# render :partial => 'shared/exhibit_search_form' %>
             <%= render :partial => 'atrium_exhibits/navigation' -%>
           <%- end -%>
-          <%= render :partial => 'atrium_exhibits/navigation' -%>
-          <%= debug sidebar_items.join('').html_safe %>
+          <%= sidebar_items.join('').html_safe %>
         </div>
-	    </div>
-        <!--<div class="yui-b sidebar"><%# sidebar_items.join('').html_safe %></div>-->
-	    <div id="ft"><%= raw(@footer) %></div>
-	  </div>
+<div id="ft"><%= raw(@footer) %></div>
+</div>
     </body>
     
     </html>

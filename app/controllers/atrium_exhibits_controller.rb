@@ -10,7 +10,7 @@ class AtriumExhibitsController < ApplicationController
 
   before_filter :initialize_exhibit, :except=>[:index, :new, :create]
   before_filter :atrium_html_head
-  #layout 'blacklight', :only => [:show]
+  layout 'atrium'
   #before_filter :set_page_style, :only => :show
 
   def new

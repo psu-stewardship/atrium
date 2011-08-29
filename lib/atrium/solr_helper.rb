@@ -157,7 +157,7 @@ module Atrium::SolrHelper
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level_hash = {:solr_facet_name => browse_facet_name}
-      (browse_level.label.nil? || browse_level.label.blank?) ? browse_level_hash.merge!(:label=>facet_field_labels(browse_facet_name)) : browse_level_hash.merge!(:label=>browse_level.label)
+      (browse_level.label.nil? || browse_level.label.blank?) ? browse_level_hash.merge!(:label=>facet_field_labels[browse_facet_name]) : browse_level_hash.merge!(:label=>browse_level.label)
       browse_level_hash.merge!(:values=>[])
       
       if params.has_key?(:f) && !params[:f].nil? && params[:f][browse_facet_name]
