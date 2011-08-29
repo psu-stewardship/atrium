@@ -1,12 +1,16 @@
 class AtriumExhibitsController < ApplicationController
 
+  include CatalogHelper
+  include BlacklightHelper
+  include AtriumHelper
   include Blacklight::SolrHelper
   include Atrium::ExhibitsHelper
   include Atrium::SolrHelper
-  include CatalogHelper
-  include BlacklightHelper
+
 
   before_filter :initialize_exhibit, :except=>[:index, :new, :create]
+  before_filter :atrium_html_head
+  #layout 'blacklight', :only => [:show]
   #before_filter :set_page_style, :only => :show
 
   def new

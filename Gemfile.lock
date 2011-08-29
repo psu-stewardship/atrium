@@ -24,7 +24,7 @@ PATH
       om (>= 1.2.3)
       rack
       rack-test
-      rails (>= 3.0)
+      rails (~> 3.0)
       rake
       rcov
       sanitize

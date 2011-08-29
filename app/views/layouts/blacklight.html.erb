@@ -51,7 +51,7 @@
           </div>
         </div>
         
-        <div class="yui-b sidebar">
+        <div class="yui-b sidebar"> <%= debug " In side bar: #{sidebar_items.inspect}" %>
           <%- if params[:controller] == "catalog" -%>
             <%- if params[:render_search].blank? || params[:class] == "edit_exhibit" -%>
               <%- if params[:exhibit_id] -%>
@@ -59,14 +59,17 @@
               <%- end -%>
             <%- else -%>
               <%# render :partial => 'shared/exhibit_search_form' %> 
-              <%= render :partial => 'shared/navigation' %>
+              <%= render :partial => 'atrium_exhibits/navigation' %>
             <%- end -%>  
           <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "exhibits" && params[:action] == "index")-%>
             <%# render :partial => 'shared/exhibit_search_form' %> 
-            <%= render :partial => 'shared/navigation' -%>
+            <%= render :partial => 'atrium_exhibits/navigation' -%>
           <%- end -%>
-          <%= sidebar_items.join('').html_safe %>
+          <%= render :partial => 'atrium_exhibits/navigation' -%>
+          <%= debug sidebar_items.join('').html_safe %>
         </div>
+	    </div>
+        <!--<div class="yui-b sidebar"><%# sidebar_items.join('').html_safe %></div>-->
 	    <div id="ft"><%= raw(@footer) %></div>
 	  </div>
     </body>

@@ -51,6 +51,13 @@ module Atrium
       ## directory "../../../../solr_conf", "solr_conf"
     end
 
+    # Copy all files in templates/public/ directory to public/
+    # Call external generator in AssetsGenerator, so we can
+    # leave that callable seperately too.
+    def copy_public_assets
+      generate "atrium:assets"
+    end
+
     # Register mimetypes required by hydra-head
     def add_mime_types
       puts "Updating Mime Types"
