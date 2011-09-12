@@ -4,12 +4,15 @@ describe Atrium::Showcase do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save
-    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id)
+    @browse_set = Atrium::BrowseSet.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @browse_set.save
+    @showcase = Atrium::Showcase.new(:atrium_browse_set_id=>@browse_set.id)
     @showcase.save
   end
 
   after(:each) do
     @showcase.delete
+    @browse_set.delete
     @exhibit.delete
     begin
       @item.delete
@@ -21,10 +24,6 @@ describe Atrium::Showcase do
     end
     begin
       @showcase2.delete
-    rescue
-    end
-    begin
-      @exhibit2.delete
     rescue
     end
     begin
@@ -125,9 +124,9 @@ describe Atrium::Showcase do
     end
   end
 
-  describe "#exhibit" do
-    it "should return correct exhibit" do
-      @showcase.exhibit.should == @exhibit
+  describe "#browse_set" do
+    it "should return correct browse_set" do
+      @showcase.browse_set.should == @browse_set
     end
 
     it "should throw an exception if exhibit not set" do
@@ -170,7 +169,7 @@ describe Atrium::Showcase do
 
   describe "#initialize" do
     it "should allow no facet selections defined" do
-      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase = Atrium::Showcase.new({:atrium_browse_set_id=>@browse_set.id})
       @showcase.save!
       @showcase.facet_selections.should == []
     end

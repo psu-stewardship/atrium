@@ -3,7 +3,6 @@ class CreateAtriumExhibits < ActiveRecord::Migration
     create_table :atrium_exhibits do |t|
       t.string :title
       t.string :solr_filter_query
-      t.string :solr_top_browse_level_query
     end
     add_index :atrium_exhibits, :id
   end

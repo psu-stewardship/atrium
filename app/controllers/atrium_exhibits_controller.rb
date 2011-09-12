@@ -40,7 +40,7 @@ class AtriumExhibitsController < ApplicationController
           params[:atrium_exhibit][:browse_levels_attributes] = browse_level_attributes_params if browse_level_attributes_params
           params[:atrium_exhibit][:search_facets_attributes] = search_facets_attributes_params if search_facets_attributes_params
           @atrium_exhibit.update_attributes(params[:atrium_exhibit])
-          refresh_browse_level_label(@atrium_exhibit)
+          #refresh_browse_level_label(@atrium_exhibit)
         end
         flash[:notice] = 'Exhibit was successfully created.'
         format.html { redirect_to :action => "edit", :id=>@atrium_exhibit.id }
@@ -66,7 +66,7 @@ class AtriumExhibitsController < ApplicationController
     @atrium_exhibit = Atrium::Exhibit.find(params[:id])
     respond_to do |format|
       if @atrium_exhibit.update_attributes(params[:atrium_exhibit])
-        refresh_browse_level_label(@atrium_exhibit)
+        #refresh_browse_level_label(@atrium_exhibit)
         flash[:notice] = 'Exhibit was successfully updated.'
         format.html  { render :action => "edit" }
       else

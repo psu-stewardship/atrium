@@ -1,10 +1,9 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
 <div class="facet-list">
-  <%- unless @browse_levels.nil? || @browse_levels.empty? -%>
-    <%# debug " Browse level_navigation_data: #{@browse_level_navigation_data.inspect}" %>
-    <%- browse_level_data = @browse_level_navigation_data -%>
-    <%- unless browse_level_data.nil? || browse_level_data.empty? -%>
+  <%# unless @browse_levels.nil? || @browse_levels.empty? -%>
+    <%# browse_level_data = @browse_level_navigation_data -%>
+    <%# unless browse_level_data.nil? || browse_level_data.empty? -%>
       <!-- recursively render the browse levels-->
-      <%= render :partial => 'shared/navigation_browse_levels', :locals=>{:browse_level_data=>browse_level_data, :browse_facets=>@atrium_exhibit.browse_facet_names}%>  <%- end -%>
-  <%- end -%>
-</div>
+      <%# render :partial => 'shared/navigation_browse_levels', :locals=>{:browse_level_data=>browse_level_data, :browse_facets=>@atrium_exhibit.browse_facet_names}%>  <%# end -%>
+  <%# end -%>
+</dbi>

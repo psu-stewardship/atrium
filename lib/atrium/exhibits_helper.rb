@@ -9,7 +9,10 @@ module Atrium::ExhibitsHelper
   def get_browse_facet_path(facet_solr_field, value, browse_facets)
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
-    p.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
+    if params[:exhibit_id]
+      p.merge!(:id=>params[:exhibit_id])
+      p.merge!(:exhibit_id=>params[:exhibit_id])
+    end
     p = remove_related_facet_params(facet_solr_field, p, browse_facets)
     p = add_browse_facet_params(facet_solr_field,value,p)
     #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
@@ -30,7 +33,10 @@ module Atrium::ExhibitsHelper
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
     p = remove_related_facet_params(facet_solr_field, p, browse_facets)
-    p.merge!(:id=>params[:exhibit_id]) if params[:exhibit_id]
+    if params[:exhibit_id]
+      p.merge!(:id=>params[:exhibit_id])
+      p.merge!(:exhibit_id=>params[:exhibit_id])
+    end
     atrium_exhibit_path(p.merge!(:action=>"show"))  
   end
 

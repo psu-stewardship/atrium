@@ -38,24 +38,23 @@ describe Atrium::ExhibitsHelper do
     end
   end
 
-  describe "add_facet_params" do
+  describe "add_browse_facet_params" do
     it "should return a params hash with a field pointing to an array with the new value" do
-      helper.expects(:params).returns({:f=>{:test=>["first_val"]}})
-      p = {}
-      helper.add_facet_params(:test, "testing", p).should == {:f=>{:test=>["testing"]}}
+      p = HashWithIndifferentAccess.new
+      helper.add_browse_facet_params(:test, "testing", p).should == {"f"=>{"test"=>["testing"]}}
       #test if p is nil
-      helper.add_facet_params(:test, "testing").should == {:f=>{:test=>["first_val","testing"]}}
+      helper.add_browse_facet_params(:test, "testing").should == {"f"=>{"test"=>["testing"]}}
     end
   end
 
   describe "get_browse_facet_path" do
     before do
-      catalog_facet_params = {:q => "query",
+      catalog_facet_params = HashWithIndifferentAccess.new({:q => "query",
                 :search_field => "search_field",
                 :f => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
                 :exhibit_id => 'exhibit_PID',
                 :controller => "catalog"
-      }
+      })
       helper.stubs(:params).returns(catalog_facet_params)
     end
     it "should redirect to exhibit action" do

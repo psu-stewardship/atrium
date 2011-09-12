@@ -156,7 +156,7 @@ namespace :atrium do
       system("source ./test_app/.rvmrc")
       
       puts "Installing rails, bundler and devise"
-      %x[gem install --no-rdoc --no-ri 'rails']
+      %x[gem install --no-rdoc --no-ri 'rails' --version=3.0.10]
       %x[gem install --no-rdoc --no-ri 'bundler']
       %x[gem install --no-rdoc --no-ri 'devise']
       
@@ -230,8 +230,8 @@ namespace :atrium do
     puts "Running rspec tests"
     puts  %x[rake atrium:spec:rcov]
 
-    puts "Running cucumber tests"
-    puts %x[rake atrium:cucumber]
+    #puts "Running cucumber tests"
+    #puts %x[rake atrium:cucumber]
 
     FileUtils.cd('../../')
     puts "Completed test suite"

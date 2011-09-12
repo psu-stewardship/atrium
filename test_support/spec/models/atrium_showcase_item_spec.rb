@@ -4,7 +4,9 @@ describe Atrium::Showcase::Item do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save!
-    @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+    @browse_set = Atrium::BrowseSet.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @browse_set.save!
+    @showcase = Atrium::Showcase.new(:atrium_browse_set_id=>@browse_set.id)
     @showcase.save!
     @item = Atrium::Showcase::Item.new({:atrium_showcase_id=>@showcase.id})
     @item.save
@@ -13,6 +15,7 @@ describe Atrium::Showcase::Item do
   after(:each) do
     @showcase.delete
     @item.delete
+    @browse_set.delete
     @exhibit.delete
     begin
     @fail_item.delete

@@ -34,53 +34,22 @@
 <% end %>
 
 <fieldset>
-  <legend>Browse Levels</legend>
+  <legend>Browse Sets</legend>
 
+<%=debug @atrium_exhibit.browse_sets.inspect%>
 <%= form_for(@atrium_exhibit) do |f| %>
-  <%- unless @atrium_exhibit.browse_levels.empty? -%>
-      <table>
-	<tr><th>Level</th><th>Facet</th><th>Label</th><th>Solr Filter Query</th><th>Delete</th></tr>
-        <%- @atrium_exhibit.browse_levels.each_with_index do |level,index| -%>
-        <tr>
-          <%= f.fields_for :browse_levels, level do |level_form| %>
-            <td>Level-<%=level.level_number%>: </td> 
-            <td><%=facet_field_labels[level.solr_facet_name]%></td>
-	    <td><%=level_form.text_field :label, :value=>level.label%></td>
-	    <td><%=level_form.text_field :solr_filter_query%></td>
-	    <td><%=level_form.check_box :_destroy %></td>
-          <% end %>
-        </tr>
-        <%- end -%>
-      </table>
-      <p>
-	<%= f.submit 'Update' %>
-      </p>
+  <%- unless @atrium_exhibit.browse_sets.empty? -%>
+    <%- @atrium_exhibit.browse_sets.each do |browse_set|  -%>
+      <%= render :partial=>'browse_set_form', :locals=>{:browse_set=>browse_set}%>
     <%- end -%>
+  <%- end -%>
 <%- end -%>
 <%= form_for(@atrium_exhibit) do |f| %>
-    <%- @level = Atrium::BrowseLevel.new-%>
-    <%= f.fields_for :browse_levels, @level do |level_fields| %>
-      <%- if @atrium_exhibit.browse_levels.empty? -%>
-        <%- available_facets = facet_field_names -%>
-      <%- else -%>
-        <%- facet_names = @atrium_exhibit.browse_levels.collect {|level| level.solr_facet_name}-%>
-        <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
-      <%- end -%>
-      <%- @level.level_number = @atrium_exhibit.browse_levels.size + 1 -%>
-      <%= level_fields.hidden_field :level_number %>
-      <table>
-	<tr>
-	  <td>
-	    <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
-	    <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
-	  </td>
-	  <td>
-            <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %> 
-	    <%= level_fields.text_field :solr_filter_query %>
-	  </td>
-	  <td><%= f.submit 'Add Browse Level' %></td>
-	</tr>
-      </table>
+    <%- @browse_set = Atrium::BrowseSet.new-%>
+    <%= f.fields_for :browse_sets, @browse_set do |browse_set_fields| %>
+      <%- @browse_set.set_number = @atrium_exhibit.browse_sets.size + 1 -%>
+      <%= browse_set_fields.hidden_field :set_number %>
+      <%= f.submit 'Add Browse Set' %>
     <% end %>
 <% end %>
 </fieldset>

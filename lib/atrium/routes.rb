@@ -31,7 +31,7 @@ module Atrium
 
       def atrium_exhibits
         add_routes do |options|
-          resources :atrium_exhibits
+          resources :atrium_exhibits, :atrium_browse_sets
         end
       end
 
