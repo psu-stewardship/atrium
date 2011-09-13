@@ -200,6 +200,7 @@ describe Atrium::SolrHelper do
       browse_response.expects(:facets).returns([facet1,facet2,facet3]).at_least_once
       helper.stubs(:browse_response).returns(browse_response)
       helper.expects(:facet_in_params?).returns(false).at_least_once
+      #this will make it have something be selected
       helper.expects(:facet_in_params?).with('my_facet','val2').returns(true)
       
 
@@ -225,117 +226,121 @@ describe Atrium::SolrHelper do
     end
 
     it "should use the blacklight facet field label if no label defined in a browse level" do
+      #must have a browse set and exhibit not nil
       @exhibit.save
       @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
       @browse_set.save
+      #add a browse level with label nil
+      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
       @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
-      helper.expects(:facet_field_labels).returns("my_label").twice()
-      #label will be nil
-      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet"})
-      @browse_set.browse_levels << browse_level
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+      helper.expects(:facet_field_labels).returns("my_label").times(2)
+      #response must have facet for this level
+      response = mock()
       facet = mock()
-      item = mock()
-      item.expects(:value).returns("my_val").at_least_once
-      facet.expects(:items).returns([item]).at_least_once
-      facet.expects(:name).returns("my_facet").at_least_once
-      browse_response = mock()
-      browse_response.expects(:facets).returns([facet]).at_least_once
-      helper.expects(:browse_response).returns(browse_response)
-      helper.expects(:facet_in_params?).returns(false)
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val"]}]
+      facet.expects(:name).returns("my_facet").times(4)
+      #no items in facet to skip calling get_browse_level_data
+      facet.expects(:items).returns([]).twice
+      response.expects(:facets).returns([facet]).times(4)
+      helper.stubs(:browse_response).returns(response)
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.first.label.should == "my_label"
       #check if label is blank instead
       browse_level.label = ""
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val"]}]
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.first.label.should == "my_label"
     end
 
     it "should use the label in a browse level if defined" do
       helper.expects(:facet_field_labels).returns("my_label").times(0)
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label_2"})
-      @exhibit.browse_levels << browse_level
+      #must have a browse set and exhibit not nil
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @browse_set.save
+      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:label=>"my_label_2"})
+      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+      response = mock()
       facet = mock()
-      item = mock()
-      item.expects(:value).returns("my_val").at_least_once
-      facet.expects(:items).returns([item]).at_least_once
+      facet.expects(:items).returns([]).at_least_once
       facet.expects(:name).returns("my_facet").at_least_once
-      @response.expects(:facets).returns([facet]).at_least_once
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label_2",:values=>["my_val"]}]
+      response.expects(:facets).returns([facet]).at_least_once
+      helper.stubs(:browse_response).returns(response)
+      helper.get_browse_level_navigation_data.first.browse_levels.first.label.should == "my_label_2"
     end
 
     it "if no f param is defined it should set the response without f param to be response" do
       #if they are the same then response.facets should be called twice
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      @exhibit.browse_levels << browse_level
-      @facet = mock()
-      @facet.expects(:name).returns("other_facet").at_least_once
-      @response.expects(:facets).returns([@facet]).twice
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @browse_set.save
+      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+      response = mock()
+      facet = mock()
+      facet.expects(:name).returns("other_facet").at_least_once
+      #it will call this twice if response is same for without f param
+      response.expects(:facets).returns([facet]).twice
+      helper.expects(:browse_response).returns(response)
       helper.get_browse_level_navigation_data
     end
 
-    it "should return browse navigation hash with values filled in if a browse facet exists and f param not defined (nothing selected)" do
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      @exhibit.browse_levels << browse_level
-      facet = mock()
-      facet.expects(:name).returns("my_facet").at_least_once
-      item = mock()
-      item.expects(:value).returns("my_val").at_least_once
+    it "if multiple browse levels defined and f defined for anything but top level it should only have values set for the top level" do
+      #must have a browse set and exhibit not nil
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @browse_set.save
+      #add a browse level with label nil
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+      
+      #put something in params different from our facet, use facet at second level but should be ignored
+      helper.expects(:params).returns({:f=>{"my_facet2"=>["val3"]}}).at_least_once
+      facet1 = mock()
+      facet1.expects(:name).returns("my_facet").at_least_once
+      item1 = mock()
+      item1.expects(:value).returns("val1").at_least_once
       item2 = mock()
-      item2.expects(:value).returns("my_val2").at_least_once
-      facet.expects(:items).returns([item,item2]).at_least_once
-      @response.expects(:facets).returns([facet]).twice
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"]}]
-    end
-
-    it "if f param is defined it should make the value provided as selected and return a second browse level of data in results if more than one level defined" do
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      @exhibit.browse_levels << browse_level
-      @exhibit.browse_levels << browse_level2
-      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"]}}).at_least_once
-      facet = mock()
-      facet.expects(:name).returns("my_facet").at_least_once
-      item = mock()
-      item.expects(:value).returns("my_val").at_least_once
-      item2 = mock()
-      item2.expects(:value).returns("my_val2").at_least_once
-      facet.expects(:items).returns([item,item2]).at_least_once
-      facet2 = mock()
-      facet2.expects(:name).returns("my_facet2").at_least_once
+      item2.expects(:value).returns("val2").at_least_once
       item3 = mock()
-      item3.expects(:value).returns("my_val3").at_least_once
-      item4 = mock()
-      item4.expects(:value).returns("my_val4").at_least_once
-      facet2.expects(:items).returns([item3,item4]).at_least_once
-      @response.expects(:facets).returns([facet2,facet]).at_least_once
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"],:selected=>"my_val2"},
-                                                         {:solr_facet_name=>"my_facet2", :label=>"my_label2", :values=>["my_val3","my_val4"]}]
-    end
-
-    it "if multiple browse levels defined and f defined but nothing selected it should only return a browse level element for top level" do
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      @exhibit.browse_levels << browse_level
-      @exhibit.browse_levels << browse_level2
-      facet = mock()
-      facet.expects(:name).returns("my_facet").at_least_once
-      item = mock()
-      item.expects(:value).returns("my_val").at_least_once
-      item2 = mock()
-      item2.expects(:value).returns("my_val2").at_least_once
-      facet.expects(:items).returns([item,item2]).at_least_once
+      item3.stubs(:value).returns("val3")
+      facet1.expects(:items).returns([item1,item2]).at_least_once
       facet2 = mock()
       facet2.expects(:name).returns("my_facet2").at_least_once
-      @response.expects(:facets).returns([facet2,facet]).at_least_once
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"]}]
+      #stub so it can be called but not necessarily expected
+      facet2.stubs(:items).returns([item3])
+      response = mock()
+      response.expects(:facets).returns([facet2,facet1]).at_least_once
+      helper.expects(:browse_response).returns(response)
+      helper.expects(:facet_field_labels).returns("my_label")
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.first.values.should == ["val1","val2"]
+      browse_data.first.browse_levels.first.selected.should == nil
+      browse_data.first.browse_levels.second.values.should == []
+      browse_data.first.browse_levels.second.selected.should == nil
     end
 
-    it "if 3 browse levels defined and two items selected in each browse level then it should return 3 browse levels" do
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      browse_level3 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet3",:label=>"my_label3"})
-      @exhibit.browse_levels << browse_level
-      @exhibit.browse_levels << browse_level2
-      @exhibit.browse_levels << browse_level3
+    it "if 3 browse levels defined and two items selected in each browse level then it should return 2 browse levels with values" do
+      #must have a browse set and exhibit not nil
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @browse_set.save
+      #add a browse level with label nil
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      browse_level3 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet3",:level_number=>3})
+      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2,browse_level3]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
       helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>"my_val3"}}).at_least_once
+      helper.expects(:atrium_exhibit).returns(@exhibit)
       facet = mock()
       facet.expects(:name).returns("my_facet").at_least_once
       item = mock()
@@ -359,18 +364,33 @@ describe Atrium::SolrHelper do
       item6 = mock()
       item6.expects(:value).returns("my_val6").at_least_once
       facet3.expects(:items).returns([item5,item6]).at_least_once
-
-      @response.expects(:facets).returns([facet2,facet,facet3]).at_least_once
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"],:selected=>"my_val2"},
-                                                         {:solr_facet_name=>"my_facet2", :label=>"my_label2", :values=>["my_val3","my_val4"], :selected=>"my_val3"},{:solr_facet_name=>"my_facet3", :label=>"my_label3", :values=>["my_val5","my_val6"]}] 
+      response = mock()
+      response.expects(:facets).returns([facet2,facet,facet3]).at_least_once
+      helper.expects(:browse_response).returns(response)
+      helper.expects(:facet_field_labels).returns("my_label").at_least_once
+      helper.expects(:get_search_results).returns([response,mock()]).at_least_once
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
+      browse_data.first.browse_levels.first.selected.should == "my_val2"
+      browse_data.first.browse_levels.second.values.should == ["my_val3","my_val4"]
+      browse_data.first.browse_levels.second.selected.should == "my_val3"
+      browse_data.first.browse_levels.fetch(2).values.should == ["my_val5","my_val6"]
+      browse_data.first.browse_levels.fetch(2).selected.should == nil
     end
 
     it "should ignore a facet that is not present" do
-      browse_level = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_exhibit_id=>@exhibit.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      @exhibit.browse_levels << browse_level
-      @exhibit.browse_levels << browse_level2
-      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>"my_val3"}}).at_least_once
+      #must have a browse set and exhibit not nil
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @browse_set.save
+      #add a browse level with label nil
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+
+      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>["my_val3"]}}).at_least_once
       facet = mock()
       facet.expects(:name).returns("my_facet").at_least_once
       item = mock()
@@ -378,20 +398,31 @@ describe Atrium::SolrHelper do
       item2 = mock()
       item2.expects(:value).returns("my_val2").at_least_once
       facet.expects(:items).returns([item,item2]).at_least_once
-
-      @response.expects(:facets).returns([facet]).at_least_once
+      response = mock()
+      response.expects(:facets).returns([facet]).at_least_once
+      helper.expects(:browse_response).returns(response)
+      helper.expects(:facet_field_labels).returns("my_label").at_least_once
+      helper.expects(:get_search_results).returns([response,mock()]).at_least_once
       #second level facet not present so it should only return one level even though first level has something selected
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"],:selected=>"my_val2"}] 
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.size.should == 1
+      browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
+      browse_data.first.browse_levels.first.selected.should == "my_val2"
     end
 
     it "if 2 browse levels defined and two items selected it should handle having something selected at the lowest browse level" do
-      @browse_set = Atrium::BrowseSet.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+      #must have a browse set and exhibit not nil
+      @exhibit.save
+      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
       @browse_set.save
-      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      @browse_set.browse_levels << browse_level
-      @browse_set.browse_levels << browse_level2
-      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>"my_val3"}}).at_least_once
+      #add a browse level with label nil
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      helper.stubs(:atrium_exhibit).returns(@exhibit)
+
+      helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>["my_val3"]}}).at_least_once
       facet = mock()
       facet.expects(:name).returns("my_facet").at_least_once
       item = mock()
@@ -406,9 +437,17 @@ describe Atrium::SolrHelper do
       item4 = mock()
       item4.expects(:value).returns("my_val4").at_least_once
       facet2.expects(:items).returns([item3,item4]).at_least_once
-      @response.expects(:facets).returns([facet2,facet]).at_least_once
-      helper.get_browse_level_navigation_data.should == [{:solr_facet_name=>"my_facet",:label=>"my_label",:values=>["my_val","my_val2"],:selected=>"my_val2"},
-                                                         {:solr_facet_name=>"my_facet2", :label=>"my_label2", :values=>["my_val3","my_val4"], :selected=>"my_val3"}]
+      response = mock()
+      response.expects(:facets).returns([facet2,facet]).at_least_once
+      helper.expects(:browse_response).returns(response)
+      helper.expects(:facet_field_labels).returns("my_label").at_least_once
+      helper.expects(:get_search_results).returns([response,mock()]).at_least_once
+      browse_data = helper.get_browse_level_navigation_data
+      browse_data.first.browse_levels.size.should == 2
+      browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
+      browse_data.first.browse_levels.first.selected.should == "my_val2"
+      browse_data.first.browse_levels.second.values.should == ["my_val3","my_val4"]
+      browse_data.first.browse_levels.second.selected.should == "my_val3"
     end
   end
 end
