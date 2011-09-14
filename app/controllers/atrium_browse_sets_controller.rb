@@ -14,14 +14,10 @@ class AtriumBrowseSetsController < ApplicationController
 
   def update
     @browse_set = Atrium::BrowseSet.find(params[:id])
-    respond_to do |format|
-      if @browse_set.update_attributes(params[:atrium_browse_set])
-        #refresh_browse_level_label(@atrium_exhibit)
-        flash[:notice] = 'Browse set was successfully updated.'
-        #format.html  { render :controller=>"atrium_exhibits", :action => "edit" }
-      else
-        #format.html { render :controller=>"atrium_exhibits", :action => "edit" }
-      end
+    if @browse_set.update_attributes(params[:atrium_browse_set])
+      #refresh_browse_level_label(@atrium_exhibit)
+      flash[:notice] = 'Browse set was successfully updated.'        
     end
+    redirect_to :controller=>"atrium_exhibits", :action => "edit", :id=>@browse_set.atrium_exhibit_id
   end
 end

@@ -15,7 +15,7 @@ module NavigationHelpers
     when /the new exhibit page/
       new_atrium_exhibit_path
 
-    when /the edit exhibit page/
+    when /the configure exhibit page/
       '/atrium_exhibits/\./edit'
       
     when /the catalog page/

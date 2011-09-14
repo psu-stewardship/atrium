@@ -139,7 +139,11 @@ module Atrium::SolrHelper
       atrium_exhibit.browse_sets.each do |browse_set|
         if browse_set.respond_to?(:browse_levels) && !browse_set.browse_levels.nil?
           updated_browse_levels = get_browse_level_data(browse_set.browse_levels,browse_response,extra_controller_params)
-          browse_set.browse_levels = updated_browse_levels unless updated_browse_levels.nil? || updated_browse_levels.empty?
+          browse_set.browse_levels.each_index do |index|
+            browse_set.browse_levels.fetch(index).values = updated_browse_levels.fetch(index).values
+            browse_set.browse_levels.fetch(index).label = updated_browse_levels.fetch(index).label
+            browse_set.browse_levels.fetch(index).selected = updated_browse_levels.fetch(index).selected
+          end
           browse_set.browse_levels.flatten!(1)
           browse_data << browse_set
         end
@@ -172,7 +176,7 @@ module Atrium::SolrHelper
     unless browse_levels.nil? || browse_levels.empty?
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
-      browse_level.label = facet_field_labels(browse_facet_name) if (browse_level.label.nil? || browse_level.label.blank?)
+      browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
       
       if params.has_key?(:f) && !params[:f].nil? && params[:f][browse_facet_name]
         temp = params[:f].dup
@@ -200,9 +204,6 @@ module Atrium::SolrHelper
                 #make sure to flatten any nested arrays from recursive calls
                 updated_browse_levels.flatten!(1)
               end
-            else
-              #just put rest of browse_levels in as is, so all levels represented with our without values set
-              updated_browse_levels
             end
             updated_browse_levels.first.values << item.value
           end

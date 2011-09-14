@@ -19,7 +19,7 @@ Feature: Exhibits
     Given I am logged in as "archivist1"
     Given I am on the home page
     When I press "Create New Exhibit"
-    Then I should be on the new exhibit page
+    Then I should be on the configure exhibit page
     #should see show and back to search links at top and bottom
     And I should not see "Show"
     And I should see "Back to Search"
@@ -33,27 +33,27 @@ Feature: Exhibits
     When I fill in "atrium_exhibit_title" with "My Test Title"
     And I fill in "atrium_exhibit_solr_filter_query" with "id:test"
     And I press "Update"
-    Then I should be on the edit exhibit page
-    And I should see "Exhibit created successfully."
+    Then I should be on the configure exhibit page
+    And I should see "Exhibit updated successfully."
     #after save then the show links should show up
     And I should see "Show"
     And I should see "Back to Search"
     And I should see "My Test Title" within  "#atrium_exhibit_title"
-    And I should see "id:test" within "#atrium_exhibit_solr_filter_query"
+    And I should see "id:test" within "#atrium_exhibit_solr_filter_query"  
     
+  Scenario: Adding a Browse Set to an exhibit
+  Scenario: Adding a Browse level to a browse set
+  Scenario: Editing a Browse Level in a browse set
+  Scenario: Adding another Browse Level to a browse set
+  Scenario: Removing a Browse Level from a browse set
+  Scenario: Remove a browse set
+  Scenario: Add another browse set
+  Scenario: Toggle between view on one browse set and another
+  #Scenario: Adding a Search Facet to a new exhibit
+  #Scenario: Adding a Search Facet to existing exhibit
+  #Scenario: Removing a Search Facet from an exhibit
+  #Scenario: Follow Show Exhibit Link from Configure Exhibit Page
     
-    
-    
-  Scenario: Adding a Browse Level to new exhibit
-  Scenario: Adding a Browse Level to existing exhibit
-  Scenario: Editing a Browse Level in an exhibit
-  Scenario: Adding another Browse Level to an exhibit
-  Scenario: Removing a Browse Level from an exhibit
-  Scenario: Adding a Search Facet to a new exhibit
-  Scenario: Adding a Search Facet to existing exhibit
-  Scenario: Removing a Search Facet from an exhibit
-  Scenario: Follow Show Exhibit Link from Exhibit Edit Page
-    
-  Scenario: Follow Back Link from Exhibit Edit Page
+  #Scenario: Follow Back Link from Exhibit Edit Page
   Scenario: Delete Exhibit
   

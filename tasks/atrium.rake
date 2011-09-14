@@ -230,8 +230,8 @@ namespace :atrium do
     puts "Running rspec tests"
     puts  %x[rake atrium:spec:rcov]
 
-    #puts "Running cucumber tests"
-    #puts %x[rake atrium:cucumber]
+    puts "Running cucumber tests"
+    puts %x[rake atrium:cucumber]
 
     FileUtils.cd('../../')
     puts "Completed test suite"

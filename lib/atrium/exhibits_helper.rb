@@ -6,17 +6,22 @@ module Atrium::ExhibitsHelper
   # first arg item is a facet value item from rsolr-ext.
   # options consist of:
   # :suppress_link => true # do not make it a link, used for an already selected value for instance
-  def get_browse_facet_path(facet_solr_field, value, browse_facets)
+  def get_browse_facet_path(facet_solr_field, value, browse_facets, browse_set_number)
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
     if params[:exhibit_id]
       p.merge!(:id=>params[:exhibit_id])
       p.merge!(:exhibit_id=>params[:exhibit_id])
+    elsif params[:id] && params[:controller] == "atrium_exhibits"
+      p.merge!(:id=>params[:id])
+      p.merge!(:exhibit_id=>params[:id])
+      p.merge!(:controller=>params[:controller])
     end
+    p.merge!(:browse_set_number=>browse_set_number)
     p = remove_related_facet_params(facet_solr_field, p, browse_facets)
     p = add_browse_facet_params(facet_solr_field,value,p)
     #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
-    atrium_exhibit_path(p.merge!({:class=>"browse_facet_select", :action=>"show"}))
+    params[:action] == "edit" ? edit_atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"})) : atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"}))
   end
 
   def add_browse_facet_params(field, value, p=HashWithIndifferentAccess.new)
@@ -28,7 +33,7 @@ module Atrium::ExhibitsHelper
 
   # Standard display of a SELECTED facet value, no link, special span
   # with class, and 'remove' button.
-  def get_selected_browse_facet_path(facet_solr_field, value, browse_facets)
+  def get_selected_browse_facet_path(facet_solr_field, value, browse_facets, browse_set_number)
     value = [value] unless value.is_a? Array
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
@@ -36,8 +41,13 @@ module Atrium::ExhibitsHelper
     if params[:exhibit_id]
       p.merge!(:id=>params[:exhibit_id])
       p.merge!(:exhibit_id=>params[:exhibit_id])
+    elsif params[:id] && params[:controller] == "atrium_exhibits"
+      p.merge!(:id=>params[:id])
+      p.merge!(:exhibit_id=>params[:id])
+      p.merge!(:controller=>params[:controller])
     end
-    atrium_exhibit_path(p.merge!(:action=>"show"))  
+    p.merge!(:browse_set_number=>browse_set_number)
+    params[:action] == "edit" ? edit_atrium_exhibit_path(p) : atrium_exhibit_path(p)
   end
 
   #Remove current selected facet plus any child facets selected

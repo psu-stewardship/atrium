@@ -7,8 +7,7 @@ class AtriumExhibitsController < ApplicationController
   include Atrium::ExhibitsHelper
   include Atrium::SolrHelper
 
-
-  before_filter :initialize_exhibit, :except=>[:index, :new, :create]
+  before_filter :initialize_exhibit, :except=>[:index, :new]
   before_filter :atrium_html_head
   layout 'atrium'
   #before_filter :set_page_style, :only => :show
@@ -54,12 +53,14 @@ class AtriumExhibitsController < ApplicationController
   end
 
   def show
-    @atrium_exhibit = Atrium::Exhibit.find(params[:id])
+    #@atrium_exhibit = Atrium::Exhibit.find(params[:id])
     @browse_level_navigation_data = get_browse_level_navigation_data
+    puts "browse_level_navigation_data: #{@browse_level_navigation_data.first.browse_levels.first.values.inspect}"
   end
 
   def edit
-    @atrium_exhibit = Atrium::Exhibit.find(params[:id])
+    #@atrium_exhibit = Atrium::Exhibit.find(params[:id])
+    @browse_level_navigation_data = get_browse_level_navigation_data
   end
 
   def update

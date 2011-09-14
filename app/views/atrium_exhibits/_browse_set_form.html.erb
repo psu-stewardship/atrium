@@ -4,12 +4,11 @@
 
 <%= form_for(browse_set) do |f| %>
   <%- unless browse_set.browse_levels.empty? -%>
-      <table>
-	<tr><th>Level</th><th>Facet</th><th>Label</th><th>Solr Filter Query</th><th>Delete</th></tr>
+      <table border=1>
+	<tr><th>Facet</th><th>Label</th><th>Solr Filter Query</th><th>Delete</th></tr>
         <%- browse_set.browse_levels.each_with_index do |level,index| -%>
         <tr>
           <%= f.fields_for :browse_levels, level do |level_form| %>
-            <td>Level-<%=level.level_number%>: </td> 
             <td><%=facet_field_labels[level.solr_facet_name]%></td>
 	    <td><%=level_form.text_field :label, :value=>level.label%></td>
 	    <td><%=level_form.text_field :solr_filter_query%></td>
