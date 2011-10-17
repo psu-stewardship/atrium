@@ -132,13 +132,13 @@ module Atrium::SolrHelper
   #   top_browse_level.selected?
   #   
   #   One should use the above methods to generate data for expand/collapse controls, breadcrumbs, etc.
-  def get_browse_level_navigation_data
+  def get_browse_set_navigation_data
     initialize_exhibit if atrium_exhibit.nil?
     browse_data = []
     unless atrium_exhibit.nil? || atrium_exhibit.browse_sets.nil?
       atrium_exhibit.browse_sets.each do |browse_set|
         if browse_set.respond_to?(:browse_levels) && !browse_set.browse_levels.nil?
-          updated_browse_levels = get_browse_level_data(browse_set.browse_levels,browse_response,extra_controller_params)
+          updated_browse_levels = get_browse_level_data(browse_set.set_number,browse_set.browse_levels,browse_response,extra_controller_params,true)
           browse_set.browse_levels.each_index do |index|
             browse_set.browse_levels.fetch(index).values = updated_browse_levels.fetch(index).values
             browse_set.browse_levels.fetch(index).label = updated_browse_levels.fetch(index).label
@@ -155,13 +155,14 @@ module Atrium::SolrHelper
   private
   
   # This is a private method and should not be called directly.
-  # get_browse_level_navigation_data calls this method to fill out the browse_level_navigation_data array
+  # get_browse_set_navigation_data calls this method to fill out the browse_level_navigation_data array
   # This method calls itself recursively as it generates the current browse state data.
   # It returns the browse levels array with its browse level objects passed in updated
   # with any values, label, and selected value if one is selected.  It will fill in values
   # for the top browse level, and then will only fill in values for the second browse level
   # if something is selected, and so on for any deeper browse levels.  If no label is defined
   # for a browse level, it will fill in the default label for the browse level facet.
+  # @param [String] The browse set number for the current browse set
   # @param [Array] The exhibit browse set's array of BrowseLevel objects
   # @param [SolrResponse] the browse response from solr
   # @param [Hash] the extra controller params that need to be passed to solr if we query for another response if necessary to get child level data
@@ -171,20 +172,33 @@ module Atrium::SolrHelper
   #   :label [String] browse level category label
   #   :values [Array] values to display for the browse level
   #   :selected [String] the selected value if one
-  def get_browse_level_data(browse_levels, response, extra_controller_params)
+  def get_browse_level_data(browse_set_number,browse_levels, response, extra_controller_params,top_level=false)
     updated_browse_levels = []
     unless browse_levels.nil? || browse_levels.empty?
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
-      
-      if params.has_key?(:f) && !params[:f].nil? && params[:f][browse_facet_name]
-        temp = params[:f].dup
-        browse_levels.each do |cur_browse_level|
-          params[:f].delete(cur_browse_level.solr_facet_name)
+
+      if params.has_key?(:browse_set_number) && params[:browse_set_number].to_i == browse_set_number.to_i
+        if params.has_key?(:f) && !params[:f].nil?
+          temp = params[:f].dup
+          unless top_level && !params[:f][browse_facet_name] && !params[:f][browse_facet_name.to_s]
+            browse_levels.each_with_index do |cur_browse_level,index|
+              params[:f].delete(cur_browse_level.solr_facet_name)
+            end
+          else
+            params[:f] = {}
+          end
+          (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
+          params[:f] = temp 
+        else
+          response_without_f_param = response
         end
+      elsif params.has_key?(:f) && !params[:f].nil?
+        temp = params[:f].dup
+        params[:f] = {}
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
-        params[:f] = temp
+        params[:f] = temp 
       else
         response_without_f_param = response
       end
@@ -200,7 +214,7 @@ module Atrium::SolrHelper
               level_has_selected = true
               updated_browse_levels.first.selected = item.value
               if browse_levels.length > 1
-                updated_browse_levels << get_browse_level_data(browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
+                updated_browse_levels << get_browse_level_data(browse_set_number,browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
                 #make sure to flatten any nested arrays from recursive calls
                 updated_browse_levels.flatten!(1)
               end

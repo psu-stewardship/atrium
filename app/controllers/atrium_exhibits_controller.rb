@@ -54,13 +54,13 @@ class AtriumExhibitsController < ApplicationController
 
   def show
     #@atrium_exhibit = Atrium::Exhibit.find(params[:id])
-    @browse_level_navigation_data = get_browse_level_navigation_data
-    puts "browse_level_navigation_data: #{@browse_level_navigation_data.first.browse_levels.first.values.inspect}"
+    @browse_set_navigation_data = get_browse_set_navigation_data
+    puts "browse_level_navigation_data: #{@browse_set_navigation_data.first.browse_levels.first.values.inspect}"
   end
 
   def edit
     #@atrium_exhibit = Atrium::Exhibit.find(params[:id])
-    @browse_level_navigation_data = get_browse_level_navigation_data
+    @browse_set_navigation_data = get_browse_set_navigation_data
   end
 
   def update
