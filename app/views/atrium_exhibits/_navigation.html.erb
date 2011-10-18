@@ -6,9 +6,9 @@
       <%- unless browse_set.browse_levels.nil? || browse_set.browse_levels.empty? -%>
         <%= browse_set.set_number%>
         <%= render :partial => 'atrium_exhibits/navigation_browse_levels', :locals=>{:browse_set_number=>browse_set.set_number, :browse_levels=>browse_set.browse_levels, :browse_facets=>browse_set.browse_facet_names}%>
-        <%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
-	  <%= render :partial=>'browse_set_form', :locals=>{:browse_set=>browse_set}%>
-	<%- end -%>
+      <%- end -%>
+      <%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
+	<%= render :partial=>'browse_set_form', :locals=>{:browse_set=>browse_set}%>
       <%- end -%>
     <%- end -%>
   <%- end -%>
