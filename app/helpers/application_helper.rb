@@ -2,6 +2,10 @@
 require 'cgi'
 
 module ApplicationHelper
+
+  def thumbnail_class( document )
+    display_thumnail( document ) ? ' with-thumbnail' : ''
+  end
 =begin
   include Blacklight::SolrHelper
   

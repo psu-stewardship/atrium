@@ -45,8 +45,8 @@ module Atrium::SolrHelper
   
   # Returns the current browse_levels instance variable
   # @return [Array] Array of Atrium::BrowseLevel for current Atrium::Exhibit
-  def browse_sets
-    @browse_sets
+  def showcases
+    @showcases
   end
   
   # Returns the current Blacklight solr response for results that should be displayed in current browse navigation scope
@@ -92,7 +92,7 @@ module Atrium::SolrHelper
     begin
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
-      @browse_sets = @atrium_exhibit.browse_sets
+      @showcases = @atrium_exhibit.showcases
       @extra_controller_params ||= {}
       exhibit_members_query = @atrium_exhibit.build_members_query
       queries = []
@@ -108,7 +108,7 @@ module Atrium::SolrHelper
     end
   end
   
-  # Returns an array of Atrium::BrowseSet objects with its BrowseLevel objects populated with current display
+  # Returns an array of Atrium::Showcase objects with its BrowseLevel objects populated with current display
   # data.  It is expected that it will be used for generating current navigation controls when browsing an exhibit.
   # All possible browse levels will be present but values will only be filled in for levels that should be
   # in view.  It will fill in values for the top browse level, and then will only fill in values for the second browse level
@@ -119,11 +119,11 @@ module Atrium::SolrHelper
   # browse category values at each browse level.  This method calls get_browse_level_data
   # to actually retrieve the array of data after it makes sure a response for browse information
   # has come back from Blacklight Solr
-  # @return [Array] An array of Atrium::BrowseSet objects defind for an exhibit with BrowseLevel objects populated with view data
+  # @return [Array] An array of Atrium::Showcase objects defind for an exhibit with BrowseLevel objects populated with view data
   # @example Get First Browse Level data
   #   You would access the first level of the first browse set as follows:
   #
-  #   top_browse_level = browse_sets.first.browse_levels.first
+  #   top_browse_level = showcases.first.browse_levels.first
   #   #get menu values to display
   #   top_browse_level.values
   #   #get label for the browse category
@@ -132,20 +132,20 @@ module Atrium::SolrHelper
   #   top_browse_level.selected?
   #   
   #   One should use the above methods to generate data for expand/collapse controls, breadcrumbs, etc.
-  def get_browse_set_navigation_data
+  def get_showcase_navigation_data
     initialize_exhibit if atrium_exhibit.nil?
     browse_data = []
-    unless atrium_exhibit.nil? || atrium_exhibit.browse_sets.nil?
-      atrium_exhibit.browse_sets.each do |browse_set|
-        if browse_set.respond_to?(:browse_levels) && !browse_set.browse_levels.nil?
-          updated_browse_levels = get_browse_level_data(browse_set.set_number,browse_set.browse_levels,browse_response,extra_controller_params,true)
-          browse_set.browse_levels.each_index do |index|
-            browse_set.browse_levels.fetch(index).values = updated_browse_levels.fetch(index).values
-            browse_set.browse_levels.fetch(index).label = updated_browse_levels.fetch(index).label
-            browse_set.browse_levels.fetch(index).selected = updated_browse_levels.fetch(index).selected
+    unless atrium_exhibit.nil? || atrium_exhibit.showcases.nil?
+      atrium_exhibit.showcases.each do |showcase|
+        if showcase.respond_to?(:browse_levels) && !showcase.browse_levels.nil?
+          updated_browse_levels = get_browse_level_data(showcase.set_number,showcase.browse_levels,browse_response,extra_controller_params,true)
+          showcase.browse_levels.each_index do |index|
+            showcase.browse_levels.fetch(index).values = updated_browse_levels.fetch(index).values
+            showcase.browse_levels.fetch(index).label = updated_browse_levels.fetch(index).label
+            showcase.browse_levels.fetch(index).selected = updated_browse_levels.fetch(index).selected
           end
-          browse_set.browse_levels.flatten!(1)
-          browse_data << browse_set
+          showcase.browse_levels.flatten!(1)
+          browse_data << showcase
         end
       end
     end
@@ -155,7 +155,7 @@ module Atrium::SolrHelper
   private
   
   # This is a private method and should not be called directly.
-  # get_browse_set_navigation_data calls this method to fill out the browse_level_navigation_data array
+  # get_showcase_navigation_data calls this method to fill out the browse_level_navigation_data array
   # This method calls itself recursively as it generates the current browse state data.
   # It returns the browse levels array with its browse level objects passed in updated
   # with any values, label, and selected value if one is selected.  It will fill in values
@@ -172,14 +172,14 @@ module Atrium::SolrHelper
   #   :label [String] browse level category label
   #   :values [Array] values to display for the browse level
   #   :selected [String] the selected value if one
-  def get_browse_level_data(browse_set_number,browse_levels, response, extra_controller_params,top_level=false)
+  def get_browse_level_data(showcase_number,browse_levels, response, extra_controller_params,top_level=false)
     updated_browse_levels = []
     unless browse_levels.nil? || browse_levels.empty?
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
 
-      if params.has_key?(:browse_set_number) && params[:browse_set_number].to_i == browse_set_number.to_i
+      if params.has_key?(:showcase_number) && params[:showcase_number].to_i == showcase_number.to_i
         if params.has_key?(:f) && !params[:f].nil?
           temp = params[:f].dup
           unless top_level && !params[:f][browse_facet_name] && !params[:f][browse_facet_name.to_s]
@@ -214,7 +214,7 @@ module Atrium::SolrHelper
               level_has_selected = true
               updated_browse_levels.first.selected = item.value
               if browse_levels.length > 1
-                updated_browse_levels << get_browse_level_data(browse_set_number,browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
+                updated_browse_levels << get_browse_level_data(showcase_number,browse_levels.slice(1,browse_levels.length-1), response, extra_controller_params)
                 #make sure to flatten any nested arrays from recursive calls
                 updated_browse_levels.flatten!(1)
               end

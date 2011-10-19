@@ -1,8 +1,8 @@
 class Atrium::Exhibit < ActiveRecord::Base
-  has_many :browse_sets, :class_name=>'Atrium::BrowseSet', :foreign_key=>"atrium_exhibit_id", :order=>'set_number ASC'
+  has_many :showcases, :class_name=>'Atrium::Showcase', :foreign_key=>"atrium_exhibit_id", :order=>'set_number ASC'
   has_many :search_facets, :class_name=>'Atrium::Search::Facet', :foreign_key=>"atrium_exhibit_id"
 
-  accepts_nested_attributes_for :browse_sets, :allow_destroy=>true
+  accepts_nested_attributes_for :showcases, :allow_destroy=>true
   accepts_nested_attributes_for :search_facets, :allow_destroy=>true
 
   set_table_name :atrium_exhibits

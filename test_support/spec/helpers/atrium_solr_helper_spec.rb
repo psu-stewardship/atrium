@@ -15,7 +15,7 @@ describe Atrium::SolrHelper do
     rescue
     end
     begin
-      @browse_set.delete
+      @showcase.delete
     rescue
     end
   end
@@ -46,7 +46,7 @@ describe Atrium::SolrHelper do
     it "should call get_search_results with correct params and query and all variables initialized correctly" do
       helper.expects(:params).returns({:id=>"test_id",:controller=>"atrium_exhibits"}).at_least_once
       @exhibit.expects(:id).returns("test_id").at_least(0)
-      @exhibit.expects(:browse_sets).returns(["test","test1"])
+      @exhibit.expects(:showcases).returns(["test","test1"])
       @exhibit.expects(:build_members_query).returns("_query_:id\:namespace").at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       helper.expects(:build_lucene_query).returns("_query_:id\:test_id").at_least_once
@@ -55,14 +55,14 @@ describe Atrium::SolrHelper do
       helper.atrium_exhibit.should == @exhibit
       helper.stubs(:params).returns({:exhibit_id=>"test_id"})
       @exhibit.stubs(:id).returns("test_id")
-      @exhibit.expects(:browse_sets).returns(["test","test1"]).at_least_once
+      @exhibit.expects(:showcases).returns(["test","test1"]).at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       response = mock()
       document_list = mock()
       helper.expects(:get_search_results).with({:exhibit_id=>"test_id"},{:q=>"_query_:id\:test_id AND _query_:id\:namespace"}).returns([response,document_list])
       helper.initialize_exhibit
       helper.atrium_exhibit.should == @exhibit
-      helper.browse_sets.should == @exhibit.browse_sets
+      helper.showcases.should == @exhibit.showcases
       helper.extra_controller_params.should == {:q=>"_query_:id\:test_id AND _query_:id\:namespace"}
       helper.browse_response.should == response
       helper.browse_document_list.should == document_list
@@ -76,7 +76,7 @@ describe Atrium::SolrHelper do
       helper.get_browse_level_navigation_data
       #it should not call initialize_exhibit if it is not nil, but should go no further since browse sets will be empty
       exhibit = mock()
-      exhibit.expects(:browse_sets).returns(nil)
+      exhibit.expects(:showcases).returns(nil)
       helper.stubs(:atrium_exhibit).returns(exhibit)
       helper.get_browse_level_navigation_data
     end
@@ -88,9 +88,9 @@ describe Atrium::SolrHelper do
       helper.get_browse_level_navigation_data.should == []
     end
 
-    it "if no atrium exhibit browse_sets it should return an empty array" do
+    it "if no atrium exhibit showcases it should return an empty array" do
       exhibit = mock()
-      exhibit.stubs(:browse_sets).returns([])
+      exhibit.stubs(:showcases).returns([])
       helper.stubs(:atrium_exhibit).returns(exhibit)
       helper.get_browse_level_navigation_data.should == []
     end
@@ -98,18 +98,18 @@ describe Atrium::SolrHelper do
     it "if atrium exhibit is not nil and has browse sets it should call get browse level data for each browse set" do
       exhibit = Atrium::Exhibit.new
       exhibit.save
-      exhibit.stubs(:browse_sets).returns([])
+      exhibit.stubs(:showcases).returns([])
       helper.stubs(:atrium_exhibit).returns(exhibit)
-      browse_set1 = Atrium::BrowseSet.new({:atrium_exhibit_id=>exhibit.id,:set_number=>1})
-      browse_set1.save
-      browse_set2 = Atrium::BrowseSet.new({:atrium_exhibit_id=>exhibit.id,:set_number=>2})
-      browse_set2.save
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>browse_set1.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>browse_set2.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
-      browse_level3 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>browse_set2.id,:solr_facet_name=>"my_facet3",:label=>"my_label3"})
-      browse_set1.stubs(:browse_levels).returns([browse_level1])
-      browse_set2.stubs(:browse_levels).returns([browse_level2,browse_level3])
-      exhibit.expects(:browse_sets).returns([browse_set1,browse_set2]).at_least_once
+      showcase1 = Atrium::Showcase.new({:atrium_exhibit_id=>exhibit.id,:set_number=>1})
+      showcase1.save
+      showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>exhibit.id,:set_number=>2})
+      showcase2.save
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>showcase1.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>showcase2.id,:solr_facet_name=>"my_facet2",:label=>"my_label2"})
+      browse_level3 = Atrium::BrowseLevel.new({:atrium_showcase_id=>showcase2.id,:solr_facet_name=>"my_facet3",:label=>"my_label3"})
+      showcase1.stubs(:browse_levels).returns([browse_level1])
+      showcase2.stubs(:browse_levels).returns([browse_level2,browse_level3])
+      exhibit.expects(:showcases).returns([showcase1,showcase2]).at_least_once
       browse_response = mock()
       helper.stubs(:browse_response).returns(browse_response)
       extra_con_params = mock()
@@ -125,8 +125,8 @@ describe Atrium::SolrHelper do
       browse_data = helper.get_browse_level_navigation_data
       browse_data.size.should == 2
       #order is important here for both browse sets and esp. nested levels
-      browse_data.first.should == browse_set1
-      browse_data.second.should == browse_set2
+      browse_data.first.should == showcase1
+      browse_data.second.should == showcase2
       browse_data.first.browse_levels.should == [updated_browse_level1]
       browse_data.second.browse_levels.should == [updated_browse_level2,browse_level3]
       browse_data.first.browse_levels.first.values.should == ["test1","test2"]
@@ -154,27 +154,27 @@ describe Atrium::SolrHelper do
 
     it "if browse sets not defined it should return an empty array" do
       helper.get_browse_level_navigation_data.should == []
-      @exhibit.browse_sets.should == []
+      @exhibit.showcases.should == []
     end
 
     it "should return an array of browse set objects with browse levels objects sorted by level number if any defined" do
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
-      @browse_set2 = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>2})
-      @browse_set2.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
+      @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>2})
+      @showcase2.save
       helper.expects(:facet_field_labels).returns("my_label").times(3)
       #label will be nil
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet", :level_number=>1})
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet", :level_number=>1})
       browse_level1.save
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2", :level_number=>2})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet2", :level_number=>2})
       browse_level2.save
-      @browse_set.stubs(:browse_levels).returns([browse_level1,browse_level2])
-      browse_level3 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set2.id,:solr_facet_name=>"my_facet2", :level_number=>1})
+      @showcase.stubs(:browse_levels).returns([browse_level1,browse_level2])
+      browse_level3 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase2.id,:solr_facet_name=>"my_facet2", :level_number=>1})
       browse_level3.save
-      browse_level4 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set2.id,:solr_facet_name=>"my_facet3", :level_number=>2})
+      browse_level4 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase2.id,:solr_facet_name=>"my_facet3", :level_number=>2})
       browse_level4.save
-      @browse_set2.stubs(:browse_levels).returns([browse_level3,browse_level4])
-      @exhibit.expects(:browse_sets).returns([@browse_set,@browse_set2]).at_least_once
+      @showcase2.stubs(:browse_levels).returns([browse_level3,browse_level4])
+      @exhibit.expects(:showcases).returns([@showcase,@showcase2]).at_least_once
       helper.expects(:atrium_exhibit).returns(@exhibit).at_least_once
       
       browse_response = mock()
@@ -206,8 +206,8 @@ describe Atrium::SolrHelper do
 
       browse_data = helper.get_browse_level_navigation_data
       browse_data.size.should == 2
-      browse_data.first.should == @browse_set
-      browse_data.second.should == @browse_set2
+      browse_data.first.should == @showcase
+      browse_data.second.should == @showcase2
 
       browse_data.first.browse_levels.first.should == browse_level1
       browse_data.first.browse_levels.second.should == browse_level2
@@ -228,12 +228,12 @@ describe Atrium::SolrHelper do
     it "should use the blacklight facet field label if no label defined in a browse level" do
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
       #add a browse level with label nil
-      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
-      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      browse_level = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      @showcase.expects(:browse_levels).returns([browse_level]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
       helper.expects(:facet_field_labels).returns("my_label").times(2)
       #response must have facet for this level
@@ -256,11 +256,11 @@ describe Atrium::SolrHelper do
       helper.expects(:facet_field_labels).returns("my_label").times(0)
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
-      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:label=>"my_label_2"})
-      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
+      browse_level = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:label=>"my_label_2"})
+      @showcase.expects(:browse_levels).returns([browse_level]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
       response = mock()
       facet = mock()
@@ -274,11 +274,11 @@ describe Atrium::SolrHelper do
     it "if no f param is defined it should set the response without f param to be response" do
       #if they are the same then response.facets should be called twice
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
-      browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
-      @browse_set.expects(:browse_levels).returns([browse_level]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
+      browse_level = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:label=>"my_label"})
+      @showcase.expects(:browse_levels).returns([browse_level]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
       response = mock()
       facet = mock()
@@ -292,13 +292,13 @@ describe Atrium::SolrHelper do
     it "if multiple browse levels defined and f defined for anything but top level it should only have values set for the top level" do
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
       #add a browse level with label nil
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
-      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @showcase.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
       
       #put something in params different from our facet, use facet at second level but should be ignored
@@ -330,14 +330,14 @@ describe Atrium::SolrHelper do
     it "if 3 browse levels defined and two items selected in each browse level then it should return 2 browse levels with values" do
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
       #add a browse level with label nil
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
-      browse_level3 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet3",:level_number=>3})
-      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2,browse_level3]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      browse_level3 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet3",:level_number=>3})
+      @showcase.expects(:browse_levels).returns([browse_level1,browse_level2,browse_level3]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
       helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>"my_val3"}}).at_least_once
       helper.expects(:atrium_exhibit).returns(@exhibit)
@@ -381,13 +381,13 @@ describe Atrium::SolrHelper do
     it "should ignore a facet that is not present" do
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
       #add a browse level with label nil
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
-      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @showcase.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
 
       helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>["my_val3"]}}).at_least_once
@@ -413,13 +413,13 @@ describe Atrium::SolrHelper do
     it "if 2 browse levels defined and two items selected it should handle having something selected at the lowest browse level" do
       #must have a browse set and exhibit not nil
       @exhibit.save
-      @browse_set = Atrium::BrowseSet.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
-      @browse_set.save
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
+      @showcase.save
       #add a browse level with label nil
-      browse_level1 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet",:level_number=>1})
-      browse_level2 = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet2",:level_number=>2})
-      @browse_set.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
-      @exhibit.expects(:browse_sets).returns([@browse_set]).at_least_once
+      browse_level1 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet",:level_number=>1})
+      browse_level2 = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet2",:level_number=>2})
+      @showcase.expects(:browse_levels).returns([browse_level1,browse_level2]).at_least_once
+      @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
 
       helper.expects(:params).returns({:exhibit_id=>@exhibit.id,:f=>{"my_facet"=>["my_val2"],"my_facet2"=>["my_val3"]}}).at_least_once

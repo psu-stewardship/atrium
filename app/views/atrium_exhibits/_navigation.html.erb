@@ -1,24 +1,24 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
 <div class="facet-list">
-  <%- unless @browse_set_navigation_data.nil? || @browse_set_navigation_data.empty? -%>
+  <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
     <!-- recursively render the browse sets-->
-    <%- @browse_set_navigation_data.each do |browse_set| -%>
-      <%- unless browse_set.browse_levels.nil? || browse_set.browse_levels.empty? -%>
-        <%= browse_set.set_number%>
-        <%= render :partial => 'atrium_exhibits/navigation_browse_levels', :locals=>{:browse_set_number=>browse_set.set_number, :browse_levels=>browse_set.browse_levels, :browse_facets=>browse_set.browse_facet_names}%>
+    <%- @showcase_navigation_data.each do |showcase| -%>
+      <%- unless showcase.browse_levels.nil? || showcase.browse_levels.empty? -%>
+        <%= showcase.set_number%>
+        <%= render :partial => 'atrium_exhibits/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
       <%- end -%>
       <%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
-	<%= render :partial=>'browse_set_form', :locals=>{:browse_set=>browse_set}%>
+	<%= render :partial=>'showcase_form', :locals=>{:showcase=>showcase}%>
       <%- end -%>
     <%- end -%>
   <%- end -%>
-</dbi>
+</div>
 <%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
   <%= form_for(@atrium_exhibit) do |f| %>
-    <%- @browse_set = Atrium::BrowseSet.new-%>
-    <%= f.fields_for :browse_sets, @browse_set do |browse_set_fields| %>
-      <%- @browse_set.set_number = @atrium_exhibit.browse_sets.size + 1 -%>
-      <%= browse_set_fields.hidden_field :set_number %>
+    <%- @showcase = Atrium::Showcase.new-%>
+    <%= f.fields_for :showcases, @showcase do |showcase_fields| %>
+      <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
+      <%= showcase_fields.hidden_field :set_number %>
       <%= f.submit 'Add Browse Set' %>
     <% end %>
   <% end %>

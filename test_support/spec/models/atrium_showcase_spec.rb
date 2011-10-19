@@ -4,174 +4,74 @@ describe Atrium::Showcase do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save
-    @browse_set = Atrium::BrowseSet.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
-    @browse_set.save
-    @showcase = Atrium::Showcase.new(:atrium_browse_set_id=>@browse_set.id)
+    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
     @showcase.save
   end
 
   after(:each) do
     @showcase.delete
-    @browse_set.delete
     @exhibit.delete
-    begin
-      @item.delete
-    rescue
+  end
+
+  describe "#label" do
+    it "should return empty string if no browse set label defined" do
+      @showcase.label.should == ""
     end
-    begin
-      @fail_showcase.delete
-    rescue 
-    end
-    begin
-      @showcase2.delete
-    rescue
-    end
-    begin
-      @facet_selection.delete
-    rescue
-    end
-    begin
-      @facet_selection2.delete
-    rescue
+
+    it "should return the browse set label" do
+      @showcase.update_attributes({:label=>"My label"})
+      @showcase.label.should == "My label"
     end
   end
 
-  describe "#featured_items" do
-    it "should throw exception if try to create without solr_doc_id" do
-      threw_exception = false
-      begin
-        @showcase.featured_items.create
-        @showcase.save!
-      rescue
-        threw_exception = true
-      end
-      threw_exception.should == true
-    end
-    
-    it "should be able to create featured item in nested create" do
-      @item = @showcase.featured_items.create(:solr_doc_id=>"ns:46")
-      @showcase.featured_items.should == [@item]
-      @showcase.featured_items.first.solr_doc_id.should == "ns:46"
-      @showcase.featured_items.first.type.should == "Atrium::Showcase::Item::Featured"
+  describe "browse_facet_names" do
+    it "should return an array of browse facet names" do
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_1",:label=>"My Category",:level_number=>1})
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_2",:label=>"",:level_number=>2})
+      @showcase.browse_facet_names.size.should == 2
+      @showcase.browse_facet_names.include?("my_facet_1").should == true
+      @showcase.browse_facet_names.include?("my_facet_2").should == true
     end
 
-    it "should be able to delete an existing featured item" do
-      @item = @showcase.featured_items.create(:solr_doc_id=>"ns:46")
-      @showcase.save
-      @showcase.update_attributes({:featured_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
-      @showcase.featured_items.first.marked_for_destruction?.should == true
-      @showcase.save!
-      @showcase.reload.featured_items.size.should == 0
+    it "should remove associated browse_pages if a browse facet removed" do
+      #pending "need to test that associated browse_pages are removed if a browse facet is removed..."
+      val = true
+      val.should == ""
+    end
+
+    it "if no browse facets defined it should return an empty array" do 
+      @showcase.browse_facet_names.should == []
     end
   end
 
-  describe "#related_items" do
-    it "should throw exception if try to create without solr_doc_id" do
-      threw_exception = false
-      begin
-        @showcase.related_items.create
-        @showcase.save!
-      rescue
-        threw_exception = true
-      end
-      threw_exception.should == true
-    end
-    
-    it "should be able to create related item in nested create" do
-      @item = @showcase.related_items.create(:solr_doc_id=>"ns:46")
-      @showcase.save!
-      @showcase.related_items.should == [@item]
-      @showcase.related_items.first.solr_doc_id.should == "ns:46"
-      @showcase.related_items.first.type.should == "Atrium::Showcase::Item::Related"
+  describe "browse_levels" do
+    it "should return array of levels used in browsing" do
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_1",:label=>"My Category",:level_number=>1})
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_2",:label=>"",:level_number=>2})
+      (@showcase.browse_levels.collect {|x| x.solr_facet_name}).should == ["my_facet_1","my_facet_2"]
     end
 
-    it "should be able to delete an existing related item" do
-      @item = @showcase.related_items.create(:solr_doc_id=>"ns:46")
-      @showcase.save
-      @showcase.update_attributes({:related_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
-      @showcase.related_items.first.marked_for_destruction?.should == true
-      @showcase.save!
-      @showcase.reload.related_items.size.should == 0
+    it "should return browse levels sorted by level number" do
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_1",:label=>"My Category",:level_number=>2})
+      @showcase.browse_levels.create({:solr_facet_name=>"my_facet_2",:label=>"",:level_number=>1})
+      (@showcase.browse_levels.collect {|x| x.solr_facet_name}).should == ["my_facet_2","my_facet_1"]
+    end
+  end
+  
+  describe "#solr_filter_query" do
+    it "should return the solr filter query if any for the top of this browse set" do
+      @exhibit.solr_filter_query = "id_t:RBSC-CURRENCY"
+      @exhibit.solr_filter_query.should == "id_t:RBSC-CURRENCY"
     end
   end
 
-  describe "#descriptions" do
-    it "should throw exception if try to create without solr_doc_id" do
-      threw_exception = false
-      begin
-        @showcase.descriptions.create
-        @showcase.save!
-      rescue
-        threw_exception = true
-      end
-      threw_exception.should == true
-    end
-    
-    it "should be able to create description in nested create" do
-      @item = @showcase.descriptions.create(:solr_doc_id=>"ns:46")
-      @showcase.descriptions.should == [@item]
-      @showcase.descriptions.first.solr_doc_id.should == "ns:46"
-      @showcase.descriptions.first.type.should == "Atrium::Showcase::Item::Description"
-    end
-
-    it "should be able to delete an existing description" do
-      @item = @showcase.descriptions.create(:solr_doc_id=>"ns:46")
-      @showcase.save
-      @showcase.update_attributes({:descriptions_attributes => [{:id => @item.id, :_destroy => '1'}]})
-      @showcase.descriptions.first.marked_for_destruction?.should == true
-      @showcase.save!
-      @showcase.reload.descriptions.size.should == 0
-    end
-  end
-
-  describe "#browse_set" do
-    it "should return correct browse_set" do
-      @showcase.browse_set.should == @browse_set
-    end
-
-    it "should throw an exception if exhibit not set" do
-      @fail_showcase = Atrium::Showcase.new
-      threw_exception = false
-      begin
-        @fail_showcase.save!
-      rescue
-        threw_exception = true
-      end
-      threw_exception.should == true
-    end
-  end
-
-  describe "#facet_selections" do
-    it "should allow no facet selection if looking at top level" do
-      @showcase.facet_selections.size.should == 0
-      @showcase.save!
-      #it will throw an exception if this does not work
-    end
-
-    it "should only allow setting showcase facet selection associated with facets that are defined within exhibit" do
-       threw_exception = false
-      begin
-        @facet_selection2 = @showcase.facet_selections.create({:solr_facet_name=>"my_facet2"})
-        @showcase.save!
-      rescue
-        threw_exception = true
-      end
-      threw_exception.should == true
-      false.should == true
-    end
-
-    it "should be able to set the facet selection for a showcase" do
-      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"}) 
-      @showcase.save!
-      @showcase.facet_selections.should == [@facet_selection]
-    end
-  end
-
-  describe "#initialize" do
-    it "should allow no facet selections defined" do
-      @showcase = Atrium::Showcase.new({:atrium_browse_set_id=>@browse_set.id})
-      @showcase.save!
-      @showcase.facet_selections.should == []
+  describe "browse_pages" do
+    it "should return array of browse_pages defined" do
+      @browse_page = @showcase.browse_pages.create
+      @browse_page2 = @showcase.browse_pages.create
+      @showcase.browse_pages.size.should == 2
+      @showcase.browse_pages.include?(@browse_page).should == true
+      @showcase.browse_pages.include?(@browse_page2).should == true
     end
   end
 end

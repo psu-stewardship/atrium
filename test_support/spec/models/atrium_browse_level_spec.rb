@@ -4,22 +4,22 @@ describe Atrium::BrowseLevel do
   before(:each) do
     @exhibit = Atrium::Exhibit.new
     @exhibit.save
-    @browse_set = Atrium::BrowseSet.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
-    @browse_set.save
-    @browse_level = Atrium::BrowseLevel.new(:atrium_browse_set_id=>@browse_set.id,:level_number=>1)
+    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @showcase.save
+    @browse_level = Atrium::BrowseLevel.new(:atrium_showcase_id=>@showcase.id,:level_number=>1)
     @browse_level.save
   end
 
   after(:each) do
   end
 
-  describe "#browse_set" do
-    describe "#browse_set" do
+  describe "#showcase" do
+    describe "#showcase" do
       it "should return correct browse set" do
-        @browse_level.browse_set.should == @browse_set
+        @browse_level.showcase.should == @showcase
       end
 
-      it "should throw an exception if browse_set not set" do
+      it "should throw an exception if showcase not set" do
         @fail_browse_level = Atrium::BrowseLevel.new({:level_number=>1,:solr_facet_name=>"my_facet"})
         threw_exception = false
         begin
@@ -34,7 +34,7 @@ describe Atrium::BrowseLevel do
 
   describe "#level_number" do
     it "level number cannot be nil" do
-      @fail_browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:solr_facet_name=>"my_facet"})
+      @fail_browse_level = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet"})
       threw_exception = false
       begin
         @fail_browse_level.save!
@@ -62,7 +62,7 @@ describe Atrium::BrowseLevel do
 
   describe "#solr_facet_name" do
     it "solr facet name cannot be nil" do
-       @fail_browse_level = Atrium::BrowseLevel.new({:atrium_browse_set_id=>@browse_set.id,:level_number=>2})
+       @fail_browse_level = Atrium::BrowseLevel.new({:atrium_showcase_id=>@showcase.id,:level_number=>2})
       threw_exception = false
       begin
         @fail_browse_level.save!
