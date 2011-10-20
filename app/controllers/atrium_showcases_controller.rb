@@ -14,9 +14,9 @@ class AtriumShowcasesController < ApplicationController
 
   def update
     @showcase = Atrium::Showcase.find(params[:id])
-    if @showcase.update_attributes(params[:atrium_browse_set])
+    if @showcase.update_attributes(params[:atrium_showcase])
       #refresh_browse_level_label(@atrium_exhibit)
-      flash[:notice] = 'Browse set was successfully updated.'        
+      flash[:notice] = 'Showcase was successfully updated.'
     end
     redirect_to :controller=>"atrium_exhibits", :action => "edit", :id=>@showcase.atrium_exhibit_id
   end
