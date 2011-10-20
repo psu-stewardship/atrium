@@ -180,7 +180,6 @@ module Atrium::SolrHelper
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
-
       if params.has_key?(:showcase_number) && params[:showcase_number].to_i == showcase_number.to_i
         if params.has_key?(:f) && !params[:f].nil?
           temp = params[:f].dup
