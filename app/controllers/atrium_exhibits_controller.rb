@@ -67,13 +67,18 @@ class AtriumExhibitsController < ApplicationController
     @atrium_exhibit = Atrium::Exhibit.find(params[:id])
     respond_to do |format|
       if @atrium_exhibit.update_attributes(params[:atrium_exhibit])
-        #refresh_browse_level_label(@atrium_exhibit)
+        refresh_showcase
         flash[:notice] = 'Exhibit was successfully updated.'
         format.html  { render :action => "edit" }
       else
         format.html { render :action => "edit" }
       end
     end
+  end
+
+  def destroy
+    @atrium_exhibit = Atrium::Exhibit.find(params[:id])
+    @atrium_exhibit.destroy
   end
 =begin
   # Just return nil for exhibit facet limit because we want to display all values for browse links
@@ -93,6 +98,10 @@ class AtriumExhibitsController < ApplicationController
 end
 
 private
+
+def refresh_showcase
+  @showcase_navigation_data = get_showcase_navigation_data
+end
 
 def refresh_browse_level_label(atrium_exhibit)
   if params[:atrium_exhibit][:browse_levels_attributes]

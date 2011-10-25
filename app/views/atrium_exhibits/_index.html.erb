@@ -6,6 +6,7 @@
         <h2><%=link_to exhibit.title.blank? ? "Unnamed Exhibit" : exhibit.title, atrium_exhibit_path(exhibit) %></h2>
       </li>
     <%- end -%>
+  </ul>
 <%- else -%>
   <p>No exhibits found.</p>
 <%- end -%>

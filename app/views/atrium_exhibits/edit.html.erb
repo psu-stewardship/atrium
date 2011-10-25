@@ -1,6 +1,8 @@
 
 <%= link_to 'Show', @atrium_exhibit %> |
-<%= link_to 'Back to Search', catalog_index_path %>
+<%= link_to 'Back to Search', catalog_index_path %> |
+
+<%= link_to "Delete this Exhibit", atrium_exhibit_path(@atrium_exhibit.id), :method => :delete, :remote => true, :confirm => "Are you really sure?" %>
 
 <h1>Editing exhibit</h1>
 

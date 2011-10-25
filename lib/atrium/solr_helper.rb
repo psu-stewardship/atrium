@@ -78,6 +78,7 @@ module Atrium::SolrHelper
   #      @browse_document_list [Array] An array of SolrDocuments for the current browse scope
   #
   def initialize_exhibit
+    puts "Atrium initialize Exhibit"
     if params[:controller] == "atrium_exhibits"
       exhibit_id = params[:id]
     else
@@ -103,6 +104,7 @@ module Atrium::SolrHelper
       (@response, @document_list) = get_search_results(params, @extra_controller_params.merge!(:q=>q))
       @browse_response = @response
       @browse_document_list = @document_list
+      logger.error("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
     rescue Exception=>e
       logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
     end
@@ -133,10 +135,10 @@ module Atrium::SolrHelper
   #   
   #   One should use the above methods to generate data for expand/collapse controls, breadcrumbs, etc.
   def get_showcase_navigation_data
-    initialize_exhibit if atrium_exhibit.nil?
+    initialize_exhibit if @atrium_exhibit.nil?
     browse_data = []
-    unless atrium_exhibit.nil? || atrium_exhibit.showcases.nil?
-      atrium_exhibit.showcases.each do |showcase|
+    unless @atrium_exhibit.nil? || @atrium_exhibit.showcases.nil?
+      @atrium_exhibit.showcases.each do |showcase|
         if showcase.respond_to?(:browse_levels) && !showcase.browse_levels.nil?
           updated_browse_levels = get_browse_level_data(showcase.set_number,showcase.browse_levels,browse_response,extra_controller_params,true)
           showcase.browse_levels.each_index do |index|

@@ -7,6 +7,8 @@ class Atrium::BrowsePage < ActiveRecord::Base
 
   validates_presence_of :atrium_showcase_id
 
+  serialize :browse_page_items, Hash
+
   accepts_nested_attributes_for :featured_items, :allow_destroy=>true
   accepts_nested_attributes_for :related_items, :allow_destroy=>true
   accepts_nested_attributes_for :descriptions, :allow_destroy=>true
@@ -18,4 +20,9 @@ class Atrium::BrowsePage < ActiveRecord::Base
     super
     #facet
   end
+
+  def browse_page_items
+    read_attribute(:browse_page_items) || write_attribute(:browse_page_items, {})
+  end
+
 end

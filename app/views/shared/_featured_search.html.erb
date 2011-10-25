@@ -1,0 +1,18 @@
+<%- if @browse_response.nil? -%>
+  <h3><em>0 items found</em></h3>
+<%- else -%>
+  
+  <div class="pageEntriesInfo">
+    <%# render_pagination_info @browse_response, :entry_name=>'item' %>
+
+  </div>
+  
+	<%= render 'sort_and_per_page', :locals => {:response=>@browse_response} if @browse_response.response['numFound'] > 10%>
+  
+        <%= render 'results_pagination' %>
+  
+	<%= render :partial => 'document_list', :locals => {:document_list=>@browse_document_list, :response=>@browse_response}%>
+
+  <%= render 'results_pagination' %>
+
+<% end %>

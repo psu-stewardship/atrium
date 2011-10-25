@@ -35,7 +35,15 @@
 
 <fieldset>
   <legend>Browse Sets</legend>
-
+  <%# debug @showcase_navigation_data.inspect %>
+  <%# unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
+    <!-- recursively render the browse sets-->
+    <%# @showcase_navigation_data.each do |showcase| -%>
+      <%# if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
+	    <%# render :partial=>'showcases/showcase_form', :locals=>{:showcase=>showcase}%>
+      <%# end -%>
+    <%# end -%>
+  <%# end -%>
 </fieldset>
 
 <fieldset>

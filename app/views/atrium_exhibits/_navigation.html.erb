@@ -4,22 +4,10 @@
     <!-- recursively render the browse sets-->
     <%- @showcase_navigation_data.each do |showcase| -%>
       <%- unless showcase.browse_levels.nil? || showcase.browse_levels.empty? -%>
-        <%= showcase.set_number%>
+        <%# showcase.set_number%>
         <%= render :partial => 'atrium_exhibits/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
-      <%- end -%>
-      <%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
-	<%= render :partial=>'showcase_form', :locals=>{:showcase=>showcase}%>
       <%- end -%>
     <%- end -%>
   <%- end -%>
 </div>
-<%- if params[:controller]=="atrium_exhibits" && params[:action]=="edit" -%>
-  <%= form_for(@atrium_exhibit) do |f| %>
-    <%- @showcase = Atrium::Showcase.new-%>
-    <%= f.fields_for :showcases, @showcase do |showcase_fields| %>
-      <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
-      <%= showcase_fields.hidden_field :set_number %>
-      <%= f.submit 'Add Browse Set' %>
-    <% end %>
-  <% end %>
-<%- end -%>
+

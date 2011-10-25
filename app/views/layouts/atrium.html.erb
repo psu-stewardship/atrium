@@ -9,6 +9,9 @@
     <link href="<%= opensearch_catalog_path %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
     
     <%= raw(render_head_content) %>
+    <%= stylesheet_link_tag :all %>
+    <%= javascript_include_tag :defaults %>
+    <%= csrf_meta_tag %>
     
     
   </head>
@@ -60,10 +63,18 @@
             <%- else -%>
               <%# render :partial => 'shared/exhibit_search_form' %> 
               <%= render :partial => 'atrium_exhibits/navigation' %>
-            <%- end -%>  
+              <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+            <%- end -%>
+          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "edit"-%>
+            <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+
+          <%- elsif params[:controller] == "atrium_showcases" && params[:action] == "edit"-%>
+            <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+
           <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "exhibits" && params[:action] == "index")-%>
             <%# render :partial => 'shared/exhibit_search_form' %> 
             <%= render :partial => 'atrium_exhibits/navigation' -%>
+
           <%- end -%>
           <%= sidebar_items.join('').html_safe %>
         </div>
