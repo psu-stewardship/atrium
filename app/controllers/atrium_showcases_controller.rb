@@ -8,9 +8,10 @@ class AtriumShowcasesController < ApplicationController
 
   layout 'atrium'
 
-  before_filter :initialize_exhibit, :except=>[:index, :new, :create]
+  before_filter :initialize_exhibit, :except=>[:index, :create]
 
   def new
+    logger.debug("in create params: #{params.inspect}")
     @showcase = Atrium::Showcase.new
     respond_to do |format|
       format.html
@@ -21,16 +22,18 @@ class AtriumShowcasesController < ApplicationController
     logger.debug("in create params: #{params.inspect}")
     @showcase = Atrium::Showcase.new(params[:atrium_showcase])
 
-    respond_to do |format|
+     @showcase.save
+    logger.debug("in create params: #{@showcase.inspect}")
+    #respond_to do |format|
       if @showcase.save
-          @showcase.update_attributes(params[:atrium_exhibit])
+          @showcase.update_attributes(params[:atrium_showcase])
           #refresh_browse_level_label(@atrium_exhibit)
 
         flash[:notice] = 'Showcase was successfully created.'
         format.html { redirect_to :action => "edit", :id=>@showcase.id }
       end
       format.html { render :action => "new" }
-    end
+    #end
   end
 
   def edit
@@ -44,7 +47,7 @@ class AtriumShowcasesController < ApplicationController
       #refresh_browse_level_label(@atrium_exhibit)
       flash[:notice] = 'Showcase was successfully updated.'
     end
-    redirect_to :controller=>"atrium_exhibits", :action => "edit", :id=>@showcase.atrium_exhibit_id
+    redirect_to :action => "edit", :exhibit_id=>@showcase.atrium_exhibit_id
   end
 
   def destroy

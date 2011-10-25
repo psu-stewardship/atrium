@@ -24,6 +24,8 @@
 <%- end -%>
 <%= form_for(@showcase) do |f| %>
     <%- @level = Atrium::BrowseLevel.new-%>
+    <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
+    <%-  @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
     <%= f.fields_for :browse_levels, @level do |level_fields| %>
       <%- if @showcase.browse_levels.empty? -%>
         <%- available_facets = facet_field_names -%>
@@ -40,7 +42,7 @@
 	    <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
 	  </td>
 	  <td>
-            <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %> 
+        <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %>
 	    <%= level_fields.text_field :solr_filter_query %>
 	  </td>
 	  <td><%= f.submit 'Add Browse Level' %></td>

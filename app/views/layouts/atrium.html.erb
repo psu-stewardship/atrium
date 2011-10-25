@@ -65,16 +65,17 @@
               <%= render :partial => 'atrium_exhibits/navigation' %>
               <%= render :partial => 'atrium_exhibits/edit_navigation' %>
             <%- end -%>
-          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "edit"-%>
+          <%- elsif params[:controller] == "atrium_exhibits" && !(params[:action] == "show")-%>
             <%= render :partial => 'atrium_exhibits/edit_navigation' %>
-
-          <%- elsif params[:controller] == "atrium_showcases" && params[:action] == "edit"-%>
+          <%- elsif params[:controller] == "atrium_showcases"-%>
             <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show"-%>
+            <%= render :partial => 'shared/exhibit_search_form' %>
+            <%= render :partial => 'atrium_exhibits/navigation' %>
 
           <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "exhibits" && params[:action] == "index")-%>
-            <%# render :partial => 'shared/exhibit_search_form' %> 
-            <%= render :partial => 'atrium_exhibits/navigation' -%>
-
+            <%= render :partial => 'shared/exhibit_search_form' %>
+            <%= render :partial => 'atrium_exhibits/navigation' %>
           <%- end -%>
           <%= sidebar_items.join('').html_safe %>
         </div>
