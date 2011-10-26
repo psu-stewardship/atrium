@@ -97,6 +97,24 @@ EOF
       end
     end
 
+    # Add Atrium behaviors and Filters to CatalogController
+    def inject_atrium_catalog_behavior
+      puts "Adding Atrium behaviors to CatalogController"
+      controller_name = "catalog_controller"
+      file_path = "app/controllers/#{controller_name.underscore}.rb"
+      if File.exists?(file_path)
+        insert_into_file file_path, :after => "require 'blacklight/catalog'" do
+            "\nrequire 'atrium/catalog'"
+        end
+        insert_into_file file_path, :after => 'include Blacklight::Catalog' do
+          "\n  # Extend Blacklight::Catalog with Atrium behaviors (primarily editing)." +
+            "\n  include Atrium::Catalog"
+        end
+      else
+        puts " \e[31mFailure\e[0m Could not find #{model_name.underscore}.rb. To add Atrium behaviors to your Blacklight::Catalog Controllers, you must include the Atrium::Controller module in the Controller class definition."
+      end
+    end
+
     # Add Hydra to the application controller
     def inject_atrium_controller_behavior    
       inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
