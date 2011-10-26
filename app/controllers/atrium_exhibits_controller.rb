@@ -22,30 +22,9 @@ class AtriumExhibitsController < ApplicationController
 
   def create
     logger.debug("in create params: #{params.inspect}")
-    #first remove browse level attributes or search facet first and then add back in
-    if (params[:atrium_exhibit][:browse_levels_attributes])
-      browse_level_attributes_params = params[:atrium_exhibit][:browse_levels_attributes]
-      params[:atrium_exhibit].delete(:browse_levels_attributes)
-    end
-    if (params[:atrium_exhibit][:search_facets_attributes])
-      search_facets_attributes_params = params[:atrium_exhibit][:search_facets_attributes]
-      params[:atrium_exhibit].delete(:search_facets_attributes)
-    end
-    @atrium_exhibit = Atrium::Exhibit.new(params[:atrium_exhibit])
-
-    respond_to do |format|
-      if @atrium_exhibit.save
-        if browse_level_attributes_params || search_facets_attributes_params
-          params[:atrium_exhibit][:browse_levels_attributes] = browse_level_attributes_params if browse_level_attributes_params
-          params[:atrium_exhibit][:search_facets_attributes] = search_facets_attributes_params if search_facets_attributes_params
-          @atrium_exhibit.update_attributes(params[:atrium_exhibit])
-          #refresh_browse_level_label(@atrium_exhibit)
-        end
-        flash[:notice] = 'Exhibit was successfully created.'
-        format.html { redirect_to :action => "edit", :id=>@atrium_exhibit.id }
-      end
-      format.html { render :action => "new" }
-    end
+    @atrium_exhibit = Atrium::Exhibit.new
+    @atrium_exhibit.save
+    redirect_to :action => "edit", :id=>@atrium_exhibit.id
   end
 
   def update_embedded_search
