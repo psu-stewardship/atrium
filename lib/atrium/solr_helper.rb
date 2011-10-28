@@ -103,11 +103,16 @@ module Atrium::SolrHelper
       queries << params[:q] if params[:q]
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
       @extra_controller_params.merge!(:q=>q)
-      session_search_params = solr_search_params(params)
       if filter_query_params[:fq]
-         session_search_params[:fq] ? @extra_controller_params.merge!(:fq=>filter_query_params[:fq].concat(session_search_params[:fq])) : @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) 
+        @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) 
+        session_search_params = solr_search_params(params)
+        if session_search_params[:fq] 
+          @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
+        end
       end
       (@response, @document_list) = get_search_results(params, @extra_controller_params)
+      #reset to just filters in exhibit filter
+      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
       @browse_response = @response
       @browse_document_list = @document_list
       logger.error("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
