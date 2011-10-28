@@ -6,7 +6,7 @@ class CreateAtriumBrowsePageFacetSelections < ActiveRecord::Migration
       t.string :value
     end
     add_index :atrium_browse_page_facet_selections, :id
-    add_index :atrium_browse_page_facet_selections, :atrium_browse_page_id, :unique => true, :name =>'atrium_facet_browse_page_index'
+    add_index :atrium_browse_page_facet_selections, :atrium_browse_page_id, :name =>'atrium_facet_browse_page_index'
   end
 
   def self.down

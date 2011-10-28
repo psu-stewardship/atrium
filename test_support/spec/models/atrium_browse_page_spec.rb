@@ -27,6 +27,10 @@ describe Atrium::BrowsePage do
     rescue
     end
     begin
+      @showcase2.delete
+    rescue
+    end
+    begin
       @facet_selection.delete
     rescue
     end
@@ -149,7 +153,7 @@ describe Atrium::BrowsePage do
     end
 
     it "should only allow setting browse_page facet selection associated with facets that are defined within exhibit" do
-       threw_exception = false
+      threw_exception = false
       begin
         @facet_selection2 = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet2"})
         @browse_page.save!
@@ -172,6 +176,55 @@ describe Atrium::BrowsePage do
       @browse_page = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
       @browse_page.save!
       @browse_page.facet_selections.should == []
+    end
+  end
+
+  describe "#with_selected_facets" do
+    it "should return correct browse page with no facets selected" do
+      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
+      @browse_page2.save!
+      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      puts "browse page is: #{@browse_page.inspect}"
+      Atrium::BrowsePage.with_selected_facets(@showcase.id).first.should == @browse_page
+    end
+
+    it "should return correct browse page with one facet selected" do
+      @browse_page = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
+      @browse_page.save!
+      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"}) 
+      @browse_page.save!
+      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
+      @browse_page2.save!
+      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+       Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @browse_page
+    end
+    
+    it "should return correct browse page with one facet selected but a browse page exists with same facet plus another" do
+      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @facet_selection2 = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      @browse_page.save!
+      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
+      @browse_page2.save!
+      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @browse_page2
+    end
+
+    it "should return correct browse page with two facets selected" do
+      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @facet_selection2 = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      @browse_page.save!
+      Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value,
+                                              @facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @browse_page
+    end
+
+    it "should return correct browse page with same facet selections but different showcase" do
+      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @showcase2 = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>2)
+      @showcase2.save!
+      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase2.id})
+      @browse_page2.save!
+      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      Atrium::BrowsePage.with_selected_facets(@showcase2.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @browse_page2
     end
   end
 end

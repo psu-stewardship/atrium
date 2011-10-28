@@ -21,25 +21,6 @@ describe Atrium::Exhibit do
     end
   end
 
-  describe "#build_members_query" do
-    it "should return empty string if no members defined" do
-      @exhibit.build_members_query.should == ""
-    end
-
-    it "should return a query string with delimiter AND and prefix _query_:" do
-      @exhibit.solr_filter_query = "id_t:RBSC-CURRENCY"
-      @exhibit.solr_filter_query.should == "id_t:RBSC-CURRENCY"
-      @exhibit.build_members_query.should == "_query_:\"id_t:RBSC-CURRENCY\""
-    end
-  end
-
-  describe "#solr_filter_query" do
-    it "should return an array of solr query queries that will be used for filter queries" do
-      @exhibit.solr_filter_query = "id_t:RBSC-CURRENCY"
-      @exhibit.solr_filter_query.should == "id_t:RBSC-CURRENCY"
-    end
-  end
-
   describe "search_facets" do
     it "should return array of facets used in searching" do
       @exhibit.search_facets.create({:name=>"my_facet_2"})
