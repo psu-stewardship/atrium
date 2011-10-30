@@ -1,0 +1,22 @@
+
+<h1>Selected Items</h1>
+
+<div id="documents">  
+  <% @documents.each_with_index do |document, i| %>
+    <% # container for a single doc -%>
+    <div class="document">
+        <h3 class="index_title"><%= i + 1 + @response.params[:start].to_i%>. <%= link_to_document document, :label => document_show_link_field, :results_view => false %></h3>
+	    <%= render_document_partial document, :index %>
+    </div>
+  <% end %>
+</div>
+<%= debug selected_document_ids.class %>
+
+<%= form_for(@atrium_browse_page) do |f| %>
+<%= f.fields_for :browse_page_items, @atrium_browse_page.browse_page_items do |item| %>
+  <%= item.hidden_field :key, :size => 10, :value => "Featured"  %>
+  <%= item.hidden_field :solr_doc_ids,:value => selected_document_ids.join(',') %>
+<% end %>
+<%= f.submit 'Add featured' %>
+<% end %>
+

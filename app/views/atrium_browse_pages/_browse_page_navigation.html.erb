@@ -1,0 +1,15 @@
+
+<%# render :partial => 'atrium_browse_pages/navigation_browse_levels', :locals=>{:showcase_number=>@showcase.set_number, :browse_levels=>@showcase.browse_levels, :browse_facets=>@showcase.browse_facet_names}%>
+
+<%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
+    <!-- recursively render the browse sets-->
+  <%- @showcase_navigation_data.each do |showcase| -%>
+    <%- if showcase.set_number == @showcase.set_number  %>
+    <%# debug "#{showcase.browse_levels}, @showcase: #{@showcase.browse_levels.inspect}" %>
+      <%- unless showcase.browse_levels.nil? || showcase.browse_levels.empty? -%>
+        <%# showcase.set_number%>
+        <%= render :partial => 'atrium_browse_pages/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>

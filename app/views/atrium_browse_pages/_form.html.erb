@@ -1,0 +1,25 @@
+
+<p>Initialized browse_page: <%= "Browse_Page: #{@atrium_browse_page.inspect}" %></p>
+
+
+
+    <fieldset>
+     <legend>Browse Page</legend>
+       <div id="catalog-form" title="Catalog" style="display:none">
+         <span id="show_selected"> </span>
+         <%- unless @atrium_browse_page.nil?-%>
+           <%= form_for(@atrium_browse_page) do |f| %>
+            <%= f.text_field :atrium_showcase_id %>
+            <%= f.fields_for :browse_page_items, @atrium_browse_page.browse_page_items do |item| %>
+              <%= item.label :key, "key:" %>
+              <%= item.text_field :key, :size => 10, :value => @atrium_browse_page.browse_page_items["key"]  %>
+              <%= item.label :key, "Doc_ids:" %>
+              <%= item.text_field :solr_doc_ids, :size => 10, :value => @atrium_browse_page.browse_page_items["solr_doc_ids"]   %>
+              <%= item.hidden_field :solr_doc_ids %>
+            <% end %>
+            <%= f.submit 'Update browse' %>
+           <% end %>
+         <% end %>
+      </div>
+    </fieldset>
+
