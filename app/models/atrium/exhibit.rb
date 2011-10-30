@@ -7,12 +7,10 @@ class Atrium::Exhibit < ActiveRecord::Base
 
   set_table_name :atrium_exhibits
 
+  serialize :filter_query_params
+
   def title
     title = super
     title.nil? ? "" : title
-  end
-
-  def build_members_query
-    (solr_filter_query.nil? || solr_filter_query.empty?) ? "" : "_query_:\"#{solr_filter_query}\"" 
   end
 end

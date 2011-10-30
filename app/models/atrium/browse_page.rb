@@ -25,15 +25,34 @@ class Atrium::BrowsePage < ActiveRecord::Base
     read_attribute(:browse_page_items) || write_attribute(:browse_page_items, {})
   end
 
+
   def type
     browse_page_items[:type] unless browse_page_items.blank?
   end
 
+
   def solr_doc_ids
     browse_page_items[:solr_doc_ids]  unless browse_page_items.blank?
   end
+   #this method will select browse_page objects that have exactly the selected facets passed in (but no more or no less) and is tied to the given showcase id
+  #it expects two parameters:
+  # @param[String] the showcase id
+  # @param[Hash] hash of key value pairs of selected facets
+  # @return Array of browse_page objects found
+  scope :with_selected_facets, lambda {|*args|
+    showcase_id,selected_facets = args.flatten(1)
 
-  def with_selected_facets
-  end
+    selected_facets ? facet_conditions = selected_facets.collect {|key,value| "(#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`solr_facet_name` = '#{key}' and #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`value` = '#{value}')"} : facet_conditions = {}
+    conditions = "#{quoted_table_name}.`atrium_showcase_id` = #{showcase_id}"
+    unless facet_conditions.empty?
+      #unfortunately have to do subselect here to get this correct
+      conditions = "#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id` in (select #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id` from #{Atrium::BrowsePage::FacetSelection.quoted_table_name} INNER JOIN #{quoted_table_name} ON #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id` = #{quoted_table_name}.`id` where #{quoted_table_name}.atrium_showcase_id = #{showcase_id} AND (#{facet_conditions.join(" OR ")}))" 
+      having_str = "count(#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id`) = #{facet_conditions.size}"
+      joins("INNER JOIN #{Atrium::BrowsePage::FacetSelection.quoted_table_name} ON #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id` = #{quoted_table_name}.`id`").where(conditions).group("#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id`").having(having_str)
+    else
+      conditions = "#{conditions} AND #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`id` is NULL"
+      joins("LEFT OUTER JOIN #{Atrium::BrowsePage::FacetSelection.quoted_table_name} ON #{quoted_table_name}.`id` = #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`atrium_browse_page_id`").where(conditions)
+    end
+  }
 
 end

@@ -2,16 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
   <head>
-    
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <%= csrf_meta_tag %>
+
     <title><%= h(@page_title || application_name) %></title>
     <link href="<%= opensearch_catalog_path %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
-    
+
     <%= raw(render_head_content) %>
+
     <%= stylesheet_link_tag :all %>
     <%= javascript_include_tag :defaults %>
     <%= csrf_meta_tag %>
+
   </head>
   <% if params[:q].to_s.empty? and params[:f].to_s.empty? and params[:id].nil? %>
   <body onload="$('input#q').focus();" class="<%= render_body_class %>">
@@ -44,14 +47,14 @@
       </div>
 
 <div id="bd">
-      
+
        <div id="yui-main">
           <div class="yui-b">
             <%= render :partial=>'/flash_msg' %>
             <%= yield %>
           </div>
         </div>
-        
+
         <div class="yui-b sidebar">
           <%- if params[:controller] == "catalog" -%>
             <%- if params[:render_search].blank? || params[:class] == "edit_exhibit" -%>
@@ -59,7 +62,7 @@
                 <h3><%# link_to_exhibit(:label=>"Back to Browse Exhibit") %></h3>
               <%- end -%>
             <%- else -%>
-              <%# render :partial => 'shared/exhibit_search_form' %> 
+              <%# render :partial => 'shared/exhibit_search_form' %>
               <%= render :partial => 'atrium_exhibits/navigation' %>
               <%= render :partial => 'atrium_exhibits/edit_navigation' %>
             <%- end -%>
@@ -82,5 +85,5 @@
 <div id="ft"><%= raw(@footer) %></div>
 </div>
     </body>
-    
+
     </html>

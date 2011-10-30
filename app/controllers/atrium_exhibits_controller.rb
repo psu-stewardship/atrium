@@ -13,11 +13,7 @@ class AtriumExhibitsController < ApplicationController
   #before_filter :set_page_style, :only => :show
 
   def new
-    @atrium_exhibit = Atrium::Exhibit.new
-
-    respond_to do |format|
-      format.html 
-    end
+    create
   end
 
   def create

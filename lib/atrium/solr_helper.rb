@@ -95,13 +95,24 @@ module Atrium::SolrHelper
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
       @showcases = @atrium_exhibit.showcases
       @extra_controller_params ||= {}
-      exhibit_members_query = @atrium_exhibit.build_members_query
+      filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params)
       queries = []
       #build_lucene_query will be defined if hydra is present to add hydra rights into query etc, otherwise it will be ignored
       queries << build_lucene_query(params[:q]) if respond_to?(:build_lucene_query)
-      queries << exhibit_members_query unless exhibit_members_query.empty?
+      queries << filter_query_params[:q] if filter_query_params[:q]
+      queries << params[:q] if params[:q]
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
-      (@response, @document_list) = get_search_results(params, @extra_controller_params.merge!(:q=>q))
+      @extra_controller_params.merge!(:q=>q)
+      if filter_query_params[:fq]
+        @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) 
+        session_search_params = solr_search_params(params)
+        if session_search_params[:fq] 
+          @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
+        end
+      end
+      (@response, @document_list) = get_search_results(params, @extra_controller_params)
+      #reset to just filters in exhibit filter
+      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
       @browse_response = @response
       @browse_document_list = @document_list
       logger.error("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
@@ -180,7 +191,6 @@ module Atrium::SolrHelper
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
-
       if params.has_key?(:showcase_number) && params[:showcase_number].to_i == showcase_number.to_i
         if params.has_key?(:f) && !params[:f].nil?
           temp = params[:f].dup

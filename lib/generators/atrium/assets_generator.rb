@@ -9,21 +9,19 @@
 
 
 # Need the requires here so we can call the generator from environment.rb
-# as suggested above. 
+# as suggested above.
 require 'rails/generators'
 require 'rails/generators/base'
 module Atrium
   class Assets < Rails::Generators::Base
     source_root File.expand_path('../templates', __FILE__)
-  
+
     def assets
       if use_asset_pipeline?
         insert_into_file app/"assets/stylesheets/application.css", :after => " *= require_self" do
 %q{
  *
  * Required by Atrium
- *= require 'yui'
- *= require 'jquery/ui-lightness/jquery-ui-1.8.1.custom.css'
  *= require 'atrium/atrium'
 }
         end
@@ -33,11 +31,11 @@ module Atrium
 // Required by Atrium
 //= require jquery-ui
 //= require atrium/atrium
-}          
+}
         end
         directory("../../../../assets/images/atrium", "public/images/atrium")
       else
-        # directories are relative to the source_root 
+        # directories are relative to the source_root
         directory("../../../../assets/images/atrium", "public/images/atrium")
         directory("../../../../assets/stylesheets", "public/stylesheets")
         directory("../../../../assets/javascripts", "public/javascripts")
@@ -48,6 +46,6 @@ module Atrium
     def use_asset_pipeline?
       (Rails::VERSION::MAJOR >= 3 and Rails::VERSION::MINOR >= 1) and Rails.application.config.assets.enabled
     end
-    
+
   end
 end
