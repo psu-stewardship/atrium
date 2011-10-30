@@ -6,7 +6,8 @@ module Atrium::ExhibitsHelper
   # first arg item is a facet value item from rsolr-ext.
   # options consist of:
   # :suppress_link => true # do not make it a link, used for an already selected value for instance
-  def get_browse_facet_path(facet_solr_field, value, browse_facets, showcase_number)
+  def get_browse_facet_path(facet_solr_field, value, browse_facets, showcase_number, opts={})
+    logger.debug("Params: #{params.inspect}")
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
     if params[:exhibit_id]
@@ -16,6 +17,9 @@ module Atrium::ExhibitsHelper
       p.merge!(:id=>params[:id])
       p.merge!(:exhibit_id=>params[:id])
       p.merge!(:controller=>params[:controller])
+    end
+    if params[:edit_browse_page]
+      p.merge!(:edit_browse_page=>true)
     end
     p.merge!(:showcase_number=>showcase_number)
     p = remove_related_facet_params(facet_solr_field, p, browse_facets, showcase_number)
@@ -33,7 +37,8 @@ module Atrium::ExhibitsHelper
 
   # Standard display of a SELECTED facet value, no link, special span
   # with class, and 'remove' button.
-  def get_selected_browse_facet_path(facet_solr_field, value, browse_facets, showcase_number)
+  def get_selected_browse_facet_path(facet_solr_field, value, browse_facets, showcase_number, opts={})
+    logger.debug("Options: #{opts.inspect}")
     value = [value] unless value.is_a? Array
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
@@ -45,6 +50,9 @@ module Atrium::ExhibitsHelper
       p.merge!(:id=>params[:id])
       p.merge!(:exhibit_id=>params[:id])
       p.merge!(:controller=>params[:controller])
+    end
+    if params[:edit_browse_page]
+      p.merge!(:edit_browse_page=>true)
     end
     p.merge!(:showcase_number=>showcase_number)
     params[:action] == "edit" ? edit_atrium_exhibit_path(p) : atrium_exhibit_path(p)

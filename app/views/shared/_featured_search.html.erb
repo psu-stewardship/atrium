@@ -7,12 +7,12 @@
 
   </div>
   
-	<%= render 'sort_and_per_page', :locals => {:response=>@browse_response} if @browse_response.response['numFound'] > 10%>
+	<%# render 'atrium_exhibits/sort_and_per_page', :locals => {:response=>@browse_response} if @browse_response.response['numFound'] > 10%>
   
-        <%= render 'results_pagination' %>
+        <%= render 'atrium_exhibits/results_pagination' %>
   
-	<%= render :partial => 'document_list', :locals => {:document_list=>@browse_document_list, :response=>@browse_response}%>
+	<%= render :partial => 'atrium_exhibits/document_list', :locals => {:document_list=>@browse_document_list, :response=>@browse_response}%>
 
-  <%= render 'results_pagination' %>
+  <%= render 'atrium_exhibits/results_pagination' %>
 
 <% end %>

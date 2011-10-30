@@ -25,4 +25,15 @@ class Atrium::BrowsePage < ActiveRecord::Base
     read_attribute(:browse_page_items) || write_attribute(:browse_page_items, {})
   end
 
+  def type
+    browse_page_items[:type] unless browse_page_items.blank?
+  end
+
+  def solr_doc_ids
+    browse_page_items[:solr_doc_ids]  unless browse_page_items.blank?
+  end
+
+  def with_selected_facets
+  end
+
 end

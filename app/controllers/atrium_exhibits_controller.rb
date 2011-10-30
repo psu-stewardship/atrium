@@ -34,6 +34,12 @@ class AtriumExhibitsController < ApplicationController
   def show
     #@atrium_exhibit = Atrium::Exhibit.find(params[:id])
     @showcase_navigation_data = get_showcase_navigation_data
+    if(params[:showcase_number])
+      @showcase = Atrium::Showcase.find(params[:showcase_number])
+    end
+    if(params[:browse_page_id])
+      @atrium_browse_page = Atrium::Showcase.find(params[:browse_page_id])
+    end
     #puts "browse_level_navigation_data: #{@showcase_navigation_data.first.browse_levels.first.values.inspect}"
   end
 
@@ -58,6 +64,8 @@ class AtriumExhibitsController < ApplicationController
   def destroy
     @atrium_exhibit = Atrium::Exhibit.find(params[:id])
     @atrium_exhibit.destroy
+    flash[:notice] = 'Exhibit deleted.'
+    redirect_to catalog_index_path
   end
 =begin
   # Just return nil for exhibit facet limit because we want to display all values for browse links

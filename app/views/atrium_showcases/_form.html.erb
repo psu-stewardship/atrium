@@ -52,10 +52,29 @@
 <% end %>
 </fieldset>
 
+
+
+
+    <%# link_to 'Select Featured', atrium_browse_pages_path(:exhibit_id => @showcase.atrium_exhibit_id), :class=>'colorbox', :action=> atrium_browse_page_path %>
+    <%= link_to 'Select Featured', catalog_index_path, :class=>'colorbox'%>
+
     <fieldset>
      <legend>Browse Page</legend>
-      <div id="catalog-form" title="Catalog" style="display:none"></div>
-      <%= link_to 'Back to search', catalog_index_path, :remote => true %>
+       <div id="catalog-form" title="Catalog" style="display:none">
+         <span id="show_selected"> </span>
+         <%- @browse_page = Atrium::BrowsePage.new-%>
+         <%= form_for(@browse_page) do |f| %>
+            <%-  @browse_page.atrium_showcase_id = @showcase.id %>
+            <%= f.hidden_field :atrium_showcase_id %>
+            <%= f.fields_for :browse_page_items, @browse_page.browse_page_items do |item| %>
+              <%= item.label :key, "key:" %>
+              <%= item.text_field :key, :size => 10, :value => @browse_page.browse_page_items["key"]  %>
+              <%= item.label :key, "Doc_ids:" %>
+              <%= item.text_field :solr_doc_ids, :size => 10, :value => @browse_page.browse_page_items["solr_doc_ids"]   %>
+            <% end %>
+            <%= f.submit 'Add browse' %>
+        <% end %>
+      </div>
     </fieldset>
 
 <%- end -%>

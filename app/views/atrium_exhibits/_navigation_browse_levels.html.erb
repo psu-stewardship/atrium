@@ -1,5 +1,5 @@
 <!-- this partial recursively calls itself as necessary to render the navigation browse level data -->
-<%- unless browse_levels.nil? || browse_facets.nil? || showcase_number.nil?-%>
+<% unless browse_levels.nil? || browse_facets.nil? || showcase_number.nil?-%>
   <%- browse_level = browse_levels.first -%>
   <%- unless browse_level.values.empty? -%>
     <%- solr_facet_name = browse_level.solr_facet_name -%>

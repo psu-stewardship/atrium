@@ -10,11 +10,10 @@ module AtriumHelper
       stylesheet_links  << ["application"]
       javascript_includes << ["application"]
     else
-      javascript_includes << ['http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js']
+      stylesheet_links << ['yui', 'jquery/jquery-ui-1.8.1.custom.css','jquery.lightbox-0.5.css', 'colorbox', {:media=>'all'}]
+      stylesheet_links << ['atrium/atrium',  {:media=>'all'}]
+      javascript_includes << ['http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js', 'jquery.colorbox']
       javascript_includes << ['atrium/atrium' ]
-
-      stylesheet_links << ['yui', 'jquery.lightbox-0.5.css', {:media=>'all'}]
-      stylesheet_links << ['atrium/atrium', 'jquery/jquery-ui-1.8.1.custom.css', {:media=>'all'}]
       puts stylesheet_links.inspect
     end
   end

@@ -6,6 +6,18 @@ module ApplicationHelper
   def thumbnail_class( document )
     display_thumnail( document ) ? ' with-thumbnail' : ''
   end
+
+  def top_level_browse_page(showcase_id)
+    browse_pages = Atrium::BrowsePage.find_by_atrium_showcase_id(showcase_id)
+    browse_page = browse_pages.first unless browse_pages.empty?
+  end
+
+  def has_selected_facet
+    selected_facets = {"facet1"=>"value1","facet2"=>"value2"}
+    browse_pages = Atrium::BrowsePage.with_selected_facets(showcase_id,selected_facets)
+    browse_page = browse_pages.first unless browse_pages.empty?
+  end
+
 =begin
   include Blacklight::SolrHelper
   
