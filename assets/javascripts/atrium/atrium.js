@@ -3,43 +3,33 @@
    versions of Atrium change this file. Instead, use your own JS file
    which over-rides things in this JS file, as described below: Modified on startup */
 
-
 (function($){
-
-
   $(document).ready(function(){
-    $(".colorbox").colorbox({
-        width:"80%",
-        height:"80%",
-        iframe:true,
-        onClosed:function(){
-
-          var url=$(this).attr("action")
-            //alert('onClosed:'+url);
-            $.ajax({
-                    type: 'GET',
-                    url: url,
-                    dataType: 'html',
-                    cache: true,
-                    beforeSend: function() {
-                        $('#cboxLoadedContent').empty();
-                        $('#cboxLoadingGraphic').show();
-                    },
-                    complete: function() {
-                        $('#cboxLoadingGraphic').hide();
-                    },
-
-                    success: function(data) {
-                        $('#show_selected').html(data)
-                        $('#catalog-form').show()
-                    }
-            });
-
-		}
+    $('select.chosen').chosen();
+    $('.colorbox').colorbox({
+      width:'80%',
+      height:'80%',
+      iframe:true,
+      onClosed:function(){
+        var url = $(this).attr('action');
+        $.ajax({
+          type: 'GET',
+          url: url,
+          dataType: 'html',
+          cache: true,
+          beforeSend: function() {
+            $('#cboxLoadedContent').empty();
+            $('#cboxLoadingGraphic').show();
+          },
+          complete: function() {
+            $('#cboxLoadingGraphic').hide();
+          },
+          success: function(data) {
+            $('#show_selected').html(data);
+            $('#catalog-form').show();
+          }
+        });
+      }
     });
-
   });
-
 })(jQuery);
-
-

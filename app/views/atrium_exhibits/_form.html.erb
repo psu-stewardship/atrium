@@ -1,77 +1,31 @@
-
+<%= form_for(@atrium_exhibit, :html => {:class => "atrium"}) do |f| %>
   <fieldset>
-    <legend> General Settings </legend>
-<%= form_for(@atrium_exhibit) do |f| %>
-  <% if @atrium_exhibit.errors.any? %>
-    <ul>
-    <% @atrium_exhibit.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
+    <legend>Basic Configuration</legend>
+    <% if @atrium_exhibit.errors.any? %>
+      <ul class="errors">
+        <% @atrium_exhibit.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     <% end %>
-    </ul>
-  <% end %>
 
-    <table>
-      <tr>
-	<td>
-	  <%= f.label :title, 'Title:' %>
-	</td>
-	<td>
-	  <%= f.text_field :title %>
-        </td>
-      </tr>
-      <tr>
-	<td>
-	  <%- query_params = {:exhibit_id=>@atrium_exhibit.id,:edit_exhibit_filter=>@atrium_exhibit.id} -%>
-          <%- query_params.merge!(@atrium_exhibit.filter_query_params) if @atrium_exhibit.filter_query_params -%>
-	  <%= link_to("Set Exhibit Filter", catalog_index_path(query_params)).html_safe %>
-	</td>
-      </tr>
-    </table>
-  <p>
-    <%= f.submit 'Update' %>
-  </p>
+    <ol>
+      <li>
+        <%= f.label :title, 'Title:' %>
+        <%= f.text_field :title %>
+      </li>
+      <li>
+        <%= f.label :search_facet_names, 'Exhibit Search Facets:' %>
+        <%= f.collection_select :search_facet_names, facet_field_names.map{|field_name| Atrium::Search::FacetSelection.new(:field_name => field_name)}, :field_name, :label, {}, :multiple => true, :class => 'chosen', :'data-placeholder' => 'Select desired facets from the Collection' %>
+      </>
+    </ol>
+    <p>
+      <%= f.submit 'Update Exhibit Configuration' %>
+    </p>
+  </fieldset>
 <% end %>
 
-<fieldset>
-  <legend>Search Facets</legend>
-<%= form_for(@atrium_exhibit) do |f| %>
-  <%- unless @atrium_exhibit.search_facets.empty? -%>
-      <table>
-	<tr><th>Search Facet</th><th>Delete</th></tr>
-        <%- @atrium_exhibit.search_facets.each do |facet| -%>
-        <tr>
-          <%= f.fields_for :search_facets, facet do |facet_form| %>
-            <td><%=facet_field_labels[facet.name]%></td><td><%=facet_form.check_box :_destroy %></td>
-          <% end %>
-        </tr>
-        <%- end -%>
-      </table>
-      <p>
-	<%= f.submit 'Update' %>
-      </p>
-    <%- end -%>
-<%- end -%>
-<%= form_for(@atrium_exhibit) do |f| %>
-    <%- @facet = Atrium::Search::Facet.new-%>
-    <%= f.fields_for :search_facets, @facet do |facet_fields| %>
-      <%- if @atrium_exhibit.search_facets.empty? -%>
-        <%- available_facets = facet_field_names -%>
-      <%- else -%>
-        <%- facet_names = @atrium_exhibit.search_facets.collect {|facet| facet.name}-%>
-        <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
-      <%- end -%>
-      <table>
-	<tr>
-	  <td>
-	    <%= facet_fields.select(:name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
-	  </td>
-	  <td>
-	    <%= f.submit 'Add Search Facet' %>
-	  </td>
-	</tr>
-      </table>
-    <% end %>
-<% end %>
-</fieldset>
-
-</fieldset>
+<hr />
+<%- query_params = {:exhibit_id=>@atrium_exhibit.id,:edit_exhibit_filter=>@atrium_exhibit.id} -%>
+<%- query_params.merge!(@atrium_exhibit.filter_query_params) if @atrium_exhibit.filter_query_params -%>
+<%= link_to("Set Exhibit Filter", catalog_index_path(query_params)).html_safe %>

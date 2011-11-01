@@ -18,7 +18,44 @@ select {
 }
 
 /** Sidebar  **/
+.blacklight-atrium_exhibits-edit .sidebar h2,
+.blacklight-atrium_showcases-edit .sidebar h2 {
+  margin-bottom:.3em;
+}
+
+.exhibit-controls {
+  margin-left:1em;
+  margin-top:0;
+}
+
+.exhibit-controls li {
+  list-style-type:none;
+}
+
 #showcases dt {
   font-weight:bold;
   margin-top:.6em;
+}
+
+/** Forms **/
+form.atrium ol {
+  margin-left:0;
+}
+
+form.atrium ol li {
+  list-style-type:none;
+}
+
+form.atrium label{
+  margin-top:1em;
+  display:block;
+}
+
+form.atrium input[type=text],
+form.atrium select{
+  width:72%;
+}
+
+.chzn-container-multi .chzn-choices .search-choice .search-choice-close{
+  border-bottom:none;
 }
