@@ -7,7 +7,7 @@
   $(document).ready(function(){
     $('select.chosen').chosen();
     $('.colorbox').colorbox({
-      width:'80%',
+      width:'880px',
       height:'80%',
       iframe:true,
       onClosed:function(){
