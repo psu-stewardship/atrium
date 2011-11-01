@@ -7,11 +7,9 @@
   <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
     <dl id="showcases">
       <%- @showcase_navigation_data.each do |showcase| -%>
-
         <dt><%= showcase.title%></dt>
         <dd><%= link_to 'Facets', edit_atrium_showcase_path( :id => showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id )%></dd>
         <dd><%= link_to '"Browse Pages"', @atrium_exhibit %></dd>
-
       <%- end -%>
     </dl>
   <%- end -%>

@@ -22,21 +22,37 @@ class AtriumBrowsePagesController < ApplicationController
   end
 
   def new
-    @atrium_browse_page = Atrium::BrowsePage.new
-    respond_to do |format|
-      format.html
+    #@atrium_browse_page = Atrium::BrowsePage.new
+    @atrium_browse_page= get_atrium_browse_page(params[:atrium_showcase_id], params[:facet_selection]).first
+
+        #Atrium::BrowsePage.with_selected_facets(params[:atrium_showcase_id]).first
+
+    logger.debug("in new: #{@atrium_browse_page.inspect}")
+
+    if  @atrium_browse_page.nil?
+      logger.debug("in create params: #{params.inspect}")
+      @atrium_browse_page = Atrium::BrowsePage.new({:atrium_showcase_id=>params[:atrium_showcase_id]})
+      @atrium_browse_page.save!
+      if(params[:facet_selection])
+        params[:facet_selection].collect {|key,value|
+          facet_selection = @atrium_browse_page.facet_selections.create({:solr_facet_name=>key,:value=>value})
+        }
+        @atrium_browse_page.save!
+      end
+      #@atrium_browse_page.browse_page_items ||= Hash.new
+      logger.info("atrium_browse_page = #{@atrium_browse_page.inspect}")
+      #@atrium_browse_page.save
     end
+    redirect_to :action => "configure_browse_page" , :id=>@atrium_browse_page.id, :atrium_showcase_id=>@atrium_browse_page.atrium_showcase_id
+
   end
 
   def create
     logger.debug("in create params: #{params.inspect}")
-    @atrium_browse_page= top_level_browse_page(params[:atrium_browse_page][:atrium_showcase_id])
-    if  @atrium_browse_page.nil?
-      @atrium_browse_page = Atrium::BrowsePage.new(params[:atrium_browse_page])
+      @atrium_browse_page = Atrium::BrowsePage.new(params[:atrium_showcase_id])
       @atrium_browse_page.browse_page_items ||= Hash.new
       logger.info("atrium_browse_page = #{@atrium_browse_page.inspect}")
       @atrium_browse_page.save
-    end
     #@atrium_browse_page = Atrium::BrowsePage.new(params[:atrium_browse_page])
     #@atrium_browse_page.browse_page_items ||= Hash.new
     logger.info("atrium_browse_page = #{@atrium_browse_page.inspect}")

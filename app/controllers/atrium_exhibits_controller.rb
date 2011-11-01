@@ -34,8 +34,9 @@ class AtriumExhibitsController < ApplicationController
       @showcase = Atrium::Showcase.find(params[:showcase_number])
     end
     if(params[:browse_page_id])
-      @atrium_browse_page = Atrium::Showcase.find(params[:browse_page_id])
+      @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
     end
+
     #puts "browse_level_navigation_data: #{@showcase_navigation_data.first.browse_levels.first.values.inspect}"
   end
 

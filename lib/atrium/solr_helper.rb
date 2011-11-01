@@ -90,12 +90,13 @@ module Atrium::SolrHelper
       return
     end
     
-    begin
+    #begin
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
-      @showcases = @atrium_exhibit.showcases
+      #@showcases = @atrium_exhibit.showcases
+      logger.error("Exhibit: #{@atrium_exhibit}")
       @extra_controller_params ||= {}
-      filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params)
+      filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params) unless @atrium_exhibit.filter_query_params.nil?
       queries = []
       #build_lucene_query will be defined if hydra is present to add hydra rights into query etc, otherwise it will be ignored
       queries << build_lucene_query(params[:q]) if respond_to?(:build_lucene_query)
@@ -103,6 +104,7 @@ module Atrium::SolrHelper
       queries << params[:q] if params[:q]
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
       @extra_controller_params.merge!(:q=>q)
+#begin
       if filter_query_params[:fq]
         @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) 
         session_search_params = solr_search_params(params)
@@ -110,15 +112,16 @@ module Atrium::SolrHelper
           @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
         end
       end
+#end
       (@response, @document_list) = get_search_results(params, @extra_controller_params)
       #reset to just filters in exhibit filter
-      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
+     # @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
       @browse_response = @response
       @browse_document_list = @document_list
       logger.error("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
-    rescue Exception=>e
-      logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
-    end
+    #rescue Exception=>e
+    #  logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
+    #end
   end
   
   # Returns an array of Atrium::Showcase objects with its BrowseLevel objects populated with current display
@@ -242,5 +245,11 @@ module Atrium::SolrHelper
       end
     end
     updated_browse_levels
+  end
+
+  def get_atrium_browse_page(showcase_id, facet_hash={})
+    atrium_browse_page= Atrium::BrowsePage.with_selected_facets(showcase_id,facet_hash)
+    logger.error("Get browse page: #{atrium_browse_page.inspect}")
+    return atrium_browse_page
   end
 end

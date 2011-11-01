@@ -1,2 +1,4 @@
 <h1>You are configuring your browse page, Here are you options</h1>
 
+<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id]), :class=>'colorbox', :test=> atrium_browse_page_path(params[:browse_page_id]) %>
+<%= link_to 'Get Browse Page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f])%>
