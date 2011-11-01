@@ -28,10 +28,10 @@
     <%- @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
     <%= f.fields_for :browse_levels, @level do |level_fields| %>
       <%- if @showcase.browse_levels.empty? -%>
-        <%- available_facets = facet_field_names -%>
+        <%- available_facets = Blacklight.config[:facet][:field_names] -%>
       <%- else -%>
         <%- facet_names = @showcase.browse_levels.collect {|level| level.solr_facet_name}-%>
-        <%- available_facets = facet_field_names.reject {|facet| facet_names.include?(facet)} -%>
+        <%- available_facets = Blacklight.config[:facet][:field_names].reject {|facet| facet_names.include?(facet)} -%>
       <%- end -%>
       <%- @level.level_number = @showcase.browse_levels.size + 1 -%>
       <%= level_fields.hidden_field :level_number %>

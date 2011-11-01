@@ -21,6 +21,12 @@ module Atrium
       # make sure mount_at ends with trailing slash
       config.mount_at += '/'  unless config.mount_at.last == '/'
     end
+
+    # BlacklightHelper is needed by all helpers, so we inject it
+    # into action view base here. 
+    initializer 'atrium.helpers' do |app|
+      ActionView::Base.send :include, AtriumHelper
+    end
     
     initializer "static assets" do |app|
       app.middleware.use ::ActionDispatch::Static, "#{root}/public"
