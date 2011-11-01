@@ -40,7 +40,7 @@ module AtriumHelper
   def facet_field_names
     exhibit = Atrium::Exhibit.find(params[:exhibit_id]) if params[:exhibit_id]
     if exhibit
-      exhibit.search_facets.collect {|f| f.name} 
+      exhibit.search_facets.collect {|f| f.name}
     else
       super
     end

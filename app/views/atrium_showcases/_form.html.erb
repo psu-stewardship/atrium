@@ -1,28 +1,53 @@
-<%- unless @showcase.nil? -%>
-<fieldset>
-  <legend>Browse Levels</legend>
+<%- if @showcase -%>
+  <%= form_for(@showcase, :html => {:class => 'atrium'}) do |f| %>
+    <fieldset>
+      <legend>General Configuration</legend>
+      <ol>
+        <li>
+          <%= f.label :label, 'Title:' %>
+          <%= f.text_field :label %>
+        </li>
+      </ol>
+    </fieldset>
 
-<%= form_for(@showcase) do |f| %>
-  <%- unless @showcase.browse_levels.empty? -%>
-      <table border=1>
-	<tr><th>Facet</th><th>Label</th><th>Solr Filter Query</th><th>Delete</th></tr>
-        <%- @showcase.browse_levels.each_with_index do |level,index| -%>
-        <tr>
-          <%= f.fields_for :browse_levels, level do |level_form| %>
-            <td><%=facet_field_labels[level.solr_facet_name]%></td>
-	    <td><%=level_form.text_field :label, :value=>level.label%></td>
-	    <td><%=level_form.text_field :solr_filter_query%></td>
-	    <td><%=level_form.check_box :_destroy %></td>
-          <% end %>
-        </tr>
-        <%- end -%>
-      </table>
-      <p>
-	<%= f.submit 'Update' %>
-      </p>
-    <%- end -%>
-<%- end -%>
-<%= form_for(@showcase) do |f| %>
+    <h3>Group Showcase Items by Facets</h3>
+    <p>
+      Items present in a showcase can be further scoped by facet selections. These facets
+      are arranged in a single-level tree with each facet nested beneath its parent.
+    </p>
+
+    <fieldset>
+      <legend>Current Facets</legend>
+      <%- if @showcase.browse_levels.any? -%>
+        <table>
+          <thead>
+            <tr>
+              <th>Facet</th>
+              <th>Label</th>
+              <th>Solr Filter Query</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @showcase.browse_levels.each_with_index do |level,index| -%>
+              <tr>
+                <%= f.fields_for :browse_levels, level do |level_form| %>
+                  <td><%=facet_field_labels[level.solr_facet_name]%></td>
+                  <td><%=level_form.text_field :label, :value=>level.label%></td>
+                  <td><%=level_form.text_field :solr_filter_query%></td>
+                  <td><%=level_form.check_box :_destroy %></td>
+                <% end %>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+      <%- end -%>
+    </fieldset>
+    <p>
+      <%= f.submit 'Update Showcase and Current Facets' %>
+    </p>
+  <%- end -%>
+  <%= form_for(@showcase) do |f| %>
     <%- @level = Atrium::BrowseLevel.new-%>
     <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
     <%- @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
@@ -36,45 +61,42 @@
       <%- @level.level_number = @showcase.browse_levels.size + 1 -%>
       <%= level_fields.hidden_field :level_number %>
       <table>
-	<tr>
-	  <td>
-	    <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
-	    <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
-	  </td>
-	  <td>
-        <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %>
-	    <%= level_fields.text_field :solr_filter_query %>
-	  </td>
-	  <td><%= f.submit 'Add Browse Level' %></td>
-	</tr>
+        <tr>
+          <td>
+            <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
+            <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
+          </td>
+          <td>
+            <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %>
+            <%= level_fields.text_field :solr_filter_query %>
+          </td>
+          <td><%= f.submit 'Add Browse Level' %></td>
+        </tr>
       </table>
     <% end %>
-<% end %>
-</fieldset>
+  <% end %>
 
 
+  <%# link_to 'Select Featured', atrium_browse_pages_path(:exhibit_id => @showcase.atrium_exhibit_id), :class=>'colorbox', :action=> atrium_browse_page_path %>
+  <%= link_to 'Select Featured', catalog_index_path, :class=>'colorbox'%>
 
-
-    <%# link_to 'Select Featured', atrium_browse_pages_path(:exhibit_id => @showcase.atrium_exhibit_id), :class=>'colorbox', :action=> atrium_browse_page_path %>
-    <%= link_to 'Select Featured', catalog_index_path, :class=>'colorbox'%>
-
-    <fieldset>
-     <legend>Browse Page</legend>
-       <div id="catalog-form" title="Catalog" style="display:none">
-         <span id="show_selected"> </span>
-         <%- @browse_page = Atrium::BrowsePage.new-%>
-         <%= form_for(@browse_page) do |f| %>
-            <%-  @browse_page.atrium_showcase_id = @showcase.id %>
-            <%= f.hidden_field :atrium_showcase_id %>
-            <%= f.fields_for :browse_page_items, @browse_page.browse_page_items do |item| %>
-              <%= item.label :key, "key:" %>
-              <%= item.text_field :key, :size => 10, :value => @browse_page.browse_page_items["key"]  %>
-              <%= item.label :key, "Doc_ids:" %>
-              <%= item.text_field :solr_doc_ids, :size => 10, :value => @browse_page.browse_page_items["solr_doc_ids"]   %>
-            <% end %>
-            <%= f.submit 'Add browse' %>
+  <fieldset>
+    <legend>Browse Page</legend>
+    <div id="catalog-form" title="Catalog" style="display:none">
+      <span id="show_selected"> </span>
+      <%- @browse_page = Atrium::BrowsePage.new-%>
+      <%= form_for(@browse_page) do |f| %>
+        <%-  @browse_page.atrium_showcase_id = @showcase.id %>
+        <%= f.hidden_field :atrium_showcase_id %>
+        <%= f.fields_for :browse_page_items, @browse_page.browse_page_items do |item| %>
+          <%= item.label :key, "key:" %>
+          <%= item.text_field :key, :size => 10, :value => @browse_page.browse_page_items["key"]  %>
+          <%= item.label :key, "Doc_ids:" %>
+          <%= item.text_field :solr_doc_ids, :size => 10, :value => @browse_page.browse_page_items["solr_doc_ids"]   %>
         <% end %>
-      </div>
-    </fieldset>
+        <%= f.submit 'Add browse' %>
+      <% end %>
+    </div>
+  </fieldset>
 
 <%- end -%>

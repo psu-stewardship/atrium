@@ -65,6 +65,10 @@ form.atrium select{
   width:72%;
 }
 
+form.atrium th {
+  text-align:left;
+}
+
 .chzn-container-multi .chzn-choices .search-choice .search-choice-close{
   border-bottom:none;
 }

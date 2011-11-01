@@ -9,7 +9,7 @@
     <dl id="showcases">
       <%- @showcase_navigation_data.each do |showcase| -%>
         <dt><%= showcase.title%></dt>
-        <dd><%= link_to 'Facets', edit_atrium_showcase_path(showcase) %></dd>
+        <dd><%= link_to 'Configure Showcase', edit_atrium_showcase_path(showcase) %></dd>
         <dd><%= link_to 'Config Browse Page',  atrium_browse_pages_path(:atrium_showcase_id=>showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id)%></dd>
       <%- end -%>
     </dl>

@@ -81,6 +81,10 @@ module Atrium::SolrHelper
     puts "Atrium initialize Exhibit"
     if params[:controller] == "atrium_exhibits"
       exhibit_id = params[:id]
+    elsif params[:controller] =="atrium_showcases"
+      showcase = Atrium::Showcase.find(params[:id])
+      exhibit = showcase.exhibit if showcase
+      exhibit_id = exhibit.id if exhibit
     elsif params[:atrium_showcase_id]
       showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
       exhibit = showcase.exhibit if showcase
@@ -98,7 +102,7 @@ module Atrium::SolrHelper
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
       #@showcases = @atrium_exhibit.showcases
-      logger.error("Exhibit: #{@atrium_exhibit}")
+      logger.debug("Exhibit: #{@atrium_exhibit}")
       @extra_controller_params ||= {}
       filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params) unless @atrium_exhibit.filter_query_params.nil?
       queries = []
@@ -122,7 +126,7 @@ module Atrium::SolrHelper
      # @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
       @browse_response = @response
       @browse_document_list = @document_list
-      logger.error("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
+      logger.debug("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
     #rescue Exception=>e
     #  logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
     #end
