@@ -2,15 +2,15 @@ class AtriumExhibitsController < ApplicationController
 
   include CatalogHelper
   include BlacklightHelper
-  include AtriumHelper
   include Blacklight::SolrHelper
-  include Atrium::ExhibitsHelper
+  include AtriumHelper
   include Atrium::SolrHelper
+  include Atrium::ExhibitsHelper
+
+  layout 'atrium'
 
   before_filter :initialize_exhibit, :except=>[:index, :new]
   before_filter :atrium_html_head
-  layout 'atrium'
-  #before_filter :set_page_style, :only => :show
 
   def new
     create
@@ -69,12 +69,12 @@ class AtriumExhibitsController < ApplicationController
     return nil
   end
   helper_method :facet_limit_for
-  
+
   # Returns complete hash of key=facet_field, value=limit.
   # Used by SolrHelper#solr_search_params to add limits to solr
   # request for all configured facet limits.
   def facet_limit_hash
-    Blacklight.config[:facet][:limits]           
+    Blacklight.config[:facet][:limits]
   end
   helper_method :facet_limit_hash
 =end

@@ -1,32 +1,28 @@
 <div class="facet-list">
-      <h2><%=@atrium_exhibit.title %></h2>
-      <li> <%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(@atrium_exhibit.id) %> </li>
-      <li> <%= link_to 'Configure Exhibit Page', @atrium_exhibit %> </li>
-    <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
+  <h2><%=@atrium_exhibit.title %></h2>
+  <ul>
+    <li> <%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(@atrium_exhibit.id) %> </li>
+    <li> <%= link_to 'Configure Exhibit Page', @atrium_exhibit %> </li>
+  </ul>
+  <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
+    <dl id="showcases">
       <%- @showcase_navigation_data.each do |showcase| -%>
-      <h3> Showcase <%= showcase.set_number%> </h3>
-      <ul>
-        <li><%= link_to 'Config Browse level',  edit_atrium_showcase_path(:id=>showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id)%></li>
-        <li><%= link_to 'Config Browse Page',  atrium_browse_pages_path(:atrium_showcase_id=>showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id)%></li>
-        <li>
-           <%- @browse_page = Atrium::BrowsePage.new-%>
-          <%= form_for(@browse_page) do |f| %>
-            <%-  @browse_page.atrium_showcase_id = showcase.id %>
-            <%= f.hidden_field :atrium_showcase_id %>
-            <%= f.submit 'Add browse' %>
-        <% end %></li>
-      </ul>
+
+        <dt><%= showcase.title%></dt>
+        <dd><%= link_to 'Facets', edit_atrium_showcase_path( :id => showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id )%></dd>
+        <dd><%= link_to '"Browse Pages"', @atrium_exhibit %></dd>
+
       <%- end -%>
-    <%- end -%>
+    </dl>
+  <%- end -%>
 </div>
 
-
+<hr />
 <%= form_for(@atrium_exhibit) do |f| %>
-<%- @showcase = Atrium::Showcase.new-%>
-<%= f.fields_for :showcases, @showcase do |showcase_fields| %>
-  <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
-  <%= showcase_fields.hidden_field :set_number %>
-  <%= f.submit 'Add Showcase' %>
+  <%- @showcase = Atrium::Showcase.new-%>
+  <%= f.fields_for :showcases, @showcase do |showcase_fields| %>
+    <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
+    <%= showcase_fields.hidden_field :set_number %>
+    <%= f.submit 'Add Showcase' %>
+  <% end %>
 <% end %>
-<% end %>
-

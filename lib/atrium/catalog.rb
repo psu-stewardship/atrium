@@ -35,7 +35,33 @@ module Atrium::Catalog
         redirect_to new_atrium_exhibit_path
       end
     else
-      super
+      delete_or_assign_search_session_params
+
+      extra_head_content << view_context.auto_discovery_link_tag(:rss, url_for(params.merge(:format => 'rss')), :title => "RSS for results")
+      extra_head_content << view_context.auto_discovery_link_tag(:atom, url_for(params.merge(:format => 'atom')), :title => "Atom for results")
+      extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
+
+      @extra_controller_params ||= {}
+      if @atrium_exhibit
+        filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params)
+        if filter_query_params[:fq]
+          session_search_params = solr_search_params(params)
+          if session_search_params[:fq]
+            @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
+          end
+        end
+      end
+      (@response, @document_list) = get_search_results(params,@extra_controller_params)
+      #reset to settings before was merged with user params
+      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if ( filter_query_params && filter_query_params[:fq] )
+      @filters = params[:f] || []
+      search_session[:total] = @response.total unless @response.nil?
+
+      respond_to do |format|
+        format.html { save_current_search_params }
+        format.rss  { render :layout => false }
+        format.atom { render :layout => false }
+      end
     end
   end
 end

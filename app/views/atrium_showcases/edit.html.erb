@@ -1,4 +1,3 @@
-
 <%= link_to 'Back to Exhibit', edit_atrium_exhibit_path(@showcase.atrium_exhibit_id) %>  |
 <%= link_to 'Back to Search', catalog_index_path %> |
 <%= link_to "Delete Showcase #{@showcase.id}", atrium_showcase_path(@showcase.id), :method => :delete, :confirm => "Are you really want to delete this showcase?"%>
@@ -6,4 +5,3 @@
 <h1>Configure Showcase</h1>
 
 <%= render :partial => "form" %>
-
