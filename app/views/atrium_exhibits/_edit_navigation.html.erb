@@ -1,8 +1,9 @@
 <div class="facet-list">
   <h2><%=@atrium_exhibit.title %></h2>
   <ul class="exhibit-controls">
-    <li> <%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(@atrium_exhibit.id) %> </li>
-    <li> <%= link_to 'Configure Exhibit Page', @atrium_exhibit %> </li>
+    <li><%= link_to 'View Exhibit', @atrium_exhibit %></li>
+    <li><%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(@atrium_exhibit.id) %></li>
+    <li><%= link_to 'Configure Exhibit Page', @atrium_exhibit %></li>
   </ul>
   <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
     <dl id="showcases">
@@ -24,3 +25,6 @@
     <%= f.submit 'Add Showcase' %>
   <% end %>
 <% end %>
+
+<hr />
+<%= link_to "Delete this Exhibit", atrium_exhibit_path(@atrium_exhibit.id), :method => :delete, :remote => true, :confirm => "Are you really sure?" %>

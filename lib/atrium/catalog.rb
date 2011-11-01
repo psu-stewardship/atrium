@@ -21,6 +21,8 @@ module Atrium::Catalog
   end
 
   def index
+    stylesheet_links << ['atrium/atrium', {:media=>'all'}]
+
     #put in atrium index code here
     if params[:save_exhibit_filter_button]
       puts "pressed save filter button"
@@ -42,11 +44,11 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params ||= {}
-      if @atrium_exhibit
+      if (@atrium_exhibit && @atrium_exhibit.filter_query_params)
         filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params)
-        if filter_query_params[:fq]
+        if (filter_query_params && filter_query_params[:fq])
           session_search_params = solr_search_params(params)
-          if session_search_params[:fq]
+          if (session_search_params && session_search_params[:fq])
             @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
           end
         end

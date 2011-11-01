@@ -37,6 +37,15 @@ select {
   margin-top:.6em;
 }
 
+/** Banner **/
+#prompt {
+  position:fixed;
+  top:3px;
+  left:3px;
+  text-align:center;
+  padding:1em .3em;
+}
+
 /** Forms **/
 form.atrium ol {
   margin-left:0;

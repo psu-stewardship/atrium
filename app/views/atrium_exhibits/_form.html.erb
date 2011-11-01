@@ -25,7 +25,10 @@
   </fieldset>
 <% end %>
 
-<hr />
+<h3>Exhibit Scope</h3>
+<p>
+  An exhibit is a subset of a collection. The scope of the exhibit can be set to any possible query made in the search interface.
+</p>
 <%- query_params = {:exhibit_id=>@atrium_exhibit.id,:edit_exhibit_filter=>@atrium_exhibit.id} -%>
 <%- query_params.merge!(@atrium_exhibit.filter_query_params) if @atrium_exhibit.filter_query_params -%>
-<%= link_to("Set Exhibit Filter", catalog_index_path(query_params)).html_safe %>
+<%= link_to("Set Exhibit Scope", catalog_index_path(query_params)).html_safe %>
