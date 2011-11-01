@@ -1,21 +1,24 @@
 /* Global */
 
-
-
 /* Custom bits of data forms */
 
 legend {
-	color: #999;
+  color: #999;
 }
 
 fieldset {
-		padding: .5em;
-		border: 1px solid #eeeeee;
-	}
-
-select {
-	background-color:#FFFFFF;
-	border:1px solid #cccccc;
-	font-size:.9em;
+  padding: .5em;
+  border: 1px solid #eeeeee;
 }
 
+select {
+  background-color:#FFFFFF;
+  border:1px solid #cccccc;
+  font-size:.9em;
+}
+
+/** Sidebar  **/
+#showcases dt {
+  font-weight:bold;
+  margin-top:.6em;
+}

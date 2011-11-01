@@ -1,14 +1,16 @@
 class AtriumShowcasesController < ApplicationController
 
-  include Blacklight::SolrHelper
-  include Atrium::ExhibitsHelper
-  include Atrium::SolrHelper
   include CatalogHelper
   include BlacklightHelper
+  include Blacklight::SolrHelper
+  include AtriumHelper
+  include Atrium::SolrHelper
+  include Atrium::ExhibitsHelper
 
   layout 'atrium'
 
   before_filter :initialize_exhibit, :except=>[:index, :create]
+  before_filter :atrium_html_head
 
   def new
     logger.debug("in create params: #{params.inspect}")

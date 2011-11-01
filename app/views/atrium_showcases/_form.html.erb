@@ -25,7 +25,7 @@
 <%= form_for(@showcase) do |f| %>
     <%- @level = Atrium::BrowseLevel.new-%>
     <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
-    <%-  @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
+    <%- @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
     <%= f.fields_for :browse_levels, @level do |level_fields| %>
       <%- if @showcase.browse_levels.empty? -%>
         <%- available_facets = facet_field_names -%>
