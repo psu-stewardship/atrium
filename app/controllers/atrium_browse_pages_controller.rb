@@ -35,7 +35,8 @@ class AtriumBrowsePagesController < ApplicationController
       @atrium_browse_page.save!
       if(params[:facet_selection])
         params[:facet_selection].collect {|key,value|
-          facet_selection = @atrium_browse_page.facet_selections.create({:solr_facet_name=>key,:value=>value})
+          facet_selection = @atrium_browse_page.facet_selections.create({:solr_facet_name=>key,:value=>value.first})
+          logger.debug("to browse page adding facet selection: #{facet_selection.inspect}")
         }
         @atrium_browse_page.save!
       end
@@ -43,7 +44,7 @@ class AtriumBrowsePagesController < ApplicationController
       logger.info("atrium_browse_page = #{@atrium_browse_page.inspect}")
       #@atrium_browse_page.save
     end
-    redirect_to :action => "configure_browse_page" , :id=>@atrium_browse_page.id, :atrium_showcase_id=>@atrium_browse_page.atrium_showcase_id
+    redirect_to :action => "configure_browse_page" , :id=>@atrium_browse_page.id, :atrium_showcase_id=>@atrium_browse_page.atrium_showcase_id, :f=>params[:facet_selection]
 
   end
 
@@ -92,7 +93,7 @@ class AtriumBrowsePagesController < ApplicationController
     @showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
     @showcase_navigation_data = get_showcase_navigation_data
     logger.debug("Showcase: #{@showcase.inspect}")
-    redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id])
+    redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id], :f=>params[:f])
   end
 
   def featured

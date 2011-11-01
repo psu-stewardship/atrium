@@ -41,8 +41,9 @@ class Atrium::BrowsePage < ActiveRecord::Base
   # @return Array of browse_page objects found
   scope :with_selected_facets, lambda {|*args|
     showcase_id,selected_facets = args.flatten(1)
+    logger.debug("getting browse page for showcase: #{showcase_id.inspect} and facets: #{selected_facets.inspect}")
 
-    selected_facets ? facet_conditions = selected_facets.collect {|key,value| "(#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`solr_facet_name` = '#{key}' and #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`value` = '#{value}')"} : facet_conditions = {}
+    selected_facets ? facet_conditions = selected_facets.collect {|key,value| "(#{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`solr_facet_name` = '#{key}' and #{Atrium::BrowsePage::FacetSelection.quoted_table_name}.`value` = '#{value.flatten}')"} : facet_conditions = {}
     conditions = "#{quoted_table_name}.`atrium_showcase_id` = #{showcase_id}"
     unless facet_conditions.empty?
       #unfortunately have to do subselect here to get this correct

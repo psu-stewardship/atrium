@@ -81,6 +81,10 @@ module Atrium::SolrHelper
     puts "Atrium initialize Exhibit"
     if params[:controller] == "atrium_exhibits"
       exhibit_id = params[:id]
+    elsif params[:atrium_showcase_id]
+      showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
+      exhibit = showcase.exhibit if showcase
+      exhibit_id = exhibit.id if exhibit
     else
       exhibit_id = params[:exhibit_id]
     end
