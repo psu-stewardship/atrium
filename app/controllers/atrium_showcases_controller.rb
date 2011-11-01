@@ -25,22 +25,22 @@ class AtriumShowcasesController < ApplicationController
     logger.debug("in create params: #{params.inspect}")
     @showcase = Atrium::Showcase.new(params[:atrium_showcase])
 
-     @showcase.save
+    @showcase.save
     logger.debug("in create params: #{@showcase.inspect}")
     #respond_to do |format|
-      if @showcase.save
-          @showcase.update_attributes(params[:atrium_showcase])
-          #refresh_browse_level_label(@atrium_exhibit)
+    if @showcase.save
+      @showcase.update_attributes(params[:atrium_showcase])
 
-        flash[:notice] = 'Showcase was successfully created.'
-        format.html { redirect_to :action => "edit", :id=>@showcase.id }
-      end
-      format.html { render :action => "new" }
+      flash[:notice] = 'Showcase was successfully created.'
+      format.html { redirect_to :action => "edit", :id=>@showcase.id }
+    end
+    format.html { render :action => "new" }
     #end
   end
 
   def edit
     @showcase = Atrium::Showcase.find(params[:id])
+    @atrium_exhibit = @showcase.exhibit
     @showcase_navigation_data = get_showcase_navigation_data
   end
 

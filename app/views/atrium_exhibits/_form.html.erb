@@ -32,3 +32,29 @@
 <%- query_params = {:exhibit_id=>@atrium_exhibit.id,:edit_exhibit_filter=>@atrium_exhibit.id} -%>
 <%- query_params.merge!(@atrium_exhibit.filter_query_params) if @atrium_exhibit.filter_query_params -%>
 <%= link_to("Set Exhibit Scope", catalog_index_path(query_params)).html_safe %>
+
+<h3>Showcases</h3>
+
+<% if @atrium_exhibit.showcases.any? %>
+  <ol class="showcase-listing">
+    <% @atrium_exhibit.showcases.each do |showcase| %>
+      <li>
+        <%= showcase.title %>
+        <span class="controls">
+          <%= link_to 'Configure', edit_atrium_showcase_path(showcase) %>
+        </span>
+      </li>
+    <% end %>
+  </ol>
+<% else %>
+  <em>There are no showcases in this Exhibit.</em>
+<% end %>
+
+<%= form_for(@atrium_exhibit) do |f| %>
+  <%- @showcase = Atrium::Showcase.new-%>
+  <%= f.fields_for :showcases, @showcase do |showcase_fields| %>
+    <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
+    <%= showcase_fields.hidden_field :set_number %>
+    <%= f.submit 'Add a Showcase to this Exhibit' %>
+  <% end %>
+<% end %>

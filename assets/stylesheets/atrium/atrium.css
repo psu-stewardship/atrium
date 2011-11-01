@@ -68,3 +68,17 @@ form.atrium select{
 .chzn-container-multi .chzn-choices .search-choice .search-choice-close{
   border-bottom:none;
 }
+
+.showcase-listing {
+  margin-left:0;
+}
+
+.showcase-listing li {
+  position:relative;
+  list-style-type:none;
+}
+
+.showcase-listing .controls {
+  position:absolute;
+  right:0;
+}
