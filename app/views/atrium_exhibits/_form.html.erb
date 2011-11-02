@@ -36,9 +36,10 @@
 <h3>Showcases</h3>
 
 <% if @atrium_exhibit.showcases.any? %>
-  <ol class="showcase-listing">
+  <ol data-resource="<%= update_atrium_exhibit_showcase_order_path %>" class="showcase-listing sortable">
     <% @atrium_exhibit.showcases.each do |showcase| %>
-      <li>
+      <li data-id="<%= showcase.id %>" data-order="<%= showcase.set_number %>" class="ui-state-default">
+        <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
         <%= showcase.title %>
         <span class="controls">
           <%= link_to 'Configure', edit_atrium_showcase_path(showcase) %>

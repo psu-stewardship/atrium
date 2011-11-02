@@ -6,6 +6,27 @@
 (function($){
   $(document).ready(function(){
     $('select.chosen').chosen();
+
+    $('.sortable').sortable({
+      update: function(e, ui){
+        var $target = $(e.target),
+            orderedItems = {},
+            resourceURL = $target.attr('data-resource');
+        $('li', e.target).each(function(index, element){
+          var objectId = $(element).attr('data-id');
+          orderedItems[objectId] = (index + 1);
+        });
+        $.ajax({
+          type: 'POST',
+          url: resourceURL,
+          data: {collection: orderedItems},
+          success: function(data, statusCode){
+            $target.effect('highlight', {}, 1500);
+          }
+        });
+      }
+    });
+
     $('.colorbox').colorbox({
       width:'880px',
       height:'80%',

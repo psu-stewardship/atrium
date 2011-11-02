@@ -19,6 +19,19 @@ class Atrium::Exhibit < ActiveRecord::Base
     remove_collection_of_facets_by_name( existing_facet_names - collection_of_facet_names )
   end
 
+  def showcase_order
+    showcase_order = {}
+    showcases.map{|showcase| showcase_order[showcase.id] = showcase.set_number }
+    showcase_order
+  end
+
+  def showcase_order=(showcase_order = {})
+    valid_ids = showcases.select(:id).map{|showcase| showcase.id}
+    showcase_order.each_pair do |id, order|
+      Atrium::Showcase.find(id).update_attributes!(:set_number => order) if valid_ids.include?(id.to_i)
+    end
+  end
+
   private
 
   def add_collection_of_facets_by_name(collection_of_facet_names)

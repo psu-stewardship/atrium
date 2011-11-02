@@ -31,9 +31,11 @@ module Atrium
 
       def atrium_exhibits
         add_routes do |options|
-          resources :atrium_exhibits, :atrium_showcases , :atrium_browse_pages
-          match "atrium_browse_pages/featured/:id", :to => 'atrium_browse_pages#featured', :as => 'atrium_browse_page_featured'
-          match "atrium_browse_pages/configure/:id", :to => 'atrium_browse_pages#configure_browse_page', :as => 'atrium_browse_page_configure'
+          resources :atrium_exhibits, :atrium_showcases, :atrium_browse_pages
+          match 'atrium_exhibits/:id/showcase_order',        :to => 'atrium_exhibit_showcase_order#index',       :as => 'atrium_exhibit_showcase_order'
+          match 'atrium_exhibits/:id/showcase_order/update', :to => 'atrium_exhibit_showcase_order#update',      :as => 'update_atrium_exhibit_showcase_order', :via => :post
+          match 'atrium_browse_pages/featured/:id',          :to => 'atrium_browse_pages#featured',              :as => 'atrium_browse_page_featured'
+          match 'atrium_browse_pages/configure/:id',         :to => 'atrium_browse_pages#configure_browse_page', :as => 'atrium_browse_page_configure'
         end
       end
 
@@ -54,7 +56,7 @@ module Atrium
 
       def get
         add_routes do |options|
-          resources :get, :only=>:show 
+          resources :get, :only=>:show
         end
       end
 

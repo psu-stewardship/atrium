@@ -46,6 +46,11 @@ select {
   padding:1em .3em;
 }
 
+/** Lists **/
+ol.sortable { list-style-type:none; margin:0; padding:0; width:72%;}
+ol.sortable li {margin:0 3px 3px; padding: 0.4em; padding-left:1.5em; font-size: 1.2em; height:1.2em;}
+ol.sortable li span { position: absolute; margin-left: -1.3em; }
+
 /** Forms **/
 form.atrium ol {
   margin-left:0;
@@ -73,16 +78,17 @@ form.atrium th {
   border-bottom:none;
 }
 
-.showcase-listing {
+ol.showcase-listing {
   margin-left:0;
+  padding:1em;
 }
 
-.showcase-listing li {
+ol.showcase-listing li {
   position:relative;
   list-style-type:none;
 }
 
-.showcase-listing .controls {
+ol.showcase-listing .controls {
   position:absolute;
-  right:0;
+  right:.6em;
 }
