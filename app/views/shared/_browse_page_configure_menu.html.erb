@@ -1,3 +1,13 @@
 <h1>You are configuring your browse page, Here are you options</h1>
 
 <%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id]), :class=>'colorbox', :action=> atrium_browse_page_path(@atrium_browse_page.id) %>
+
+| <a class="add_description" href="#">Add Description</a>
+
+<div class="description">
+   <%= form_for(@atrium_browse_page) do |f| %>
+    <%= f.label :label, 'Description:' %>
+    <%= f.text_area :descriptions %>
+    <%= f.submit 'Add Description' %>
+    <% end %>
+</div>

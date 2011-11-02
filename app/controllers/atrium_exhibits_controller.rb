@@ -38,9 +38,9 @@ class AtriumExhibitsController < ApplicationController
       @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
     end
 
-    if !@atrium_browse_page.nil? && !@atrium_browse_page.browse_page_items["solr_doc_ids"].blank?
-      logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items["solr_doc_ids"]}")
-      selected_document_ids = @atrium_browse_page.browse_page_items["solr_doc_ids"].split(',')
+    if @atrium_browse_page && !@atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
+      logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
+      selected_document_ids = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',')
       logger.debug("Exhibit Selected Highlight: #{selected_document_ids.inspect}")
       @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
     end
