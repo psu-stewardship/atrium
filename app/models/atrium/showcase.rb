@@ -17,4 +17,17 @@ class Atrium::Showcase < ActiveRecord::Base
   def browse_facet_names
     browse_levels.collect {|facet| facet.solr_facet_name} rescue []
   end
+
+  def facet_order
+    facet_order = {}
+    browse_levels.map{|facet| facet_order[facet.id] = facet.level_number }
+    facet_order
+  end
+
+  def facet_order=(facet_order = {})
+    valid_ids = browse_levels.select(:id).map{|facet| facet.id}
+    facet_order.each_pair do |id, order|
+      Atrium::BrowseLevel.find(id).update_attributes!(:level_number => order) if valid_ids.include?(id.to_i)
+    end
+  end
 end

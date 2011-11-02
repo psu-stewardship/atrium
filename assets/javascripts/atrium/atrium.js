@@ -11,11 +11,14 @@
       update: function(e, ui){
         var $target = $(e.target),
             orderedItems = {},
-            resourceURL = $target.attr('data-resource');
-        $('li', e.target).each(function(index, element){
+            resourceURL = $target.attr('data-resource'),
+            childTag = $target.children().first()[0].nodeName.toLowerCase();
+
+        $(childTag, e.target).each(function(index, element){
           var objectId = $(element).attr('data-id');
           orderedItems[objectId] = (index + 1);
         });
+
         $.ajax({
           type: 'POST',
           url: resourceURL,
