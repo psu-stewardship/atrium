@@ -98,7 +98,7 @@ module Atrium::SolrHelper
       return
     end
 
-    #begin
+    begin
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
       #@showcases = @atrium_exhibit.showcases
@@ -112,24 +112,38 @@ module Atrium::SolrHelper
       queries << params[:q] if params[:q]
       queries.empty? ? q = params[:q] : q = queries.join(" AND ")
       @extra_controller_params.merge!(:q=>q)
-#begin
-      if (filter_query_params && filter_query_params[:fq])
-        @extra_controller_params.merge!(:fq=>filter_query_params[:fq])
-        session_search_params = solr_search_params(params)
-        if session_search_params[:fq]
-          @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
-        end
-      end
-#end
+      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if (filter_query_params && filter_query_params[:fq])
+      #merge in user params before doing query to correctly handle facets in both extra controller params and params
+      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(params,@extra_controller_params)
       (@response, @document_list) = get_search_results(params, @extra_controller_params)
       #reset to just filters in exhibit filter
-     # @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params[:fq]
+      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@extra_controller_params)
       @browse_response = @response
       @browse_document_list = @document_list
       logger.debug("Exhibit: #{@atrium_exhibit}, Showcase: #{@atrium_exhibit.showcases}")
-    #rescue Exception=>e
-    #  logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
-    #end
+    rescue Exception=>e
+      logger.error("Could not initialize exhibit information for id #{exhibit_id}. Reason - #{e.to_s}")
+    end
+  end
+
+  # This method will get extra controller params that are necessary to apply an
+  # exhibit scope filter.  If there are facets selected in the exhibit filter and
+  # a menu item is selected it will combine the facet selection from params into
+  # extra controller params to ensure that both are in the query correctly.
+  def prepare_extra_controller_params_for_exhibit_query(params, extra_controller_params)
+    if (extra_controller_params && extra_controller_params[:fq])
+      session_search_params = solr_search_params(params)
+      if session_search_params[:fq]
+        extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(extra_controller_params[:fq]))
+      end
+    end
+    extra_controller_params
+  end
+
+  def reset_extra_controller_params_after_exhibit_query(extra_controller_params)
+    filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params) unless !@atrium_exhibit.nil? && @atrium_exhibit.filter_query_params.nil?
+    extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if !filter_query_params.nil? && filter_query_params[:fq]
+    extra_controller_params
   end
 
   # Returns an array of Atrium::Showcase objects with its BrowseLevel objects populated with current display
@@ -212,7 +226,9 @@ module Atrium::SolrHelper
           else
             params[:f] = {}
           end
+          extra_controller_params = prepare_extra_controller_params_for_exhibit_query(params,extra_controller_params)
           (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
+          extra_controller_params = reset_extra_controller_params_after_exhibit_query(extra_controller_params)
           params[:f] = temp
         else
           response_without_f_param = response
@@ -220,7 +236,9 @@ module Atrium::SolrHelper
       elsif params.has_key?(:f) && !params[:f].nil?
         temp = params[:f].dup
         params[:f] = {}
+        extra_controller_params = prepare_extra_controller_params_for_exhibit_query(params,extra_controller_params)
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
+        extra_controller_params = reset_extra_controller_params_after_exhibit_query(extra_controller_params)
         params[:f] = temp
       else
         response_without_f_param = response

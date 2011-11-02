@@ -44,18 +44,10 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params ||= {}
-      if (@atrium_exhibit && @atrium_exhibit.filter_query_params)
-        filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params)
-        if (filter_query_params && filter_query_params[:fq])
-          session_search_params = solr_search_params(params)
-          if (session_search_params && session_search_params[:fq])
-            @extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(filter_query_params[:fq]))
-          end
-        end
-      end
+      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(params,@extra_controller_params) if @atrium_exhibit
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if ( filter_query_params && filter_query_params[:fq] )
+      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@extra_controller_params) if @atrium_exhibit
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 
