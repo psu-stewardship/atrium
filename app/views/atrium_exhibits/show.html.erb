@@ -1,5 +1,5 @@
 <div class="browse_page_configure">
-  <%- if !@atrium_browse_page.nil? && params[:browse_page_id]%>
+  <%- if @atrium_browse_page && params[:browse_page_id]%>
     <%=render :partial=>'shared/browse_page_configure_menu'%>
   <%- end %>
 </div>

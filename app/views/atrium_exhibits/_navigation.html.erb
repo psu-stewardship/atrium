@@ -10,7 +10,7 @@
     <%- end -%>
   <%- end -%>
 </div>
-<%- if params[:showcase_number] -%>
+<%- if current_user && params[:showcase_number] -%>
   <%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:id], :facet_selection=>params[:f], :class=>"customize")%>
 <%- end %>
 
