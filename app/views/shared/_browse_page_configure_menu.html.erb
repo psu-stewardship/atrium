@@ -7,9 +7,13 @@
 
 
 <div class="description">
-   <%= form_for(@atrium_browse_page) do |f| %>
-    <%= f.label :label, 'Description:' %>
-    <%= f.text_area :descriptions %>
+  <%= form_for(@atrium_browse_page, :html => {:class => 'atrium'}) do |f| %>
+    <ol>
+      <li>
+        <%= f.label :label, 'Description:' %>
+        <%= f.text_area :descriptions %>
+      </li>
+    </ol>
     <%= f.submit 'Add Description' %>
-    <% end %>
+  <% end %>
 </div>

@@ -67,15 +67,23 @@
       }
     });
 
-    $(".description").hide();
-    $(".add_description").click(function(){
-        $(this).next(".description").slideToggle(300);
-        $(this).text($(this).text() == 'Add Description' ? 'Hide Description' : 'Add Description');
+    $('.description').hide();
+    $('.add_description').click(function(){
+        var $this = $(this);
+        $this.parent()
+          .children('.description')
+          .slideToggle(300, function(){
+            if ($this.text() == 'Add Description'){
+              $this.text('Hide Description');
+            }else{
+              $this.text('Add Description');
+            }
+          });
     });
 
-    $(".customize").click(function(){
+    $('.customize').click(function(){
         $(this).text($(this).text() == 'Customize this page' ? 'View Exhibit' : 'Customize this page');
-        $("browse_page_configure").toggle()
+        $('browse_page_configure').toggle();
     });
 
   });
