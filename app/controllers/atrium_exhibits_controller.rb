@@ -32,11 +32,18 @@ class AtriumExhibitsController < ApplicationController
     @showcase_navigation_data = get_showcase_navigation_data
     if(params[:showcase_number])
       @showcase = Atrium::Showcase.find(params[:showcase_number])
+      @atrium_browse_page = get_atrium_browse_page(params[:showcase_number], params[:f]).first
     end
     if(params[:browse_page_id])
       @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
     end
 
+    if !@atrium_browse_page.nil? && !@atrium_browse_page.browse_page_items["solr_doc_ids"].blank?
+      logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items["solr_doc_ids"]}")
+      selected_document_ids = @atrium_browse_page.browse_page_items["solr_doc_ids"].split(',')
+      logger.debug("Exhibit Selected Highlight: #{selected_document_ids.inspect}")
+      @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
+    end
     #puts "browse_level_navigation_data: #{@showcase_navigation_data.first.browse_levels.first.values.inspect}"
   end
 

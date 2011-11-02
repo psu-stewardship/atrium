@@ -62,6 +62,9 @@ class AtriumBrowsePagesController < ApplicationController
 
   def edit
     @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+    @showcase = Atrium::Showcase.find(@atrium_browse_page.atrium_showcase_id)
+    redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id], :f=>params[:f])
+
   end
 
   def update
@@ -71,11 +74,15 @@ class AtriumBrowsePagesController < ApplicationController
       flash[:notice] = 'Browse was successfully updated.'
     end
     redirect_to :action => "edit", :id=>@atrium_browse_page.id
-
   end
 
   def show
-    @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+  #  @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+  #  selected_document_ids = @atrium_browse_page.browse_page_items["solr_doc_ids"]
+  #  logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
+  #  @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
+  #  render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
+   @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
     selected_document_ids = session[:folder_document_ids]
     session[:folder_document_ids] = session[:copy_folder_document_ids]
     logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
@@ -89,7 +96,6 @@ class AtriumBrowsePagesController < ApplicationController
 
   def configure_browse_page
     logger.debug("in configure_browse_page params: #{params.inspect}")
-    #@atrium_browse_page = Atrium::BrowsePage.find(params[:id])
     @showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
     @showcase_navigation_data = get_showcase_navigation_data
     logger.debug("Showcase: #{@showcase.inspect}")
@@ -99,11 +105,19 @@ class AtriumBrowsePagesController < ApplicationController
   def featured
     session[:copy_folder_document_ids] = session[:folder_document_ids]
     session[:folder_document_ids] = []
+    @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+    logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items["solr_doc_ids"]}")
+    session[:folder_document_ids] = @atrium_browse_page.browse_page_items["solr_doc_ids"].split(',') unless @atrium_browse_page.browse_page_items["solr_doc_ids"].nil?
     redirect_to catalog_index_path
   end
 
-  def top_level_browse_page(showcase_id)
-    browse_pages = Atrium::BrowsePage.find_by_atrium_showcase_id(showcase_id)
-
+  def selected_featured
+     @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+    selected_document_ids = session[:folder_document_ids]
+    session[:folder_document_ids] = session[:copy_folder_document_ids]
+    logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
+    @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
+    render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
   end
+
 end

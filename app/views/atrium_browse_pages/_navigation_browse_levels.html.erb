@@ -25,6 +25,7 @@
     </ul>
   <%- end -%>
 <%- end -%>
-
-<%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f])%>
+<%- if params[:edit_browse_page] -%>
+    <%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f])%>
+<%- end %>
 
