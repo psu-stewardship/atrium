@@ -9,10 +9,12 @@
 
     $('.sortable').sortable({
       update: function(e, ui){
-        var $target = $(e.target),
-            orderedItems = {},
-            resourceURL = $target.attr('data-resource'),
-            childTag = $target.children().first()[0].nodeName.toLowerCase();
+        var $target        = $(e.target),
+            orderedItems   = {},
+            resourceURL    = $target.attr('data-resource'),
+            childTag       = $target.children().first()[0].nodeName.toLowerCase(),
+            primaryLabel   = $target.attr('data-primary-label'),
+            secondaryLabel = $target.attr('data-secondary-label');
 
         $(childTag, e.target).each(function(index, element){
           var objectId = $(element).attr('data-id');
@@ -24,7 +26,16 @@
           url: resourceURL,
           data: {collection: orderedItems},
           success: function(data, statusCode){
-            $target.effect('highlight', {}, 1500);
+            if (childTag == 'li'){
+              $target.effect('highlight', {}, 1500);
+            } else {
+              $target.parents('fieldset').effect('highlight', {}, 1500);
+            }
+
+            if (primaryLabel !== undefined){
+              $('td.label', $target).text(secondaryLabel);        // This could be implemented better
+              $('td.label', $target).first().text(primaryLabel);  //
+            }
           }
         });
       }

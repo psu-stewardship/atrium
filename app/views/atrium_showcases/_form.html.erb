@@ -23,17 +23,19 @@
           <thead>
             <tr>
               <th>&nbsp;</th>
+              <th>&nbsp;</th>
               <th>Facet</th>
               <th>Label</th>
               <th>Solr Filter Query</th>
               <th>Remove</th>
             </tr>
           </thead>
-          <tbody data-resource="<%= update_atrium_showcase_facet_order_path %>" class="sortable">
+          <tbody data-resource="<%= update_atrium_showcase_facet_order_path %>" data-primary-label="Group By:" data-secondary-label="Then By:" class="sortable">
             <%- @showcase.browse_levels.each_with_index do |level,index| -%>
               <tr data-id="<%= level.id %>" data-order="<%= level.level_number %>" class="ui-state-default">
                 <%= f.fields_for :browse_levels, level do |level_form| %>
                   <td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
+                  <td class="label"><%= level.level_number == 1 ? 'Group By:' : 'Then By:' %></td>
                   <td><%=facet_field_labels[level.solr_facet_name]%></td>
                   <td><%=level_form.text_field :label, :value=>level.label%></td>
                   <td><%=level_form.text_field :solr_filter_query%></td>
@@ -46,7 +48,7 @@
       <%- end -%>
     </fieldset>
     <p>
-      <%= f.submit 'Update Showcase and Current Facets' %>
+      <%= f.submit 'Update Showcase and Facets' %>
     </p>
   <%- end -%>
   <%= form_for(@showcase) do |f| %>
@@ -72,7 +74,7 @@
             <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %>
             <%= level_fields.text_field :solr_filter_query %>
           </td>
-          <td><%= f.submit 'Add Browse Level' %></td>
+          <td><%= f.submit 'Add A Facet' %></td>
         </tr>
       </table>
     <% end %>
