@@ -25,7 +25,12 @@
     </ul>
   <%- end -%>
 <%- end -%>
-<%- if params[:edit_browse_page] -%>
-    <%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f])%>
-<%- end %>
+
+<li>
+  <%- if params[:edit_browse_page] -%>
+    <%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f]), :class=>"customize"%>
+  <%- end %>
+</li>
+
+<li class="view_exhibit" style="display: none"> <%# link_to 'View this page', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%> </li>
 

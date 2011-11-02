@@ -31,5 +31,17 @@
         });
       }
     });
+
+    $(".description").hide();
+    $(".add_description").click(function(){
+        $(this).next(".description").slideToggle(300);
+        $(this).text($(this).text() == 'Add Description' ? 'Hide Description' : 'Add Description');
+    });
+
+    $(".customize").click(function(){
+        $(this).text($(this).text() == 'Customize this page' ? 'View Exhibit' : 'Customize this page');
+        $("browse_page_configure").toggle()
+    });
+
   });
 })(jQuery);

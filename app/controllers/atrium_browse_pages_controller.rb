@@ -82,12 +82,18 @@ class AtriumBrowsePagesController < ApplicationController
   #  logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
   #  @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
   #  render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
-   @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+    @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
+    @atrium_browse_page.browse_page_items ||= Hash.new
     selected_document_ids = session[:folder_document_ids]
+    @atrium_browse_page.browse_page_items[:type]="featured"
+    @atrium_browse_page.browse_page_items[:solr_doc_ids]=selected_document_ids.join(',')
+    @atrium_browse_page.save
     session[:folder_document_ids] = session[:copy_folder_document_ids]
-    logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
-    @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
+    logger.debug("@atrium_browse_page: #{@atrium_browse_page.inspect},Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
+    @response, @documents = get_solr_response_for_field_values("id",@atrium_browse_page.browse_page_items[:solr_doc_ids].split(',') || [])
     render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
+    #@showcase = Atrium::Showcase.find(@atrium_browse_page.atrium_showcase_id)
+    #redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id], :f=>params[:f])
   end
 
   def destroy
@@ -106,8 +112,8 @@ class AtriumBrowsePagesController < ApplicationController
     session[:copy_folder_document_ids] = session[:folder_document_ids]
     session[:folder_document_ids] = []
     @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
-    logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items["solr_doc_ids"]}")
-    session[:folder_document_ids] = @atrium_browse_page.browse_page_items["solr_doc_ids"].split(',') unless @atrium_browse_page.browse_page_items["solr_doc_ids"].nil?
+    logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
+    session[:folder_document_ids] = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',') unless @atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
     redirect_to catalog_index_path
   end
 

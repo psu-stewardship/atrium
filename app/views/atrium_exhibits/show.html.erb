@@ -1,8 +1,9 @@
-<%- if !@atrium_browse_page.nil? && params[:browse_page_id]%>
-    <%= @atrium_browse_page.inspect %>
+<div class="browse_page_configure">
+  <%- if !@atrium_browse_page.nil? && params[:browse_page_id]%>
     <%=render :partial=>'shared/browse_page_configure_menu'%>
-<%- end %>
-<span id="show_selected"> </span>
+  <%- end %>
+</div>
+
 <div id="showHead">
   <div id="showUtils">
     <span class="edit-browse">
@@ -18,12 +19,9 @@
 <%=render :partial=>'shared/exhibit_title_header'%>
 <%#render :partial=>'navigation'%>
 
-<%- if false #@atrium_exhibit.descriptions.any? -%>
+<%- if @atrium_browse_page && @atrium_browse_page.descriptions -%>
   <h2>Description</h2>
-  <%- @atrium_exhibit.descriptions(:response_format=>:solr).each_with_index do |document, counter| -%>
-    <%- description = load_af_instance_from_solr(document) -%>
-    <%= render :partial=>'descriptions/show_description', :locals => {:description => description, :document=> SolrDocument.new(document), :exhibit_id => params[:id]}%>
-  <%- end -%>
+    <%= @atrium_browse_page.descriptions%>
 <%- end -%>
 
 <%- if false #@atrium_exhibit && @atrium_exhibit.collections.any? -%>
@@ -44,20 +42,11 @@
     <%- end -%>
 <%- end -%>
 
+<span id="show_selected">
 <%- if !@documents.blank? -%>
-  <h2>Featured Sources</h2>
-  <dl class="item-list featured">
-    <div id="documents">
-      <% @documents.each_with_index do |document, i| %>
-        <% # container for a single doc -%>
-        <div class="document">
-            <h3 class="index_title"><%= i + 1 + @response.params[:start].to_i%>. <%= link_to_document document, :label => document_show_link_field, :results_view => false %></h3>
-            <%= render_document_partial document, :index %>
-        </div>
-      <% end %>
-    </div>
-  </dl>
+  <%= render :partial=>'shared/featured_sources' %>
 <%- end -%>
+</span>
 
 <hr />
 
