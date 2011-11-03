@@ -1,4 +1,6 @@
-<h1>You are configuring your browse page, Here are you options</h1>
+<%# javascript_includes << ["ckeditor"] %>
+
+<h1>You are configuring your browse page, Here are your options</h1>
 
 <%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id]), :class=>'colorbox', :action=> atrium_browse_page_path(@atrium_browse_page.id) %>
 

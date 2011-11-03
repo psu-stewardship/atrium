@@ -1,3 +1,6 @@
+<%- if params[:add_featured] -%>
+  <h1> You can use either use search form or facet to search for items to be added featured source. Please use selected checkbox to select item </h1>
+<%- end -%>
 <div id="search" class="search">
   <%= form_tag catalog_index_path, :method => :get do %>
     <h2 class="search"><%= label_tag(:q, "Search ") %></h2>
