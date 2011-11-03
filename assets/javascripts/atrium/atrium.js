@@ -55,7 +55,7 @@
 
     $(".description").hide();
     $(".add_description").click(function(){
-        $(this).next(".description").slideToggle(300);
+         $(".description").slideToggle(300);
         $(this).text($(this).text() == 'Add Description' ? 'Hide Description' : 'Add Description');
     });
 

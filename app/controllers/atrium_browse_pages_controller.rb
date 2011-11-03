@@ -114,7 +114,7 @@ class AtriumBrowsePagesController < ApplicationController
     @atrium_browse_page = Atrium::BrowsePage.find(params[:id])
     logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
     session[:folder_document_ids] = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',') unless @atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
-    redirect_to catalog_index_path
+    redirect_to catalog_index_path(:add_featured=>true)
   end
 
   def selected_featured
