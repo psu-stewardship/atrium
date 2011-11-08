@@ -3,6 +3,7 @@ jetty/*
 tmp/*
 coverage/*
 doc/*
+.yardoc/*
 *~
 .idea
 .idea/*
