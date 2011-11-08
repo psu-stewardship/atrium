@@ -204,6 +204,7 @@ namespace :atrium do
 
     puts "Running rspec tests"
     puts  %x[rake atrium:spec:rcov]
+    puts  %x[rake atrium:spec]
 
     puts "Running cucumber tests"
     puts %x[rake atrium:cucumber]

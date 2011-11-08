@@ -14,10 +14,6 @@ describe Atrium::Showcase do
   end
 
   describe "#label" do
-    it "should return empty string if no browse set label defined" do
-      @showcase.label.should == ""
-    end
-
     it "should return the browse set label" do
       @showcase.update_attributes({:label=>"My label"})
       @showcase.label.should == "My label"
@@ -34,9 +30,7 @@ describe Atrium::Showcase do
     end
 
     it "should remove associated browse_pages if a browse facet removed" do
-      #pending "need to test that associated browse_pages are removed if a browse facet is removed..."
-      val = true
-      val.should == ""
+      pending "need to test that associated browse_pages are removed if a browse facet is removed..."
     end
 
     it "if no browse facets defined it should return an empty array" do 
@@ -58,13 +52,6 @@ describe Atrium::Showcase do
     end
   end
   
-  describe "#solr_filter_query" do
-    it "should return the solr filter query if any for the top of this browse set" do
-      @exhibit.solr_filter_query = "id_t:RBSC-CURRENCY"
-      @exhibit.solr_filter_query.should == "id_t:RBSC-CURRENCY"
-    end
-  end
-
   describe "browse_pages" do
     it "should return array of browse_pages defined" do
       @browse_page = @showcase.browse_pages.create

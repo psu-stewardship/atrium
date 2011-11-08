@@ -11,10 +11,6 @@ describe Atrium::Exhibit do
   end
 
   describe "#title" do
-    it "should return empty string if no exhibit title defined" do
-      @exhibit.title.should == ""
-    end
-
     it "should return the exhibit title" do
       @exhibit.update_attributes({:title=>"My title"})
       @exhibit.title.should == "My title"

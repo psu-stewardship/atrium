@@ -101,7 +101,7 @@ module Atrium::SolrHelper
     begin
       @atrium_exhibit = Atrium::Exhibit.find(exhibit_id)
       raise "No exhibit was found with id: #{exhibit_id}" if @atrium_exhibit.nil?
-      #@showcases = @atrium_exhibit.showcases
+      @showcases = @atrium_exhibit.showcases
       logger.debug("Exhibit: #{@atrium_exhibit}")
       @extra_controller_params ||= {}
       filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params) unless @atrium_exhibit.filter_query_params.nil?

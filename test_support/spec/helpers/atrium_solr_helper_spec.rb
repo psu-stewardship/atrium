@@ -47,52 +47,42 @@ describe Atrium::SolrHelper do
       helper.expects(:params).returns({:id=>"test_id",:controller=>"atrium_exhibits"}).at_least_once
       @exhibit.expects(:id).returns("test_id").at_least(0)
       @exhibit.expects(:showcases).returns(["test","test1"])
-      @exhibit.expects(:build_members_query).returns("_query_:id\:namespace").at_least_once
+      @exhibit.expects(:filter_query_params).returns({:f=>{:test_facet=>["testing"]}}).at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       helper.expects(:build_lucene_query).returns("_query_:id\:test_id").at_least_once
       helper.expects(:get_search_results)
       helper.initialize_exhibit
       helper.atrium_exhibit.should == @exhibit
-      helper.stubs(:params).returns({:exhibit_id=>"test_id"})
+      helper.stubs(:params).returns({:exhibit_id=>"test_id",:f=>{:my_facet=>["my_facet_testing"]}})
       @exhibit.stubs(:id).returns("test_id")
       @exhibit.expects(:showcases).returns(["test","test1"]).at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
       response = mock()
       document_list = mock()
-      helper.expects(:get_search_results).with({:exhibit_id=>"test_id"},{:q=>"_query_:id\:test_id AND _query_:id\:namespace"}).returns([response,document_list])
+      helper.expects(:get_search_results).with({:exhibit_id=>"test_id",:f=>{:my_facet=>["my_facet_testing"]}},{:q=>"_query_:id\:test_id"}).returns([response,document_list])
       helper.initialize_exhibit
       helper.atrium_exhibit.should == @exhibit
       helper.showcases.should == @exhibit.showcases
-      helper.extra_controller_params.should == {:q=>"_query_:id\:test_id AND _query_:id\:namespace"}
+      helper.extra_controller_params.should == {:q=>"_query_:id\:test_id",:fq=>{}}
       helper.browse_response.should == response
       helper.browse_document_list.should == document_list
     end
   end
 
-  describe "get_browse_set_navigation_data" do
-    it "should call initialize_exhibit only if @atrium_exhibit is nil" do
-      helper.expects(:initialize_exhibit).times(1)
-      #it should not do anything here as the @atrium_exhibit object will still be nil
-      helper.get_browse_set_navigation_data
-      #it should not call initialize_exhibit if it is not nil, but should go no further since browse sets will be empty
-      exhibit = mock()
-      exhibit.expects(:showcases).returns(nil)
-      helper.stubs(:atrium_exhibit).returns(exhibit)
-      helper.get_browse_set_navigation_data
-    end
-
+  describe "get_showcase_navigation_data" do
     it "if atrium exhibit still nil after calling initialize exhibit than should return empty array" do
       helper.expects(:params).returns({:exhibit_id=>"test_id"}).at_least_once
       Atrium::Exhibit.expects(:find).with("test_id").returns(nil)
-      helper.expects(:get_browse_set_data).times(0)
-      helper.get_browse_set_navigation_data.should == []
+      helper.expects(:get_browse_level_data).times(0)
+      helper.get_showcase_navigation_data.should == []
     end
 
     it "if no atrium exhibit showcases it should return an empty array" do
       exhibit = mock()
       exhibit.stubs(:showcases).returns([])
-      helper.stubs(:atrium_exhibit).returns(exhibit)
-      helper.get_browse_set_navigation_data.should == []
+      Atrium::Exhibit.expects(:find).returns(exhibit)
+      helper.expects(:params).returns({:exhibit_id=>"test_id"})
+      helper.get_showcase_navigation_data.should == []
     end
 
     it "if atrium exhibit is not nil and has browse sets it should call get browse level data for each browse set" do
