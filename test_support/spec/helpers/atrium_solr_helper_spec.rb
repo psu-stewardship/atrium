@@ -27,7 +27,6 @@ describe Atrium::SolrHelper do
       helper.atrium_exhibit.should == nil
       helper.stubs(:params).returns({:controller=>"atrium_exhibits",:exhibit_id=>"test_id"})
       helper.atrium_exhibit.should == nil
-      puts "here"
     end
 
     it "should raise an exception if the exhibit_id passed in does not exist" do
@@ -43,29 +42,39 @@ describe Atrium::SolrHelper do
       helper.initialize_exhibit
     end
 
-    it "should call get_search_results with correct params and query and all variables initialized correctly" do
-      helper.expects(:params).returns({:id=>"test_id",:controller=>"atrium_exhibits"}).at_least_once
-      @exhibit.expects(:id).returns("test_id").at_least(0)
-      @exhibit.expects(:showcases).returns(["test","test1"])
-      @exhibit.expects(:filter_query_params).returns({:f=>{:test_facet=>["testing"]}}).at_least_once
+    it "should configure params correctly if facet selected and facet in filter" do
+      helper.stubs(:params).returns({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}})
+      @exhibit.filter_query_params = {:q=>"testing",:f=>{"season"=>["spring"]}}
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
-      helper.expects(:build_lucene_query).returns("_query_:id\:test_id").at_least_once
-      helper.expects(:get_search_results)
+      helper.expects(:solr_search_params).with(@exhibit.filter_query_params).returns(:q=>"testing",:fq=>["{!raw f=season_facet}Spring"]).twice
+      helper.expects(:solr_search_params).with({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}}).returns(:fq=>["{!raw f=continent}North America"])
+      #it will combine param facet and filter facet into extra params so that the params facets are not overwritten when the filter facet is applied
+      extra_params = {:q=>"testing", :fq=>["{!raw f=continent}North America","{!raw f=season_facet}Spring"]}
+      helper.expects(:get_search_results).with({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}},extra_params)
       helper.initialize_exhibit
-      helper.atrium_exhibit.should == @exhibit
-      helper.stubs(:params).returns({:exhibit_id=>"test_id",:f=>{:my_facet=>["my_facet_testing"]}})
-      @exhibit.stubs(:id).returns("test_id")
-      @exhibit.expects(:showcases).returns(["test","test1"]).at_least_once
+    end
+
+    it "should configure params correctly if facet selected and no facet in filter" do
+      helper.stubs(:params).returns({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}})
+      @exhibit.filter_query_params = {:q=>"testing"}
       Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
-      response = mock()
-      document_list = mock()
-      helper.expects(:get_search_results).with({:exhibit_id=>"test_id",:f=>{:my_facet=>["my_facet_testing"]}},{:q=>"_query_:id\:test_id"}).returns([response,document_list])
+      helper.expects(:solr_search_params).with(@exhibit.filter_query_params).returns(:q=>"testing").twice
+      #it will combine param facet and filter facet into extra params so that the params facets are not overwritten when the filter facet is applied
+      extra_params = {:q=>"testing"}
+      helper.expects(:get_search_results).with({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}},extra_params)
       helper.initialize_exhibit
-      helper.atrium_exhibit.should == @exhibit
-      helper.showcases.should == @exhibit.showcases
-      helper.extra_controller_params.should == {:q=>"_query_:id\:test_id",:fq=>{}}
-      helper.browse_response.should == response
-      helper.browse_document_list.should == document_list
+    end
+
+    it "should configure params correctly if facet selected with same facet in filter" do
+      helper.stubs(:params).returns({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}})
+      @exhibit.filter_query_params = {:q=>"testing",:f=>{"continent"=>["North America"]}}
+      Atrium::Exhibit.expects(:find).with("test_id").returns(@exhibit)
+      helper.expects(:solr_search_params).with(@exhibit.filter_query_params).returns(:q=>"testing",:fq=>["{!raw f=continent}North America"]).twice
+      helper.expects(:solr_search_params).with({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}}).returns(:fq=>["{!raw f=continent}North America"])
+      #it will combine param facet and filter facet into extra params so that the params facets are not overwritten when the filter facet is applied
+      extra_params = {:q=>"testing", :fq=>["{!raw f=continent}North America"]}
+      helper.expects(:get_search_results).with({:exhibit_id=>"test_id",:f=>{"continent"=>["North America"]}},extra_params)
+      helper.initialize_exhibit
     end
   end
 
@@ -80,12 +89,11 @@ describe Atrium::SolrHelper do
     it "if no atrium exhibit showcases it should return an empty array" do
       exhibit = mock()
       exhibit.stubs(:showcases).returns([])
-      Atrium::Exhibit.expects(:find).returns(exhibit)
-      helper.expects(:params).returns({:exhibit_id=>"test_id"})
+      helper.stubs(:atrium_exhibit).returns(exhibit)
       helper.get_showcase_navigation_data.should == []
     end
 
-    it "if atrium exhibit is not nil and has browse sets it should call get browse level data for each browse set" do
+    it "if atrium exhibit is not nil and has showcases it should call get browse level data for each browse set" do
       exhibit = Atrium::Exhibit.new
       exhibit.save
       exhibit.stubs(:showcases).returns([])
@@ -109,16 +117,14 @@ describe Atrium::SolrHelper do
       updated_browse_level1.expects(:selected).returns("test1")
       updated_browse_level2 = browse_level2.clone
       updated_browse_level2.expects(:values).returns(["test3","test4"])
-      helper.expects(:get_browse_set_data).with([browse_level1],browse_response,extra_con_params).returns([updated_browse_level1])
-      helper.expects(:get_browse_set_data).with([browse_level2,browse_level3],browse_response,extra_con_params).returns([updated_browse_level2,browse_level3])
+      helper.expects(:get_browse_level_data).with(1,[browse_level1],browse_response,extra_con_params,true).returns([updated_browse_level1])
+      helper.expects(:get_browse_level_data).with(2,[browse_level2,browse_level3],browse_response,extra_con_params,true).returns([updated_browse_level2,browse_level3])
       #check that the array returned is flattened appropriately on concat
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.size.should == 2
       #order is important here for both browse sets and esp. nested levels
       browse_data.first.should == showcase1
       browse_data.second.should == showcase2
-      browse_data.first.browse_levels.should == [updated_browse_level1]
-      browse_data.second.browse_levels.should == [updated_browse_level2,browse_level3]
       browse_data.first.browse_levels.first.values.should == ["test1","test2"]
       browse_data.first.browse_levels.first.selected.should == "test1"
       browse_data.second.browse_levels.first.values.should == ["test3","test4"]
@@ -128,25 +134,7 @@ describe Atrium::SolrHelper do
     end
   end
 
-  describe "get_browse_set_data" do
-    #since this method is private need to do a few things to make sure it gets called by get_browse_set_navigation_data
-=begin
-    before(:each) do
-      @exhibit.save
-      Atrium::Exhibit.expects(:find).returns(@exhibit).at_least_once
-      @response = mock()
-      @document_list = mock()
-      helper.stubs(:params).returns({:exhibit_id=>@exhibit.id})
-      helper.expects(:build_lucene_query).at_least_once
-      helper.expects(:get_search_results).returns([@response,@document_list]).at_least_once
-    end
-=end
-
-    it "if browse sets not defined it should return an empty array" do
-      helper.get_browse_set_navigation_data.should == []
-      @exhibit.showcases.should == []
-    end
-
+  describe "get_browse_level_data" do
     it "should return an array of browse set objects with browse levels objects sorted by level number if any defined" do
       @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
       @showcase.save
@@ -194,7 +182,7 @@ describe Atrium::SolrHelper do
       helper.expects(:facet_in_params?).with('my_facet','val2').returns(true)
       
 
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.size.should == 2
       browse_data.first.should == @showcase
       browse_data.second.should == @showcase2
@@ -225,7 +213,7 @@ describe Atrium::SolrHelper do
       @showcase.expects(:browse_levels).returns([browse_level]).at_least_once
       @exhibit.expects(:showcases).returns([@showcase]).at_least_once
       helper.stubs(:atrium_exhibit).returns(@exhibit)
-      helper.expects(:facet_field_labels).returns("my_label").times(2)
+      helper.expects(:facet_field_labels).returns({"my_facet"=>"my_label"}).times(2)
       #response must have facet for this level
       response = mock()
       facet = mock()
@@ -234,12 +222,11 @@ describe Atrium::SolrHelper do
       facet.expects(:items).returns([]).twice
       response.expects(:facets).returns([facet]).times(4)
       helper.stubs(:browse_response).returns(response)
-      browse_data = helper.get_browse_set_navigation_data
-      puts "browse data levels is: #{browse_data.first.browse_levels.inspect}"
+      browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.first.label.should == "my_label"
       #check if label is blank instead
       browse_level.label = ""
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.first.label.should == "my_label"
     end
 
@@ -259,7 +246,7 @@ describe Atrium::SolrHelper do
       facet.expects(:name).returns("my_facet").at_least_once
       response.expects(:facets).returns([facet]).at_least_once
       helper.stubs(:browse_response).returns(response)
-      helper.get_browse_set_navigation_data.first.browse_levels.first.label.should == "my_label_2"
+      helper.get_showcase_navigation_data.first.browse_levels.first.label.should == "my_label_2"
     end
 
     it "if no f param is defined it should set the response without f param to be response" do
@@ -277,7 +264,7 @@ describe Atrium::SolrHelper do
       #it will call this twice if response is same for without f param
       response.expects(:facets).returns([facet]).twice
       helper.expects(:browse_response).returns(response)
-      helper.get_browse_set_navigation_data
+      helper.get_showcase_navigation_data
     end
 
     it "if multiple browse levels defined and f defined for anything but top level it should only have values set for the top level" do
@@ -312,7 +299,7 @@ describe Atrium::SolrHelper do
       helper.expects(:browse_response).returns(response)
       helper.expects(:facet_field_labels).returns("my_label")
       helper.expects(:get_search_results).returns([response,mock()])
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.first.values.should == ["val1","val2"]
       browse_data.first.browse_levels.first.selected.should == nil
       browse_data.first.browse_levels.second.values.should == []
@@ -361,7 +348,7 @@ describe Atrium::SolrHelper do
       helper.expects(:browse_response).returns(response)
       helper.expects(:facet_field_labels).returns("my_label").at_least_once
       helper.expects(:get_search_results).returns([response,mock()]).at_least_once
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
       browse_data.first.browse_levels.first.selected.should == "my_val2"
       browse_data.first.browse_levels.second.values.should == ["my_val3","my_val4"]
@@ -395,11 +382,12 @@ describe Atrium::SolrHelper do
       helper.expects(:browse_response).returns(response)
       helper.expects(:facet_field_labels).returns("my_label").at_least_once
       helper.expects(:get_search_results).returns([response,mock()]).at_least_once
-      #second level facet not present so it should only return one level even though first level has something selected
-      browse_data = helper.get_browse_set_navigation_data
-      browse_data.first.browse_levels.size.should == 1
+      #second level facet not present so it should only return second level with no values even though first level has something selected
+      browse_data = helper.get_showcase_navigation_data
+      browse_data.first.browse_levels.size.should == 2
       browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
       browse_data.first.browse_levels.first.selected.should == "my_val2"
+      browse_data.first.browse_levels.second.values.should == []
     end
 
     it "if 2 browse levels defined and two items selected it should handle having something selected at the lowest browse level" do
@@ -434,7 +422,7 @@ describe Atrium::SolrHelper do
       helper.expects(:browse_response).returns(response)
       helper.expects(:facet_field_labels).returns("my_label").at_least_once
       helper.expects(:get_search_results).returns([response,mock()]).at_least_once
-      browse_data = helper.get_browse_set_navigation_data
+      browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.size.should == 2
       browse_data.first.browse_levels.first.values.should == ["my_val","my_val2"]
       browse_data.first.browse_levels.first.selected.should == "my_val2"

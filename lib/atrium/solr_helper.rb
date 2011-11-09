@@ -78,7 +78,6 @@ module Atrium::SolrHelper
   #      @browse_document_list [Array] An array of SolrDocuments for the current browse scope
   #
   def initialize_exhibit
-    puts "Atrium initialize Exhibit"
     if params[:controller] == "atrium_exhibits"
       exhibit_id = params[:id]
     elsif params[:controller] =="atrium_showcases"
@@ -134,14 +133,18 @@ module Atrium::SolrHelper
     if (extra_controller_params && extra_controller_params[:fq])
       session_search_params = solr_search_params(params)
       if session_search_params[:fq]
-        extra_controller_params.merge!(:fq=>session_search_params[:fq].concat(extra_controller_params[:fq]))
+        extra_controller_params[:fq].each do |extra_param|
+          #only add if it is not already in params
+          session_search_params[:fq] << extra_param unless session_search_params[:fq].include?(extra_param)
+        end
+        extra_controller_params.merge!(:fq=>session_search_params[:fq])
       end
     end
     extra_controller_params
   end
 
   def reset_extra_controller_params_after_exhibit_query(extra_controller_params)
-    filter_query_params = solr_search_params(@atrium_exhibit.filter_query_params) unless !@atrium_exhibit.nil? && @atrium_exhibit.filter_query_params.nil?
+    filter_query_params = solr_search_params(atrium_exhibit.filter_query_params) unless !atrium_exhibit.nil? && atrium_exhibit.filter_query_params.nil?
     extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if !filter_query_params.nil? && filter_query_params[:fq]
     extra_controller_params
   end
@@ -171,10 +174,10 @@ module Atrium::SolrHelper
   #
   #   One should use the above methods to generate data for expand/collapse controls, breadcrumbs, etc.
   def get_showcase_navigation_data
-    initialize_exhibit if @atrium_exhibit.nil?
+    initialize_exhibit if atrium_exhibit.nil?
     browse_data = []
-    unless @atrium_exhibit.nil? || @atrium_exhibit.showcases.nil?
-      @atrium_exhibit.showcases.each do |showcase|
+    unless atrium_exhibit.nil? || atrium_exhibit.showcases.nil?
+      atrium_exhibit.showcases.each do |showcase|
         if showcase.respond_to?(:browse_levels) && !showcase.browse_levels.nil?
           updated_browse_levels = get_browse_level_data(showcase.set_number,showcase.browse_levels,browse_response,extra_controller_params,true)
           showcase.browse_levels.each_index do |index|
@@ -200,8 +203,8 @@ module Atrium::SolrHelper
   # for the top browse level, and then will only fill in values for the second browse level
   # if something is selected, and so on for any deeper browse levels.  If no label is defined
   # for a browse level, it will fill in the default label for the browse level facet.
-  # @param [String] The browse set number for the current browse set
-  # @param [Array] The exhibit browse set's array of BrowseLevel objects
+  # @param [String] The showcase number for the current showcase
+  # @param [Array] The exhibit showcase's array of BrowseLevel objects
   # @param [SolrResponse] the browse response from solr
   # @param [Hash] the extra controller params that need to be passed to solr if we query for another response if necessary to get child level data
   # @return [Array] An array of update BrowseLevel objects that are enhanced with current navigation data such as selected, values, and label filled in
@@ -216,6 +219,8 @@ module Atrium::SolrHelper
       browse_level = browse_levels.first
       browse_facet_name = browse_level.solr_facet_name
       browse_level.label = facet_field_labels[browse_facet_name] if (browse_level.label.nil? || browse_level.label.blank?)
+      #always add whether there should be values set or not
+      updated_browse_levels << browse_level
       if params.has_key?(:showcase_number) && params[:showcase_number].to_i == showcase_number.to_i
         if params.has_key?(:f) && !params[:f].nil?
           temp = params[:f].dup
@@ -246,8 +251,6 @@ module Atrium::SolrHelper
       display_facet = response_without_f_param.facets.detect {|f| f.name == browse_facet_name}
       display_facet_with_f = response.facets.detect {|f| f.name == browse_facet_name}
       unless display_facet.nil?
-        #always add whether there should be values set or not
-        updated_browse_levels << browse_level
         level_has_selected = false
         if display_facet.items.any?
           display_facet.items.each do |item|
