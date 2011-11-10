@@ -40,7 +40,7 @@ module AtriumHelper
   def facet_field_names
     exhibit = Atrium::Exhibit.find(params[:exhibit_id]) if params[:exhibit_id] && !params[:edit_exhibit_filter]
     if exhibit
-      exhibit.search_facets.collect {|f| f.name}
+      params[:add_featured] ? [] : exhibit.search_facets.collect {|f| f.name}
     else
       super
     end
@@ -68,6 +68,17 @@ module AtriumHelper
   # Otherwise use code lifted from catalog controller in blacklight plugin
   def facet_limit_for(facet_field)
     (params[:exhibit_id] && !params[:render_search].blank?) ? nil : super
+  end
+
+  # Overriding so that it will not show facet constraints if selecting
+  # featured items because we should not be able to remove facet selections
+  # that are setting proper search scope for a browse page
+  def render_constraints(localized_params = params)
+    if params[:add_featured]
+      (render_constraints_query(localized_params)).html_safe
+    else
+      (render_constraints_query(localized_params) + render_constraints_filters(localized_params)).html_safe
+    end
   end
 
 end

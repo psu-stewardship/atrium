@@ -2,7 +2,8 @@
 
 <h1>You are configuring your browse page, Here are your options</h1>
 
-<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id]), :class=>'colorbox', :action=> atrium_browse_page_path(@atrium_browse_page.id) %>
+<%- params[:controller]=="atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id] -%>
+<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'colorbox', :action=> atrium_browse_page_path(@atrium_browse_page.id) %>
 
 | <a class="add_description" href="#">Add Description</a>  |
 <%= link_to 'View this exhibit', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%> </li>
