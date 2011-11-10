@@ -4,7 +4,7 @@ class CreateAtriumShowcases < ActiveRecord::Migration
       t.integer :atrium_exhibit_id, :null=>false
       t.integer :set_number, :null=>false
       t.string :label
-      t.string :solr_filter_query
+      t.string :filter_query_params
     end
     add_index :atrium_showcases, :id
     add_index :atrium_showcases, :atrium_exhibit_id

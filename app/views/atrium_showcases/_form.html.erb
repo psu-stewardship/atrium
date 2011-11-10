@@ -10,6 +10,15 @@
       </ol>
     </fieldset>
 
+    <h3>Showcase Scope</h3>
+    <p>
+      A showcase is a subset of a collection or exhibit. The scope of the showcase can be set to any possible query made in the search interface.
+    </p>
+    <%- exhibit_id = @showcase.atrium_exhibit_id if @showcase.atrium_exhibit_id -%>
+    <%- query_params = {:exhibit_id=>exhibit_id,:edit_showcase_filter=>@showcase.id, :showcase_id=>@showcase.id} -%>
+    <%- query_params.merge!(@showcase.filter_query_params) if @showcase.filter_query_params -%>
+    <%= link_to("Set Showcase Scope", catalog_index_path(query_params)).html_safe %>
+
     <h3>Group Showcase Items by Facets</h3>
     <p>
       Items present in a showcase can be further scoped by facet selections. These facets
@@ -69,10 +78,6 @@
           <td>
             <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
             <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
-          </td>
-          <td>
-            <%= level_fields.label :solr_filter_query, 'Solr Filter Query:' %>
-            <%= level_fields.text_field :solr_filter_query %>
           </td>
           <td><%= f.submit 'Add A Facet' %></td>
         </tr>

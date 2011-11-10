@@ -25,8 +25,7 @@ module Atrium::Catalog
 
     #put in atrium index code here
     if params[:save_exhibit_filter_button]
-      puts "pressed save filter button"
-      puts "search session: #{solr_search_params(session[:search]).inspect}"
+      logger.debug("pressed save exhibit filter button")
       if @atrium_exhibit
         filter_query_params = search_session.clone
         filter_query_params.delete(:save_exhibit_filter_button)
@@ -36,6 +35,20 @@ module Atrium::Catalog
       else
         redirect_to new_atrium_exhibit_path
       end
+    elsif params[:save_showcase_filter_button]
+      params[:showcase_id] ? showcase_id = params[:showcase_id] : showcase_id = params[:edit_showcase_filter]
+      @showcase = Atrium::Showcase.find(showcase_id) if showcase_id
+      logger.debug("pressed save showcase filter button")
+      if @showcase
+        filter_query_params = search_session.clone
+        filter_query_params.delete(:save_showcase_filter_button)
+        filter_query_params.delete(:exhibit_id)
+        filter_query_params.delete(:showcase_id)
+        @showcase.update_attributes(:filter_query_params=>filter_query_params)
+        redirect_to edit_atrium_showcase_path(@showcase.id)
+      else
+        redirect_to new_atrium_showcase_path
+      end
     else
       delete_or_assign_search_session_params
 
@@ -44,10 +57,10 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params ||= {}
-      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(params,@extra_controller_params) if @atrium_exhibit
+      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(@atrium_exhibit,@showcase,params,@extra_controller_params) if @atrium_exhibit || @showcase
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@extra_controller_params) if @atrium_exhibit
+      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@atrium_exhibit,@showcase,@extra_controller_params) if @atrium_exhibit || @showcase
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 

@@ -10,6 +10,8 @@ class Atrium::Showcase < ActiveRecord::Base
 
   set_table_name :atrium_showcases
 
+  serialize :filter_query_params
+
   def title
     label.blank? ? "Showcase #{set_number}" : label
   end
