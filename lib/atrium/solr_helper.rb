@@ -69,7 +69,7 @@ module Atrium::SolrHelper
 
   # Returns the current extra controller params used in the query to Solr for Browsing response results
   # @return [Hash]
-  def extra_controller_params
+  def current_extra_controller_params
     @extra_controller_params
   end
 
@@ -150,6 +150,7 @@ module Atrium::SolrHelper
   # a menu item is selected it will combine the facet selection from params into
   # extra controller params to ensure that both are in the query correctly.
   def prepare_extra_controller_params_for_exhibit_query(exhibit,showcase,params, extra_controller_params)
+    extra_controller_params ||= {}
     filter_query_params = get_current_filter_query_params(exhibit,showcase)
     queries = []
     #build_lucene_query will be defined if hydra is present to add hydra rights into query etc, otherwise it will be ignored
@@ -174,6 +175,7 @@ module Atrium::SolrHelper
   end
 
   def reset_extra_controller_params_after_exhibit_query(exhibit,showcase,extra_controller_params)
+    extra_controller_params ||= {}
     filter_query_params = get_current_filter_query_params(exhibit,showcase)
     extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params && filter_query_params[:fq]
     extra_controller_params
@@ -209,7 +211,7 @@ module Atrium::SolrHelper
     unless atrium_exhibit.nil? || atrium_exhibit.showcases.nil?
       atrium_exhibit.showcases.each do |showcase|
         if showcase.respond_to?(:browse_levels) && !showcase.browse_levels.nil?
-          updated_browse_levels = get_browse_level_data(atrium_exhibit,showcase,showcase.browse_levels,browse_response,extra_controller_params,true)
+          updated_browse_levels = get_browse_level_data(atrium_exhibit,showcase,showcase.browse_levels,browse_response,current_extra_controller_params,true)
           showcase.browse_levels.each_index do |index|
             showcase.browse_levels.fetch(index).values = updated_browse_levels.fetch(index).values
             showcase.browse_levels.fetch(index).label = updated_browse_levels.fetch(index).label
@@ -245,7 +247,7 @@ module Atrium::SolrHelper
   #   :label [String] browse level category label
   #   :values [Array] values to display for the browse level
   #   :selected [String] the selected value if one
-  def get_browse_level_data(exhibit, showcase, browse_levels, response, extra_controller_params,top_level=false)
+  def get_browse_level_data(exhibit, showcase, browse_levels, response, extra_controller_params={},top_level=false)
     showcase_number = showcase.set_number
     updated_browse_levels = []
     unless browse_levels.nil? || browse_levels.empty?
@@ -278,17 +280,13 @@ module Atrium::SolrHelper
         temp = params[:f].dup
         params[:f] = {}
         extra_controller_params = prepare_extra_controller_params_for_exhibit_query(exhibit,showcase,params,extra_controller_params)
-        puts "extra controller params before: #{extra_controller_params.inspect}"
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
         extra_controller_params = reset_extra_controller_params_after_exhibit_query(exhibit,showcase,extra_controller_params)
-        puts "extra controller params after: #{extra_controller_params.inspect}"
         params[:f] = temp
       else
         extra_controller_params = prepare_extra_controller_params_for_exhibit_query(exhibit,showcase,params,extra_controller_params)
-        puts "extra controller params before: #{extra_controller_params.inspect}"
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
         extra_controller_params = reset_extra_controller_params_after_exhibit_query(exhibit,showcase,extra_controller_params)
-        puts "extra controller params after: #{extra_controller_params.inspect}"
       end
       display_facet = response_without_f_param.facets.detect {|f| f.name == browse_facet_name}
       display_facet_with_f = response.facets.detect {|f| f.name == browse_facet_name}

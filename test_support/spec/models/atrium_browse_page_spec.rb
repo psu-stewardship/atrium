@@ -168,7 +168,6 @@ describe Atrium::BrowsePage do
       @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
       @browse_page2.save!
       @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-      puts "browse page is: #{@browse_page.inspect}"
       Atrium::BrowsePage.with_selected_facets(@showcase.id).first.should == @browse_page
     end
 

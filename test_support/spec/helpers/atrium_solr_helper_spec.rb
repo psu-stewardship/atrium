@@ -111,14 +111,14 @@ describe Atrium::SolrHelper do
       browse_response = mock()
       helper.stubs(:browse_response).returns(browse_response)
       extra_con_params = mock()
-      helper.stubs(:extra_controller_params).returns(extra_con_params)
+      helper.stubs(:current_extra_controller_params).returns(extra_con_params)
       updated_browse_level1 = browse_level1.clone
       updated_browse_level1.expects(:values).returns(["test1","test2"])
       updated_browse_level1.expects(:selected).returns("test1")
       updated_browse_level2 = browse_level2.clone
       updated_browse_level2.expects(:values).returns(["test3","test4"])
-      helper.expects(:get_browse_level_data).with(1,[browse_level1],browse_response,extra_con_params,true).returns([updated_browse_level1])
-      helper.expects(:get_browse_level_data).with(2,[browse_level2,browse_level3],browse_response,extra_con_params,true).returns([updated_browse_level2,browse_level3])
+      helper.expects(:get_browse_level_data).with(exhibit,showcase1,[browse_level1],browse_response,extra_con_params,true).returns([updated_browse_level1])
+      helper.expects(:get_browse_level_data).with(exhibit,showcase2,[browse_level2,browse_level3],browse_response,extra_con_params,true).returns([updated_browse_level2,browse_level3])
       #check that the array returned is flattened appropriately on concat
       browse_data = helper.get_showcase_navigation_data
       browse_data.size.should == 2
@@ -135,7 +135,7 @@ describe Atrium::SolrHelper do
   end
 
   describe "get_browse_level_data" do
-    it "should return an array of browse set objects with browse levels objects sorted by level number if any defined" do
+    it "should return an array of showcase objects with browse levels objects sorted by level number if any defined" do
       @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>1})
       @showcase.save
       @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id,:set_number=>2})
@@ -180,7 +180,7 @@ describe Atrium::SolrHelper do
       helper.expects(:facet_in_params?).returns(false).at_least_once
       #this will make it have something be selected
       helper.expects(:facet_in_params?).with('my_facet','val2').returns(true)
-      
+      helper.stubs(:get_search_results).returns([browse_response,mock()])
 
       browse_data = helper.get_showcase_navigation_data
       browse_data.size.should == 2
@@ -222,6 +222,7 @@ describe Atrium::SolrHelper do
       facet.expects(:items).returns([]).twice
       response.expects(:facets).returns([facet]).times(4)
       helper.stubs(:browse_response).returns(response)
+      helper.stubs(:get_search_results).returns([response,mock()])
       browse_data = helper.get_showcase_navigation_data
       browse_data.first.browse_levels.first.label.should == "my_label"
       #check if label is blank instead
@@ -246,6 +247,7 @@ describe Atrium::SolrHelper do
       facet.expects(:name).returns("my_facet").at_least_once
       response.expects(:facets).returns([facet]).at_least_once
       helper.stubs(:browse_response).returns(response)
+      helper.stubs(:get_search_results).returns([response,mock()])
       helper.get_showcase_navigation_data.first.browse_levels.first.label.should == "my_label_2"
     end
 
@@ -264,6 +266,7 @@ describe Atrium::SolrHelper do
       #it will call this twice if response is same for without f param
       response.expects(:facets).returns([facet]).twice
       helper.expects(:browse_response).returns(response)
+      helper.stubs(:get_search_results).returns([response,mock()])
       helper.get_showcase_navigation_data
     end
 
