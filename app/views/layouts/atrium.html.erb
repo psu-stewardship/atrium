@@ -71,7 +71,7 @@
           <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show"-%>
             <%= render :partial => 'shared/exhibit_search_form' %>
             <%= render :partial => 'atrium_exhibits/navigation' %>
-
+          <%- elsif params[:controller] == "atrium_descriptions" -%>
           <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "exhibits" && params[:action] == "index")-%>
             <%= render :partial => 'shared/exhibit_search_form' %>
             <%= render :partial => 'atrium_exhibits/navigation' %>

@@ -1,0 +1,8 @@
+
+
+    <%= form_for(@atrium_description) do |f| %>
+      <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+      <%= f.submit 'Update' %>
+    <% end %>
+
+

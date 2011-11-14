@@ -143,6 +143,7 @@ EOF
       better_migration_template "create_atrium_browse_page_items.rb"
       better_migration_template "create_atrium_browse_page_facet_selections.rb"
       better_migration_template "create_atrium_browse_levels.rb"
+      better_migration_template "create_atrium_descriptions.rb"
     end
 
     private  

@@ -3,20 +3,36 @@
 <h1>You are configuring your browse page, Here are your options</h1>
 
 <%- params[:controller]=="atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id] -%>
-<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'colorbox', :action=> atrium_browse_page_path(@atrium_browse_page.id) %>
 
-| <a class="add_description" href="#">Add Description</a>  |
-<%= link_to 'View this exhibit', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%> </li>
+<%- if @atrium_browse_page.browse_pages_type=="atrium_showcase" %>
+<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_showcase_atrium_browse_pages_path(@showcase, :browse_page_id=>params[:browse_page_id]) %>
+| <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => params[:browse_page_id]), :class=>'description_colorbox'%>
+<%- else %>
+    <%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit, :browse_page_id=>params[:browse_page_id]) %>
+    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => params[:browse_page_id]), :class=>'description_colorbox'%>
+<%- end %>
+
+  <ol>
+    <%- @atrium_browse_page.descriptions.each do |desc| -%>
+    <li>
+      <%= desc.description%>
+      <%= link_to 'Edit description', edit_atrium_description_path(desc), :class=>'description_colorbox'%>
+    </li>
+    <%- end -%>
+  </ol>
 
 
 <div class="description">
-  <%= form_for(@atrium_browse_page, :html => {:class => 'atrium'}) do |f| %>
+  <%- @atrium_descriptions = Atrium::Description.new-%>
+  <%= form_for(@atrium_descriptions) do |f| %>
     <ol>
       <li>
-        <%= f.label :label, 'Description:' %>
-        <%= f.text_area :descriptions %>
+        <%- @atrium_descriptions.atrium_browse_page_id = @atrium_browse_page.id -%>
+        <%= f.hidden_field :atrium_browse_page_id -%>
+        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
       </li>
     </ol>
     <%= f.submit 'Add Description' %>
   <% end %>
 </div>
+

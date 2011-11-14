@@ -19,9 +19,16 @@
 <%=render :partial=>'shared/exhibit_title_header'%>
 <%#render :partial=>'navigation'%>
 
-<%- if @atrium_browse_page && @atrium_browse_page.descriptions -%>
+<%# if @atrium_browse_page && @atrium_browse_page.descriptions -%>
+<%- if @atrium_browse_page && @atrium_browse_page.descriptions-%>
   <h2>Description</h2>
-    <%= @atrium_browse_page.descriptions%>
+   <ol>
+    <%- @atrium_browse_page.descriptions.each do |desc| -%>
+    <li>
+      <%= desc.description%>
+    </li>
+    <%- end -%>
+  </ol>
 <%- end -%>
 
 <%- if false #@atrium_exhibit && @atrium_exhibit.collections.any? -%>

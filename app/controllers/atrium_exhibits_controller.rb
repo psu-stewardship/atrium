@@ -32,12 +32,14 @@ class AtriumExhibitsController < ApplicationController
     @showcase_navigation_data = get_showcase_navigation_data
     if(params[:showcase_number])
       @showcase = Atrium::Showcase.find(params[:showcase_number])
-      @atrium_browse_page = get_atrium_browse_page(params[:showcase_number], params[:f]).first
+      @atrium_browse_page = Atrium::BrowsePage.with_selected_facets(params[:showcase_number],"atrium_showcase", params[:facet_selection]).first
+
+      #get_atrium_browse_page(params[:showcase_number], params[:f]).first
     end
-    if(params[:browse_page_id])
+    if(params[:browse_page_id] && @atrium_browse_page.nil?)
       @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
     end
-
+    logger.debug("Atrium Browse Page: #{@atrium_browse_page.inspect}")
     if @atrium_browse_page && !@atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
       logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
       selected_document_ids = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',')

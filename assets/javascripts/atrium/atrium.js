@@ -7,6 +7,17 @@
   $(document).ready(function(){
     $('select.chosen').chosen();
 
+    $('.jquery-ckeditor').ckeditor(
+     {
+      toolbar: [
+        ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+        ['Bold','Italic','Underline','Strike'],
+        ['Format','-','NumberedList','BulletedList','Blockquote'],
+        ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
+        ['Source','ShowBlocks','Maximize']
+      ]
+    })
+
     $('.sortable').sortable({
       update: function(e, ui){
         var $target        = $(e.target),
@@ -41,7 +52,7 @@
       }
     });
 
-    $('.colorbox').colorbox({
+    $('.select_colorbox').colorbox({
       width:'880px',
       height:'80%',
       iframe:true,
@@ -67,6 +78,12 @@
       }
     });
 
+    $('.description_colorbox').colorbox({
+      width:'880px',
+      height:'80%',
+      iframe:true
+    });
+
     $('.description').hide();
     $('.add_description').click(function(){
         var $this = $(this);
@@ -79,11 +96,6 @@
               $this.text('Add Description');
             }
           });
-    });
-
-    $('.customize').click(function(){
-        $(this).text($(this).text() == 'Customize this page' ? 'View Exhibit' : 'Customize this page');
-        $('browse_page_configure').toggle();
     });
 
   });

@@ -4,13 +4,17 @@
     <li><%= link_to 'View Exhibit', @atrium_exhibit %></li>
     <li><%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(@atrium_exhibit.id) %></li>
     <li><%= link_to 'Configure Exhibit Page', @atrium_exhibit %></li>
+    <li><%= link_to 'Configure Browse Page',  new_atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit,:atrium_browse_page_type=>"atrium_exhibit")%></li>
   </ul>
   <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
     <dl id="showcases">
       <%- @showcase_navigation_data.each do |showcase| -%>
         <dt><%= showcase.title%></dt>
         <dd><%= link_to 'Configure Showcase', edit_atrium_showcase_path(showcase) %></dd>
-        <dd><%= link_to 'Configure Browse Page',  atrium_browse_pages_path(:atrium_showcase_id=>showcase.set_number, :exhibit_id => showcase.atrium_exhibit_id)%></dd>
+        <dd>
+          <%# link_to 'Configure Browse Page',  new_atrium_browse_page_path(:atrium_parent_id=>showcase.set_number, :atrium_parent_type=>"showcase", :exhibit_id => showcase.atrium_exhibit_id)%>
+          <%= link_to 'Configure Browse Page',  new_atrium_showcase_atrium_browse_pages_path(showcase,:atrium_browse_page_type=>"atrium_showcase")%>
+        </dd>
       <%- end -%>
     </dl>
   <%- end -%>

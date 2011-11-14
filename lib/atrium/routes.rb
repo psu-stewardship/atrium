@@ -31,7 +31,10 @@ module Atrium
 
       def atrium_exhibits
         add_routes do |options|
-          resources :atrium_exhibits, :atrium_showcases, :atrium_browse_pages
+          resources :atrium_exhibits, :atrium_showcases do
+            resource :atrium_browse_pages
+          end
+          resources :atrium_descriptions
           match 'atrium_exhibits/:id/showcase_order',        :to => 'atrium_exhibit_showcase_order#index',       :as => 'atrium_exhibit_showcase_order'
           match 'atrium_exhibits/:id/showcase_order/update', :to => 'atrium_exhibit_showcase_order#update',      :as => 'update_atrium_exhibit_showcase_order', :via => :post
           match 'atrium_showcases/:id/facet_order',          :to => 'atrium_showcase_facet_order#index',         :as => 'atrium_showcase_facet_order'

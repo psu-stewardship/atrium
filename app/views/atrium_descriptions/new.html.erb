@@ -1,0 +1,12 @@
+<%- @atrium_descriptions = Atrium::Description.new-%>
+  <%= form_for(@atrium_descriptions) do |f| %>
+    <ol>
+      <li>
+        <%- @atrium_descriptions.atrium_browse_page_id = @atrium_browse_page.id -%>
+        <%= f.hidden_field :atrium_browse_page_id -%>
+        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+      </li>
+    </ol>
+    <%= f.submit 'Add Description' %>
+  <% end %>
+

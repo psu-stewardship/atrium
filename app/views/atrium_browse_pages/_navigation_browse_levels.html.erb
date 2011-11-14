@@ -1,3 +1,5 @@
+
+
 <!-- this partial recursively calls itself as necessary to render the navigation browse level data -->
 <% unless browse_levels.nil? || browse_facets.nil? || showcase_number.nil?-%>
   <%- browse_level = browse_levels.first -%>
@@ -23,14 +25,14 @@
 	</li>
       <%- end -%>
     </ul>
+    <%# debug @atrium_browse_page.inspect %>
   <%- end -%>
+    <%- if current_user && params[:edit_browse_page] -%>
+      <%- if !@atrium_browse_page -%>
+        <%= link_to "Customize Showcase: #{showcase_number}", new_atrium_showcase_atrium_browse_pages_path(@showcase,:atrium_browse_page_type=>"atrium_showcase", :facet_selection=>params[:f]), :class=>"customize"%>
+      <%- else %>
+       <%= link_to 'View this Showcase', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%>
+      <%- end %>
+    <%- end %>
 <%- end -%>
-
-<li>
-  <%- if current_user && params[:edit_browse_page] && !@atrium_browse_page -%>
-    <%= link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f]), :class=>"customize"%>
-  <%- end %>
-</li>
-
-<li class="view_exhibit" style="display: none"> <%# link_to 'View this page', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%> </li>
 
