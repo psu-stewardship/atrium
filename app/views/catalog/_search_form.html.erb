@@ -19,6 +19,10 @@
       <div id="prompt" class="ui-state-highlight ui-corner-all">
         <%= submit_tag 'Set Showcase Scope to Here', :class=>'submit', :name=>'save_showcase_filter_button' %>
       </div>
+    <%- elsif params[:edit_browse_level_filter] -%>
+      <div id="prompt" class="ui-state-highlight ui-corner-all">
+        <%= submit_tag 'Set Browse Level Scope to Here', :class=>'submit', :name=>'save_browse_level_filter_button' %>
+      </div>
     <%- end -%>
   <% end %>
   <hr/>

@@ -3,7 +3,7 @@ class CreateAtriumBrowseLevels < ActiveRecord::Migration
     create_table :atrium_browse_levels do |t|
       t.integer :atrium_showcase_id, :null=>false
       t.integer :level_number, :null=>false
-      t.string :solr_filter_query
+      t.string :filter_query_params
       t.string :solr_facet_name
       t.string :label
     end

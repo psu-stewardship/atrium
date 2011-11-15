@@ -35,7 +35,7 @@
               <th>&nbsp;</th>
               <th>Facet</th>
               <th>Label</th>
-              <th>Solr Filter Query</th>
+              <th>Filter</th>
               <th>Remove</th>
             </tr>
           </thead>
@@ -43,11 +43,14 @@
             <%- @showcase.browse_levels.each_with_index do |level,index| -%>
               <tr data-id="<%= level.id %>" data-order="<%= level.level_number %>" class="ui-state-default">
                 <%= f.fields_for :browse_levels, level do |level_form| %>
+		  <%- exhibit_id = @showcase.atrium_exhibit_id if @showcase.atrium_exhibit_id -%>
+                  <%- level_query_params = {:exhibit_id=>exhibit_id,:edit_browse_level_filter=>level.id, :browse_level_id=>level.id, :showcase_id=>@showcase.id} -%>
+		  <%- level_query_params.merge!(level.filter_query_params) if level.filter_query_params -%>
                   <td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
                   <td class="label"><%= level.level_number == 1 ? 'Group By:' : 'Then By:' %></td>
                   <td><%=facet_field_labels[level.solr_facet_name]%></td>
                   <td><%=level_form.text_field :label, :value=>level.label%></td>
-                  <td><%=level_form.text_field :solr_filter_query%></td>
+                  <td><%= link_to("Set Group By Filter", catalog_index_path(level_query_params)).html_safe %></td>
                   <td><%=level_form.check_box :_destroy %></td>
                 <% end %>
               </tr>
