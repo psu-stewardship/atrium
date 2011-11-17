@@ -1,0 +1,86 @@
+Goal
+----
+Design the routes of application to function as a REST API.
+The URIs should be human-readable and easy to link to.
+All actions should map to a unique combination of URI and HTTP verb.
+
+Conventions
+-----------
+Use the RESTful resource pattern for interacting with objects whenever possible.
+Management of an object can be split across multiple RESTful resources.
+Values required to correctly render a page should be passed in tokenized routes or retrieved from objects identified in route URI.
+Child objects which depend of the context provided by their parents should be nested within the route.
+Avoid nesting resources more than 2 levels deep.
+When updated collections of child objects define the necessary logic in the parent model.
+
+Reading
+-------
+[Nobody Understands REST or HTTP](http://blog.steveklabnik.com/2011/07/03/nobody-understands-rest-or-http.html)
+[Some People Understand REST and HTTP](http://blog.steveklabnik.com/2011/08/07/some-people-understand-rest-and-http.html)
+[Nesting resources](http://weblog.jamisbuck.org/2007/2/5/nesting-resources)
+[Rails Routing from the Outside In](http://guides.rubyonrails.org/routing.html)
+
+Entity Names
+------------
+The names we choose for models and actions associated with those objects are reflected in routes for the application.
+Atrium provides 3 levels of organization while building an exhibit:
+
+    Exhibit
+      `-> Showcase
+           `-> Browse Page
+
+I believe that "browse page" is not an appropriate name.
+I propose that we adopt the following hierarchy:
+
+    Collection
+      `-> Exhibit
+           `-> Showcase
+
+The planned use case for Atrium is to allow multiple collections to be housed within a single index to facilitate cross-collection search.
+Collections are defined as subset of the entire body of holdings.
+Exhibits can be created within a Collection to highlight a certain characteristic of the Collection.
+Showcases are created within Exhibits to feature items of particular significance and provide a mechanism to add descriptive text.
+
+Proposed Routes
+---------------
+The following routes use the proposed entity naming scheme.
+In order to increase the readability of the URIs I propose that we employ a ["slugging" library](https://www.ruby-toolbox.com/categories/rails_permalinks___slugs). [FriendlyId](http://rubygems.org/gems/friendly_id) is a good candidate.
+In the interest of flexibility I propose that Atrium routes be prefixed with an optional, configurable URI parameter. It should default to "collections".
+
+    GET    /:atrium-namespace
+    GET    /:atrium-namespace/new
+    POST   /:atrium-namespace
+    GET    /:atrium-namespace/:collection-key
+    GET    /:atrium-namespace/:collection-key/edit
+    PUT    /:atrium-namespace/:collection-key
+    DELETE /:atrium-namespace/:collection-key
+    GET    /:atrium-namespace/:collection-key/catalog
+    GET    /:atrium-namespace/:collection-key/exhibit_order
+    POST   /:atrium-namespace/:collection-key/exhibit_order/update
+    GET    /:atrium-namespace/:collection-key/exhibits
+    GET    /:atrium-namespace/:collection-key/exhibits/new
+    POST   /:atrium-namespace/:collection-key/exhibits
+    GET    /:atrium-namespace/:collection-key/exhibits/:exhibit-key
+    GET    /:atrium-namespace/:collection-key/exhibits/:exhibit-key/edit
+    PUT    /:atrium-namespace/:collection-key/exhibits/:exhibit-key
+    DELETE /:atrium-namespace/:collection-key/exhibits/:exhibit-key
+    GET    /:atrium-namespace/:collection-key/exhibits/:exhibit-key/catalog
+    GET    /:atrium-namespace/exhibits/:exhibit-key/facets
+    GET    /:atrium-namespace/exhibits/:exhibit-key/facets/new
+    POST   /:atrium-namespace/exhibits/:exhibit-key/facets
+    GET    /:atrium-namespace/exhibits/:exhibit-key/facets/:id
+    GET    /:atrium-namespace/exhibits/:exhibit-key/facets/:id/edit
+    PUT    /:atrium-namespace/exhibits/:exhibit-key/facets/:id
+    DELETE /:atrium-namespace/exhibits/:exhibit-key/facets/:id
+    GET    /:atrium-namespace/exhibits/:exhibit-key/facet_order
+    POST   /:atrium-namespace/exhibits/:exhibit-key/facet_order/update
+    GET    /:atrium-namespace/exhibits/:exhibit-key/showcases
+    GET    /:atrium-namespace/exhibits/:exhibit-key/showcases/:showcase-key
+    GET    /:atrium-namespace/exhibits/:exhibit-key/showcases/:showcase-key/catalog
+    GET    /:atrium-namespace/showcases/:showcase-key/descriptions
+    GET    /:atrium-namespace/showcases/:showcase-key/descriptions/new
+    POST   /:atrium-namespace/showcases/:showcase-key/descriptions
+    GET    /:atrium-namespace/showcases/:showcase-key/descriptions/:id
+    GET    /:atrium-namespace/showcases/:showcase-key/descriptions/:id/edit
+    PUT    /:atrium-namespace/showcases/:showcase-key/descriptions/:id
+    DELETE /:atrium-namespace/showcases/:showcase-key/descriptions/:id
