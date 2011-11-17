@@ -38,7 +38,7 @@ namespace :atrium do
     desc "Run the hydra-head specs - need to have jetty running, test host set up and fixtures loaded."
     task :run => :use_test_app do
       puts "Running rspec tests"
-      puts  %x[rake atrium:spec:run]
+      puts  %x[bundle exec rake atrium:spec:run]
       FileUtils.cd('../../')
     end
 
@@ -100,7 +100,7 @@ namespace :atrium do
     task :run => :set_test_host_path do
       Dir.chdir(TEST_HOST_PATH)
       puts "Running cucumber features in test host app"
-      puts %x[rake atrium:cucumber]
+      puts %x[bundle exec rake atrium:cucumber]
       # puts %x[cucumber --color --tags ~@pending --tags ~@overwritten features]
       raise "Cucumber tests failed" unless $?.success?
       FileUtils.cd('../../')
@@ -142,7 +142,7 @@ namespace :atrium do
     system("source ./test_app/.rvmrc")
 
     puts "Generating new rails app"
-    %x[rails new test_app]
+    %x[bundle exec rails new test_app]
     errors << 'Error generating new rails test app' unless $?.success?
     FileUtils.cd('test_app')
     FileUtils.rm('public/index.html')
@@ -203,11 +203,11 @@ namespace :atrium do
   task :test => [:use_test_app]  do
 
     puts "Running rspec tests"
-    puts  %x[rake atrium:spec:rcov]
-    puts  %x[rake atrium:spec]
+    puts  %x[bundle exec rake atrium:spec:rcov]
+    puts  %x[bundle exec rake atrium:spec]
 
     puts "Running cucumber tests"
-    puts %x[rake atrium:cucumber]
+    puts %x[bundle exec rake atrium:cucumber]
 
     FileUtils.cd('../../')
     puts "Completed test suite"
