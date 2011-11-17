@@ -15,10 +15,10 @@ When updated collections of child objects define the necessary logic in the pare
 
 Reading
 -------
-[Nobody Understands REST or HTTP](http://blog.steveklabnik.com/2011/07/03/nobody-understands-rest-or-http.html)
-[Some People Understand REST and HTTP](http://blog.steveklabnik.com/2011/08/07/some-people-understand-rest-and-http.html)
-[Nesting resources](http://weblog.jamisbuck.org/2007/2/5/nesting-resources)
-[Rails Routing from the Outside In](http://guides.rubyonrails.org/routing.html)
+ - [Nobody Understands REST or HTTP](http://blog.steveklabnik.com/2011/07/03/nobody-understands-rest-or-http.html)
+ - [Some People Understand REST and HTTP](http://blog.steveklabnik.com/2011/08/07/some-people-understand-rest-and-http.html)
+ - [Nesting resources](http://weblog.jamisbuck.org/2007/2/5/nesting-resources)
+ - [Rails Routing from the Outside In](http://guides.rubyonrails.org/routing.html)
 
 Entity Names
 ------------
