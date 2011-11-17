@@ -72,7 +72,11 @@ module Atrium::Catalog
 
       @extra_controller_params ||= {}
       @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) if params[:browse_level_id]
-      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(@atrium_exhibit,@showcase,@browse_level,params,@extra_controller_params) if @atrium_exhibit || @showcase || @browse_level
+      #do not mixin whatever level I am on if I am editing the settings
+      showcase = @showcase unless params[:edit_showcase_filter]
+      exhibit = @atrium_exhibit unless params[:edit_exhibit_filter]
+      browse_level = @browse_level unless params[:edit_browse_level_filter]
+      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(exhibit,showcase,browse_level,params,@extra_controller_params) if exhibit || showcase || browse_level
       puts "on search exhibit is: #{@atrium_exhibit.inspect}"
       puts "on search showcase is: #{@showcase.inspect}"
       puts "on search browse_level is: #{@browse_level.inspect}"
@@ -80,7 +84,7 @@ module Atrium::Catalog
       puts "on search extra params: #{@extra_controller_params.inspect}"
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@atrium_exhibit,@showcase,@browse_level,@extra_controller_params) if @atrium_exhibit || @showcase || @browse_level
+      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(exhibit,showcase,browse_level,@extra_controller_params) if exhibit || showcase || browse_level
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 
