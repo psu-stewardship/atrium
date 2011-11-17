@@ -1,6 +1,6 @@
 class Atrium::Showcase < ActiveRecord::Base
   has_many :browse_levels, :class_name => 'Atrium::BrowseLevel', :foreign_key => 'atrium_showcase_id', :order => 'level_number ASC'
-  has_many :browse_pages,  :class_name => 'Atrium::BrowsePage',  :as=>:browse_details
+  has_many :browse_pages,  :class_name => 'Atrium::BrowsePage',  :as=>:browse_pages
   belongs_to :exhibit, :class_name => 'Atrium::Exhibit', :foreign_key => 'atrium_exhibit_id'
 
   accepts_nested_attributes_for :browse_levels, :allow_destroy=>true

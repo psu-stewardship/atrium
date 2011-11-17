@@ -1,12 +1,12 @@
 
 <%# render :partial => 'atrium_browse_pages/navigation_browse_levels', :locals=>{:showcase_number=>@showcase.set_number, :browse_levels=>@showcase.browse_levels, :browse_facets=>@showcase.browse_facet_names}%>
+<%# debug "Browse PAGE:#{@atrium_browse_page.inspect}" %>
 <li>
-<%- if current_user && params[:edit_browse_page] -%>
+<%- if current_user && params[:edit_browse_page] && params[:controller] == "atrium_exhibits"-%>
   <%- if !@atrium_browse_page -%>
-    <%# link_to 'Customize this page', new_atrium_browse_page_path(:atrium_showcase_id=>params[:showcase_number], :exhibit_id => params[:exhibit_id], :facet_selection=>params[:f]), :class=>"customize"%>
-    <%= link_to 'Customize this page', new_atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit,:atrium_browse_page_type=>"atrium_exhibit", :facet_selection=>params[:f]), :class=>"customize"%>
+    <%= link_to 'Customize Exhibit', new_atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit, :facet_selection=>params[:f]), :class=>"customize"%>
   <%- else %>
-  <%= link_to 'View this exhibit', atrium_exhibit_path(:id => params[:id], :f=>params[:f])%>
+    <%= link_to 'View this exhibit', atrium_exhibit_path(:id => params[:id], :f=>params[:f])%>
   <%- end %>
 <%- end %>
 </li>
@@ -22,3 +22,6 @@
     <%- end -%>
   <%- end -%>
 <%- end -%>
+
+
+

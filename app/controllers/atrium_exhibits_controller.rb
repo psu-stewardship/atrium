@@ -32,10 +32,12 @@ class AtriumExhibitsController < ApplicationController
     @showcase_navigation_data = get_showcase_navigation_data
     if(params[:showcase_number])
       @showcase = Atrium::Showcase.find(params[:showcase_number])
-      @atrium_browse_page = Atrium::BrowsePage.with_selected_facets(params[:showcase_number],"atrium_showcase", params[:facet_selection]).first
-
+      @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@showcase.id,@showcase.class.name, params[:f]).first
+    else
+      @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@atrium_exhibit.id,@atrium_exhibit.class.name, params[:f]).first
       #get_atrium_browse_page(params[:showcase_number], params[:f]).first
     end
+
     if(params[:browse_page_id] && @atrium_browse_page.nil?)
       @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
     end

@@ -2,5 +2,5 @@
 <div id="documents">
   <% document_list = @browse_document_list if document_list.nil?%>
   <% response = @browse_response if response.nil?%>
-  <%= render :partial => 'document', :collection => document_list, :as => :document , :locals=>{:response=>response}%>
+  <%= render :partial => 'atrium_exhibits/document', :collection => document_list, :as => :document , :locals=>{:response=>response}%>
 </div>

@@ -1,0 +1,43 @@
+<div class="browse_page_configure">
+  <%- if @atrium_browse_page && params[:edit_browse_page]%>
+    <%=render :partial=>'shared/browse_page_configure_menu'%>
+  <%- end %>
+</div>
+
+<div id="showHead">
+  <div id="showUtils">
+    <span class="edit-browse">
+      <%# if editor? -%>
+        <%= link_to 'Edit', {:action=>"edit", :id=>@showcase.id} %> |
+        <%= link_to 'Back to Search', catalog_index_path %>
+      <%# end -%>
+    </span>
+  </div>
+</div>
+
+
+<%#render :partial=>'shared/exhibit_title_header'%>
+<%- if @atrium_browse_page && @atrium_browse_page.descriptions-%>
+  <h2>Description</h2>
+   <ol>
+    <%- @atrium_browse_page.descriptions.each do |desc| -%>
+    <li>
+      <%= desc.description%>
+    </li>
+    <%- end -%>
+  </ol>
+<%- end -%>
+
+<span id="show_selected">
+<%- if !@documents.blank? -%>
+  <%= render :partial=>'shared/featured_sources' %>
+<%- end -%>
+</span>
+
+<hr />
+
+<h2>Complete Sources</h2>
+<a id="toggle_sources" href="#" title="Hide the complete listing of sources.">Hide Complete Sources</a>
+<div id="complete_sources">
+  <%= render :partial=>'atrium_exhibits/browse_index'%>
+</div>

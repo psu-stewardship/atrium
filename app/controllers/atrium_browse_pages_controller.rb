@@ -24,7 +24,7 @@ class AtriumBrowsePagesController < ApplicationController
   def new
     #@atrium_browse_page = Atrium::BrowsePage.new
     @parent=parent_object
-    @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@parent.id,params[:atrium_browse_page_type], params[:facet_selection]).first
+    @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@parent.id, @parent.class.name, params[:facet_selection]).first
 
         #Atrium::BrowsePage.with_selected_facets(params[:atrium_showcase_id]).first
 
@@ -32,7 +32,7 @@ class AtriumBrowsePagesController < ApplicationController
 
     unless  @atrium_browse_page
       logger.debug("in create params: #{params.inspect}")
-      @atrium_browse_page = @parent.browse_pages.build({:browse_pages_id=>@parent.id, :browse_pages_type=>params[:atrium_browse_page_type]})
+      @atrium_browse_page = @parent.browse_pages.build({:browse_pages_id=>@parent.id, :browse_pages_type=>@parent.class.name})
       @atrium_browse_page.save!
       if(params[:facet_selection])
         params[:facet_selection].collect {|key,value|
@@ -113,14 +113,15 @@ class AtriumBrowsePagesController < ApplicationController
     unless  @atrium_browse_page
       @atrium_browse_page=Atrium::BrowsePage.find(params[:id])
     end
-    @showcase = Atrium::Showcase.find(@atrium_browse_page.browse_pages_id)
+
     @showcase_navigation_data = get_showcase_navigation_data
     logger.debug("Showcase: #{@showcase.inspect}")
-    if @atrium_browse_page.browse_pages_type=="atrium_showcase"
-      redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id], :f=>params[:f])
+    if @atrium_browse_page.browse_pages_type=="Atrium::Showcase"
+      redirect_to atrium_showcase_path(@atrium_browse_page.browse_pages_id,:edit_browse_page=>true,:atrium_browse_page_type=>"atrium_showcase", :f=>params[:f])
+      #redirect_to atrium_exhibit_path(:id=>@showcase.atrium_exhibit_id, :showcase_number=>@showcase.id, :browse_page_id=>params[:id], :f=>params[:f])
     else
       @atrium_exhibit= Atrium::Exhibit.find_by_id(@atrium_browse_page.browse_pages_id)
-      redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@showcase.atrium_exhibit_id, :browse_page_id=>params[:id], :f=>params[:f])
+      redirect_to atrium_exhibit_path(:edit_browse_page=>true,:id=>@atrium_browse_page.browse_pages_id, :browse_page_id=>params[:id], :f=>params[:f])
     end
   end
 
@@ -147,8 +148,8 @@ class AtriumBrowsePagesController < ApplicationController
 
   def parent_object
     case
-      when params[:atrium_browse_page_type]=="atrium_showcase" then parent= Atrium::Showcase.find_by_id(params[:atrium_showcase_id])
-      when params[:atrium_browse_page_type]=="atrium_exhibit" then parent = Atrium::Exhibit.find_by_id(params[:atrium_exhibit_id])
+      when params[:atrium_showcase_id] then parent= Atrium::Showcase.find_by_id(params[:atrium_showcase_id])
+      when params[:atrium_exhibit_id] then parent = Atrium::Exhibit.find_by_id(params[:atrium_exhibit_id])
     end
     logger.debug("Parent: #{parent.inspect}")
     return parent

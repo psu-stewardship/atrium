@@ -4,7 +4,7 @@ class Atrium::BrowsePage < ActiveRecord::Base
   has_many :descriptions, :class_name=>'Atrium::Description', :foreign_key=>"atrium_browse_page_id" , :dependent => :destroy
 
   #belongs_to :showcase, :class_name=>'Atrium::Showcase', :foreign_key=>"atrium_showcase_id"
-  belongs_to :browse_details, :polymorphic => true
+  belongs_to :browse_pages, :polymorphic => true
   has_many :facet_selections, :class_name=>'Atrium::BrowsePage::FacetSelection', :foreign_key=>"atrium_browse_page_id"
 
   #validates_presence_of :atrium_showcase_id

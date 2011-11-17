@@ -29,9 +29,10 @@
   <%- end -%>
     <%- if current_user && params[:edit_browse_page] -%>
       <%- if !@atrium_browse_page -%>
-        <%= link_to "Customize Showcase: #{showcase_number}", new_atrium_showcase_atrium_browse_pages_path(@showcase,:atrium_browse_page_type=>"atrium_showcase", :facet_selection=>params[:f]), :class=>"customize"%>
+        <%= link_to "Customize Showcase: #{showcase_number} with selected facet #{params[:f].inspect}", new_atrium_showcase_atrium_browse_pages_path(@showcase,:atrium_browse_page_type=>"atrium_showcase", :facet_selection=>params[:f]), :class=>"customize"%>
       <%- else %>
-       <%= link_to 'View this Showcase', atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number])%>
+       <%= link_to 'View this Showcase', atrium_showcase_path(:id=>@atrium_browse_page.browse_pages_id, :f=>params[:f])%>
+          <%#atrium_exhibit_path(:id => params[:id], :f=>params[:f], :showcase_number=>params[:showcase_number]) -%>
       <%- end %>
     <%- end %>
 <%- end -%>

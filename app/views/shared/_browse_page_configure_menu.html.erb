@@ -4,12 +4,12 @@
 
 <%- params[:controller]=="atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id] -%>
 
-<%- if @atrium_browse_page.browse_pages_type=="atrium_showcase" %>
-<%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_showcase_atrium_browse_pages_path(@showcase, :browse_page_id=>params[:browse_page_id]) %>
-| <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => params[:browse_page_id]), :class=>'description_colorbox'%>
+<%- if  @atrium_browse_page.browse_pages_type=="Atrium::Showcase" %>
+<%= link_to 'Select Featured', atrium_browse_page_featured_path(:id=>@atrium_browse_page.id,:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_showcase_atrium_browse_pages_path(@showcase, :browse_page_id=>@atrium_browse_page.id) %>
+| <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => @atrium_browse_page.id), :class=>'description_colorbox'%>
 <%- else %>
-    <%= link_to 'Select Featured', atrium_browse_page_featured_path(params[:browse_page_id],:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit, :browse_page_id=>params[:browse_page_id]) %>
-    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => params[:browse_page_id]), :class=>'description_colorbox'%>
+    <%=link_to 'Select Featured', atrium_browse_page_featured_path(:id=>@atrium_browse_page.id,:exhibit_id=>exhibit_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit, :browse_page_id=>@atrium_browse_page.id) %>
+    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_browse_page_id => @atrium_browse_page.id), :class=>'description_colorbox'%>
 <%- end %>
 
   <ol>
