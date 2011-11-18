@@ -11,21 +11,22 @@ module Atrium::ExhibitsHelper
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
     if params[:exhibit_id]
-      p.merge!(:id=>params[:exhibit_id])
+      #p.merge!(:id=>params[:exhibit_id])
       p.merge!(:exhibit_id=>params[:exhibit_id])
     elsif params[:id] && params[:controller] == "atrium_exhibits"
-      p.merge!(:id=>params[:id])
+      #p.merge!(:id=>params[:id])
       p.merge!(:exhibit_id=>params[:id])
-      p.merge!(:controller=>params[:controller])
+      #p.merge!(:controller=>params[:controller])
     end
     if params[:edit_browse_page]
       p.merge!(:edit_browse_page=>true)
     end
-    p.merge!(:showcase_number=>showcase_number)
+    p.merge!(:id=>showcase_number)
     p = remove_related_facet_params(facet_solr_field, p, browse_facets, showcase_number)
     p = add_browse_facet_params(facet_solr_field,value,p)
     #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
-    params[:action] == "edit" ? edit_atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"})) : atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"}))
+    #params[:action] == "edit" ? edit_atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"})) : atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"}))
+    atrium_showcase_path(p.merge!({:class=>"browse_facet_select"}))
   end
 
   def add_browse_facet_params(field, value, p=HashWithIndifferentAccess.new)
@@ -54,8 +55,9 @@ module Atrium::ExhibitsHelper
     if params[:edit_browse_page]
       p.merge!(:edit_browse_page=>true)
     end
-    p.merge!(:showcase_number=>showcase_number)
-    params[:action] == "edit" ? edit_atrium_exhibit_path(p) : atrium_exhibit_path(p)
+    p.merge!(:id=>showcase_number)
+   # params[:action] == "edit" ? edit_atrium_exhibit_path(p) : atrium_exhibit_path(p)
+    atrium_showcase_path(p)
   end
 
   #Remove current selected facet plus any child facets selected

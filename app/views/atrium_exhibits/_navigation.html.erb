@@ -25,7 +25,7 @@
       <%- end -%>
       <%- if current_user  -%>
         <%- if !params[:edit_browse_page] -%>
-          <%- if params[:showcase_number].to_i== showcase.set_number %>
+          <%- if params[:id].to_i== showcase.set_number %>
             <%= link_to "Customize Showcase: #{showcase.set_number}", new_atrium_showcase_atrium_browse_pages_path(showcase, :facet_selection => params[:f] ), :class=>"customize"%>
           <%- else %>
             <%= link_to "Customize Showcase: #{showcase.set_number}", new_atrium_showcase_atrium_browse_pages_path(showcase), :class=>"customize"%>
