@@ -15,7 +15,7 @@
   <ol>
     <%- @atrium_browse_page.descriptions.each do |desc| -%>
     <li>
-      <%= desc.description%>
+      <%= desc.description.html_safe%>
       <%= link_to 'Edit description', edit_atrium_description_path(desc), :class=>'description_colorbox'%>
     </li>
     <%- end -%>
