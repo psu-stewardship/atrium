@@ -5,6 +5,8 @@ class Atrium::BrowseLevel < ActiveRecord::Base
 
   set_table_name :atrium_browse_levels
 
+  serialize :filter_query_params
+
   attr_accessor :values, :selected
 
   def values

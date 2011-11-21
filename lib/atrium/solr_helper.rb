@@ -107,14 +107,19 @@ module Atrium::SolrHelper
       @atrium_collection = Atrium::Collection.find(collection_id)
       raise "No collection was found with id: #{collection_id}" if @atrium_collection.nil?
       @showcases = @atrium_collection.showcases
-      showcase_index = params[:showcase_number].to_i if params[:showcase_number]
-      @showcase = @showcases.fetch(showcase_index-1) if @showcases && showcase_index && showcase_index <= @showcases.size
+      if params[:showcase_number]
+        showcase_index = params[:showcase_number].to_i 
+        @showcase = @showcases.fetch(showcase_index-1) if @showcases && showcase_index && showcase_index <= @showcases.size
+      elsif params[:showcase_id]
+        @showcase = Atrium::Showcase.find(params[:showcase_id])
+      end
       logger.debug("Collection: #{@atrium_collection}")
       @extra_controller_params ||= {}
-      @extra_controller_params = prepare_extra_controller_params_for_collection_query(@atrium_collection,@showcase,params,@extra_controller_params)
+      params[:browse_level_id] ? @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]): @browse_level = get_current_browse_level(@showcase)  
+      @extra_controller_params = prepare_extra_controller_params_for_collection_query(@atrium_collection,@showcase,@browse_level,params,@extra_controller_params)
       (@response, @document_list) = get_search_results(params, @extra_controller_params)
       #reset to just filters in collection filter
-      @extra_controller_params = reset_extra_controller_params_after_collection_query(@atrium_collection,@showcase,@extra_controller_params)
+      @extra_controller_params = reset_extra_controller_params_after_collection_query(@atrium_collection,@showcase,@browse_level,@extra_controller_params)
       @browse_response = @response
       @browse_document_list = @document_list
       logger.debug("Collection: #{@atrium_collection}, Showcase: #{@atrium_collection.showcases}")
@@ -123,17 +128,26 @@ module Atrium::SolrHelper
     end
   end
 
-  def get_current_filter_query_params(collection,showcase)
+  def get_current_filter_query_params(collection,showcase,browse_level)
     filter_query_params = nil
     ex_filter_query_params = solr_search_params(collection.filter_query_params) if collection && !collection.filter_query_params.nil?
     showcase_filter_query_params = solr_search_params(showcase.filter_query_params) if showcase && !showcase.filter_query_params.nil?
+    bl_filter_query_params = solr_search_params(browse_level.filter_query_params) if browse_level && !browse_level.filter_query_params.nil?
     queries = []
     queries << ex_filter_query_params[:q] if (ex_filter_query_params && ex_filter_query_params[:q])
     queries << showcase_filter_query_params[:q] if (showcase_filter_query_params && showcase_filter_query_params[:q])
+    queries << bl_filter_query_params[:q] if (bl_filter_query_params && bl_filter_query_params[:q])
     fq = []
     fq.concat(ex_filter_query_params[:fq]) if (ex_filter_query_params && ex_filter_query_params[:fq])
+    #mixin showcase facet filters
     if showcase_filter_query_params && showcase_filter_query_params[:fq]
       showcase_filter_query_params[:fq].each do |fq_param| 
+        fq << fq_param unless fq.include?(fq_param)
+      end
+    end
+    #mixin browse level facet filters
+    if bl_filter_query_params && bl_filter_query_params[:fq]
+      bl_filter_query_params[:fq].each do |fq_param| 
         fq << fq_param unless fq.include?(fq_param)
       end
     end
@@ -149,16 +163,17 @@ module Atrium::SolrHelper
   # collection scope filter.  If there are facets selected in the collection filter and
   # a menu item is selected it will combine the facet selection from params into
   # extra controller params to ensure that both are in the query correctly.
-  def prepare_extra_controller_params_for_collection_query(collection,showcase,params, extra_controller_params)
+
+  def prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params, extra_controller_params)
     extra_controller_params ||= {}
-    filter_query_params = get_current_filter_query_params(collection,showcase)
+    filter_query_params = get_current_filter_query_params(collection,showcase,browse_level)
     queries = []
     #build_lucene_query will be defined if hydra is present to add hydra rights into query etc, otherwise it will be ignored
     queries << build_lucene_query(params[:q]) if respond_to?(:build_lucene_query)
     queries << filter_query_params[:q] if (filter_query_params && filter_query_params[:q])
     queries << params[:q] if params[:q]
     queries.empty? ? q = params[:q] : q = queries.join(" AND ")
-    extra_controller_params.merge!(:q=>q)
+    extra_controller_params.merge!(:q=>q) unless q.nil?
     extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params && filter_query_params[:fq]
     #merge in user params before doing query to correctly handle facets in both extra controller params and params
     if (extra_controller_params && extra_controller_params[:fq])
@@ -174,9 +189,9 @@ module Atrium::SolrHelper
     extra_controller_params
   end
 
-  def reset_extra_controller_params_after_collection_query(collection,showcase,extra_controller_params)
+  def reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,extra_controller_params)
     extra_controller_params ||= {}
-    filter_query_params = get_current_filter_query_params(collection,showcase)
+    filter_query_params = get_current_filter_query_params(collection,showcase,browse_level)
     extra_controller_params.merge!(:fq=>filter_query_params[:fq]) if filter_query_params && filter_query_params[:fq]
     extra_controller_params
   end
@@ -266,11 +281,10 @@ module Atrium::SolrHelper
           else
             params[:f] = {}
           end
-          
-          extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,params,extra_controller_params)
+          extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,extra_controller_params)
           puts "extra controller params before: #{extra_controller_params.inspect}"
           (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
-          extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,extra_controller_params)
+          extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,extra_controller_params)
           puts "extra controller params after: #{extra_controller_params.inspect}"
           params[:f] = temp
         else
@@ -279,14 +293,14 @@ module Atrium::SolrHelper
       elsif params.has_key?(:f) && !params[:f].nil?
         temp = params[:f].dup
         params[:f] = {}
-        extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,params,extra_controller_params)
+        extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,extra_controller_params)
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
-        extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,extra_controller_params)
+        extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,extra_controller_params)
         params[:f] = temp
       else
-        extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,params,extra_controller_params)
+        extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,extra_controller_params)
         (response_without_f_param, @new_document_list) = get_search_results(params,extra_controller_params)
-        extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,extra_controller_params)
+        extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,extra_controller_params)
       end
       display_facet = response_without_f_param.facets.detect {|f| f.name == browse_facet_name}
       display_facet_with_f = response.facets.detect {|f| f.name == browse_facet_name}
@@ -320,5 +334,23 @@ module Atrium::SolrHelper
     atrium_browse_page= Atrium::BrowsePage.with_selected_facets(showcase_id,facet_hash)
     logger.error("Get browse page: #{atrium_browse_page.inspect}")
     return atrium_browse_page
+  end
+
+  # Checks if a browse level has been navigated to for a showcase
+  # @param [Atrium::Showcase] The current showcase in view
+  # @return [Atrium::BrowseLevel] It will return a browse level that is selected, otherwise it will return nil
+  def get_current_browse_level(showcase)
+    cur_browse_level = nil
+    if showcase
+      #keep recursing until lowest level that has a facet selected is found
+      showcase.browse_levels.each do |browse_level|
+        cur_browse_level = browse_level if browse_level.solr_facet_name && facet_selected?(browse_level.solr_facet_name) 
+      end
+    end
+    cur_browse_level
+  end
+
+  def facet_selected?(facet_name)
+    params[:f].include?(facet_name) if params[:f]
   end
 end

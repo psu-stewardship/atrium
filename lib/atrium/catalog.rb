@@ -49,6 +49,20 @@ module Atrium::Catalog
       else
         redirect_to new_atrium_showcase_path
       end
+    elsif params[:save_browse_level_filter_button]
+      params[:browse_level_id] ? browse_level_id = params[:browse_level_id] : browse_level_id = params[:edit_browse_level_filter]
+      @browse_level = Atrium::BrowseLevel.find(browse_level_id) if browse_level_id
+      logger.debug("pressed save browse level filter button")
+      if @browse_level
+        filter_query_params = search_session.clone
+        filter_query_params.delete(:save_browse_level_filter_button)
+        filter_query_params.delete(:collection_id)
+        filter_query_params.delete(:browse_level_id)
+        @browse_level.update_attributes(:filter_query_params=>filter_query_params)
+        redirect_to edit_atrium_showcase_path(@browse_level.atrium_showcase_id)
+      else
+        redirect_to new_atrium_showcase_path
+      end
     else
       delete_or_assign_search_session_params
 
@@ -57,10 +71,20 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params ||= {}
-      @extra_controller_params = prepare_extra_controller_params_for_collection_query(@atrium_collection,@showcase,params,@extra_controller_params) if @atrium_collection || @showcase
+      @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) if params[:browse_level_id]
+      #do not mixin whatever level I am on if I am editing the settings
+      showcase = @showcase unless params[:edit_showcase_filter]
+      collection = @atrium_collection unless params[:edit_collection_filter]
+      browse_level = @browse_level unless params[:edit_browse_level_filter]
+      @extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,@extra_controller_params) if collection || showcase || browse_level
+      puts "on search collection is: #{@atrium_collection.inspect}"
+      puts "on search showcase is: #{@showcase.inspect}"
+      puts "on search browse_level is: #{@browse_level.inspect}"
+      puts "on search params: #{params.inspect}"
+      puts "on search extra params: #{@extra_controller_params.inspect}"
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params = reset_extra_controller_params_after_collection_query(@atrium_collection,@showcase,@extra_controller_params) if @atrium_collection || @showcase
+      @extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,@extra_controller_params) if collection || showcase || browse_level
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 
