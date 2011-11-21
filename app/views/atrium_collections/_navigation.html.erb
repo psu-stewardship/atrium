@@ -1,7 +1,7 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
 <li>
   <%- if current_user -%>
-    <%= link_to "Customize Exhibit #{@atrium_exhbit}" , new_atrium_exhibit_atrium_browse_pages_path(@atrium_exhibit,:atrium_browse_page_type=>"atrium_exhibit"), :class=>"customize"%>
+    <%= link_to "Customize Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_browse_pages_path(@atrium_collection,:atrium_browse_page_type=>"atrium_collection"), :class=>"customize"%>
 
   <%- end %>
 </li>
@@ -9,7 +9,7 @@
 <div class="facet-list">
   <%- if @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
       <ul>
-        <%- @atrium_exhibit.showcases.each do |showcase| -%>
+        <%- @atrium_collection.showcases.each do |showcase| -%>
           <%- if current_user -%>
           <li>
             <%= link_to "Customize Showcase: #{showcase.title}", new_atrium_showcase_atrium_browse_pages_path(showcase,:edit_browse_page=>true, :facet_selection=>params[:f]),:class=>"customize"%>
@@ -21,7 +21,7 @@
     <!-- recursively render the browse sets-->
     <%- @showcase_navigation_data.each do |showcase| -%>
       <%- unless showcase.browse_levels.nil? || showcase.browse_levels.empty? -%>
-        <%= render :partial => 'atrium_exhibits/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
+        <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
       <%- end -%>
       <%- if current_user  -%>
         <%- if !params[:edit_browse_page] -%>

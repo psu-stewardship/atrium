@@ -12,10 +12,10 @@
 
     <h3>Showcase Scope</h3>
     <p>
-      A showcase is a subset of a collection or exhibit. The scope of the showcase can be set to any possible query made in the search interface.
+      A showcase is a subset of a collection or collection. The scope of the showcase can be set to any possible query made in the search interface.
     </p>
-    <%- exhibit_id = @showcase.atrium_exhibit_id if @showcase.atrium_exhibit_id -%>
-    <%- query_params = {:exhibit_id=>exhibit_id,:edit_showcase_filter=>@showcase.id, :showcase_id=>@showcase.id} -%>
+    <%- collection_id = @showcase.atrium_collection_id if @showcase.atrium_collection_id -%>
+    <%- query_params = {:collection_id=>collection_id,:edit_showcase_filter=>@showcase.id, :showcase_id=>@showcase.id} -%>
     <%- query_params.merge!(@showcase.filter_query_params) if @showcase.filter_query_params -%>
     <%= link_to("Set Showcase Scope", catalog_index_path(query_params)).html_safe %>
 
@@ -62,8 +62,8 @@
   <%- end -%>
   <%= form_for(@showcase) do |f| %>
     <%- @level = Atrium::BrowseLevel.new-%>
-    <%- @showcase.set_number = @atrium_exhibit.showcases.size + 1 -%>
-    <%- @showcase.atrium_exhibit_id = @atrium_exhibit.id %>
+    <%- @showcase.set_number = @atrium_collection.showcases.size + 1 -%>
+    <%- @showcase.atrium_collection_id = @atrium_collection.id %>
     <%= f.fields_for :browse_levels, @level do |level_fields| %>
       <%- if @showcase.browse_levels.empty? -%>
         <%- available_facets = Blacklight.config[:facet][:field_names] -%>

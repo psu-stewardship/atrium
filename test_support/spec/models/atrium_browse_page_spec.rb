@@ -2,9 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::BrowsePage do
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
-    @exhibit.save
-    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @collection = Atrium::Collection.new
+    @collection.save
+    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
     @showcase.save
     @browse_page = Atrium::BrowsePage.new(:atrium_showcase_id=>@showcase.id)
     @browse_page.save
@@ -13,7 +13,7 @@ describe Atrium::BrowsePage do
   after(:each) do
     @browse_page.delete
     @showcase.delete
-    @exhibit.delete
+    @collection.delete
     begin
       @item.delete
     rescue
@@ -125,7 +125,7 @@ describe Atrium::BrowsePage do
       @browse_page.showcase.should == @showcase
     end
 
-    it "should throw an exception if exhibit not set" do
+    it "should throw an exception if collection not set" do
       @fail_browse_page = Atrium::BrowsePage.new
       threw_exception = false
       begin
@@ -144,7 +144,7 @@ describe Atrium::BrowsePage do
       #it will throw an exception if this does not work
     end
 
-    it "should only allow setting browse_page facet selection associated with facets that are defined within exhibit" do
+    it "should only allow setting browse_page facet selection associated with facets that are defined within collection" do
       pending "..."
     end
 
@@ -202,7 +202,7 @@ describe Atrium::BrowsePage do
 
     it "should return correct browse page with same facet selections but different showcase" do
       @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
-      @showcase2 = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>2)
+      @showcase2 = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>2)
       @showcase2.save!
       @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase2.id})
       @browse_page2.save!

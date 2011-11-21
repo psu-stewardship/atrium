@@ -2,7 +2,9 @@
 
 <h1>Configure Browse Page</h1>
 
-<%= link_to 'Select Featured', atrium_browse_pages_path(:exhibit_id=>params[:exhibit_id],:f=>params[:f]), :class=>'colorbox', :action=> atrium_browse_page_path %>
+<%= link_to 'Select Featured', atrium_browse_pages_path(:collection_id=>params[:collection_id],:f=>params[:f]), :class=>'colorbox', :action=> atrium_browse_page_path %>
 
 <%= render :partial => "form" %>
+
+
 

@@ -2,9 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::BrowsePage::Item do
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
-    @exhibit.save!
-    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @collection = Atrium::Collection.new
+    @collection.save!
+    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
     @showcase.save!
     @browse_page = Atrium::BrowsePage.new(:atrium_showcase_id=>@showcase.id)
     @browse_page.save!
@@ -16,7 +16,7 @@ describe Atrium::BrowsePage::Item do
     @browse_page.delete
     @item.delete
     @showcase.delete
-    @exhibit.delete
+    @collection.delete
     begin
     @fail_item.delete
     rescue

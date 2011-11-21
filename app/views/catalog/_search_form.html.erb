@@ -11,9 +11,9 @@
     <%= search_as_hidden_fields(:omit_keys => [:q, :search_field, :qt, :page]).html_safe %>
 
     <%= submit_tag 'search', :class=>'submit', :name=>'search_button' %>
-    <%- if params[:exhibit_id] && params[:edit_exhibit_filter] -%>
+    <%- if params[:collection_id] && params[:edit_collection_filter] -%>
       <div id="prompt" class="ui-state-highlight ui-corner-all">
-        <%= submit_tag 'Set Exhibit Scope to Here', :class=>'submit', :name=>'save_exhibit_filter_button' %>
+        <%= submit_tag 'Set Collection Scope to Here', :class=>'submit', :name=>'save_collection_filter_button' %>
       </div>
     <%- elsif params[:edit_showcase_filter] -%>
       <div id="prompt" class="ui-state-highlight ui-corner-all">

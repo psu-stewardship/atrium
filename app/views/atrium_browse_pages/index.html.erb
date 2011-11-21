@@ -1,5 +1,5 @@
-<%= link_to 'Select Featured', catalog_index_path(:exhibit_id=>params[:exhibit_id],:f=>params[:f]), :class=>'colorbox' %>
+<%= link_to 'Select Featured', catalog_index_path(:collection_id=>params[:collection_id],:f=>params[:f]), :class=>'colorbox' %>
 
 <%= render :partial => 'atrium_browse_pages/browse_page_navigation', :locals=>{:showcase_number=>@showcase.set_number, :browse_levels=>@showcase.browse_levels, :browse_facets=>@showcase.browse_facet_names}%>
-<%# render :partial => 'atrium_exhibits/navigation' %>
+<%# render :partial => 'atrium_collections/navigation' %>
 

@@ -16,7 +16,7 @@
 </div>
 
 
-<%#render :partial=>'shared/exhibit_title_header'%>
+<%#render :partial=>'shared/collection_title_header'%>
 <%- if @atrium_browse_page && @atrium_browse_page.descriptions-%>
   <h2>Description</h2>
    <ol>
@@ -39,5 +39,5 @@
 <h2>Complete Sources</h2>
 <a id="toggle_sources" href="#" title="Hide the complete listing of sources.">Hide Complete Sources</a>
 <div id="complete_sources">
-  <%= render :partial=>'atrium_exhibits/browse_index'%>
+  <%= render :partial=>'atrium_collections/browse_index'%>
 </div>

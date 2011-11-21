@@ -1,40 +1,40 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::ExhibitsHelper do
+describe Atrium::CollectionsHelper do
 
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
+    @collection = Atrium::Collection.new
   end
 
   after(:each) do
     begin
-      @exhibit.delete
+      @collection.delete
     rescue
     end
   end
-  describe "get_exhibits_list" do
-    it "should call find with all on Atrium::Exhibit class" do
-      Atrium::Exhibit.expects(:find).with(:all)
-      helper.get_exhibits_list
+  describe "get_collections_list" do
+    it "should call find with all on Atrium::Collection class" do
+      Atrium::Collection.expects(:find).with(:all)
+      helper.get_collections_list
     end
   end
 
-  describe "edit_exhibit_link" do
-    it "should return properly formatted edit exhibit link" do
-      helper.stubs(:params).returns({:controller=>"atrium_exhibits", :id=>"my_exhibit_id"})
-      helper.edit_exhibit_link.should == "/atrium_exhibits/my_exhibit_id/edit?render_search=false"
-      helper.stubs(:params).returns({:exhibit_id=>"my_exhibit_id"})
-      helper.edit_exhibit_link.should == "/atrium_exhibits/my_exhibit_id/edit?render_search=false"
-      helper.edit_exhibit_link("my_class").should == "/atrium_exhibits/my_exhibit_id/edit?class=my_class&render_search=false"
+  describe "edit_collection_link" do
+    it "should return properly formatted edit collection link" do
+      helper.stubs(:params).returns({:controller=>"atrium_collections", :id=>"my_collection_id"})
+      helper.edit_collection_link.should == "/atrium_collections/my_collection_id/edit?render_search=false"
+      helper.stubs(:params).returns({:collection_id=>"my_collection_id"})
+      helper.edit_collection_link.should == "/atrium_collections/my_collection_id/edit?render_search=false"
+      helper.edit_collection_link("my_class").should == "/atrium_collections/my_collection_id/edit?class=my_class&render_search=false"
     end
   end
 
-  describe "browse_exhibit_link" do
-    it "should return properly formatted browse exhibit link" do
-      helper.stubs(:params).returns({:controller=>"atrium_exhibits",:id=>"my_exhibit_id"})
-      helper.browse_exhibit_link.should == "/atrium_exhibits/my_exhibit_id"
-      helper.stubs(:params).returns({:exhibit_id=>"my_exhibit_id"})
-      helper.browse_exhibit_link.should == "/atrium_exhibits/my_exhibit_id"
+  describe "browse_collection_link" do
+    it "should return properly formatted browse collection link" do
+      helper.stubs(:params).returns({:controller=>"atrium_collections",:id=>"my_collection_id"})
+      helper.browse_collection_link.should == "/atrium_collections/my_collection_id"
+      helper.stubs(:params).returns({:collection_id=>"my_collection_id"})
+      helper.browse_collection_link.should == "/atrium_collections/my_collection_id"
     end
   end
 
@@ -52,21 +52,21 @@ describe Atrium::ExhibitsHelper do
       catalog_facet_params = HashWithIndifferentAccess.new({:q => "query",
                 :search_field => "search_field",
                 :f => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
-                :exhibit_id => 'exhibit_PID',
+                :collection_id => 'collection_PID',
                 :controller => "catalog"
       })
       helper.stubs(:params).returns(catalog_facet_params)
     end
-    it "should redirect to exhibit action" do
+    it "should redirect to collection action" do
       response = helper.get_browse_facet_path("facet_solr_field", "item_value", ["facet_field_1","facet_field_2"], "1")
-      response.should == "/atrium_exhibits/exhibit_PID?class=browse_facet_select&exhibit_id=exhibit_PID&f[facet_field_1][]=value1&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&f[facet_solr_field][]=item_value&showcase_number=1"
+      response.should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&f[facet_solr_field][]=item_value&showcase_number=1"
     end
 
     it "if an item is selected and generating a path for alternate selection at the same level then the path should not include any child facet selections that may exist" do
       catalog_facet_params = {:q => "query",
                 :search_field => "search_field",
                 :f => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2a"]},
-                :exhibit_id => 'exhibit_PID',
+                :collection_id => 'collection_PID',
                 :controller => "catalog"
       }
       helper.stubs(:params).returns(catalog_facet_params)
@@ -75,7 +75,7 @@ describe Atrium::ExhibitsHelper do
       #                     {:solr_facet_name=>"facet_field_2",:label=>"my_label2",:selected=>"value2a",:values=>["value2","value2a"]}]
       #test making link for something not currently selected that should have child facet selection removed
       browse_facets = ["facet_field_1","facet_field_2"]
-      helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"1").should == "/atrium_exhibits/exhibit_PID?class=browse_facet_select&exhibit_id=exhibit_PID&f[facet_field_1][]=value1a&showcase_number=1" 
+      helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"1").should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1a&showcase_number=1"
     end
   end
 
@@ -83,23 +83,23 @@ describe Atrium::ExhibitsHelper do
     before do
       @catalog_facet_params = {
                 :f => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
-                :id => 'exhibit_PID',
-                :controller => "atrium_exhibits",
+                :id => 'collection_PID',
+                :controller => "atrium_collections",
                  :action=>"show"
       }
       helper.stubs(:params).returns(@catalog_facet_params)
     end
-    it "should redirect to exhibit action" do
+    it "should redirect to collection action" do
       helper.stubs(:params).returns(@catalog_facet_params)
       item = {"facet_field" => ["facet_value"]}
       item.stubs(:value).returns(["value1"])
       #helper.stubs(:remove_facet_params).returns({"f" => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
-      #          "id" => 'exhibit_PID',
-      #          "controller" => "atrium_exhibits"
+      #          "id" => 'collection_PID',
+      #          "controller" => "atrium_collections"
       #})      
       response = helper.get_selected_browse_facet_path("facet_field_1", item, ["facet_field_1", "browse_facet"],"1")
       #all browse facets should be removed since at the top, and the only current facet in the params is facet_field_1, so facet_field_2 stays
-      response.should == "/atrium_exhibits/exhibit_PID?exhibit_id=exhibit_PID&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&showcase_number=1"
+      response.should == "/atrium_collections/collection_PID?collection_id=collection_PID&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&showcase_number=1"
     end
   end
 
@@ -107,8 +107,8 @@ describe Atrium::ExhibitsHelper do
     before do
       @catalog_facet_params = {
                 :f => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
-                :id => 'exhibit_PID',
-                :controller => "atrium_exhibits",
+                :id => 'collection_PID',
+                :controller => "atrium_collections",
                  :action=>"show"
       }
       helper.stubs(:params).returns(@catalog_facet_params)

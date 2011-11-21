@@ -8,7 +8,7 @@
   <div id="showUtils">
     <span class="edit-browse">
       <%# if editor? -%>
-        <%= link_to 'Edit', {:action=>"edit", :id=>@atrium_exhibit.id} %> |
+        <%= link_to 'Edit', {:action=>"edit", :id=>@atrium_collection.id} %> |
         <%= link_to 'Back to Search', catalog_index_path %>
       <%# end -%>
     </span>
@@ -16,7 +16,7 @@
 </div>
 
 
-<%=render :partial=>'shared/exhibit_title_header'%>
+<%=render :partial=>'shared/collection_title_header'%>
 <%#render :partial=>'navigation'%>
 
 <%# if @atrium_browse_page && @atrium_browse_page.descriptions -%>
@@ -31,15 +31,15 @@
   </ol>
 <%- end -%>
 
-<%- if false #@atrium_exhibit && @atrium_exhibit.collections.any? -%>
+<%- if false #@atrium_collection && @atrium_collection.collections.any? -%>
   <h2>Collection details</h2>
   <dl class="item-list featured">
-    <%- @atrium_exhibit.collections(:response_format=>:solr).each_with_index do |document, counter| -%>
+    <%- @atrium_collection.collections(:response_format=>:solr).each_with_index do |document, counter| -%>
       <%- item = load_af_instance_from_solr(document) -%>      
       <%= render_document_index_partial(SolrDocument.new(document), item.title, counter, :index) %>
     <%- end -%>
   </dl>
-    <%- collection = @atrium_exhibit.collections.first-%>
+    <%- collection = @atrium_collection.collections.first-%>
     <%- if collection.descriptions.any? -%>
       <em>Collection Description</em>
       <%- collection.descriptions.each do |description| -%>

@@ -5,12 +5,12 @@ class AtriumShowcasesController < ApplicationController
   include Blacklight::SolrHelper
   include AtriumHelper
   include Atrium::SolrHelper
-  include Atrium::ExhibitsHelper
+  include Atrium::CollectionsHelper
 
   before_filter :atrium_html_head
   layout 'atrium'
 
-  before_filter :initialize_exhibit, :except=>[:index, :create]
+  before_filter :initialize_collection, :except=>[:index, :create]
   before_filter :atrium_html_head
 
   def new
@@ -40,17 +40,17 @@ class AtriumShowcasesController < ApplicationController
 
   def edit
     @showcase = Atrium::Showcase.find(params[:id])
-    @atrium_exhibit = @showcase.exhibit
+    @atrium_collection = @showcase.collection
     @showcase_navigation_data = get_showcase_navigation_data
   end
 
   def update
     @showcase = Atrium::Showcase.find(params[:id])
     if @showcase.update_attributes(params[:atrium_showcase])
-      #refresh_browse_level_label(@atrium_exhibit)
+      #refresh_browse_level_label(@atrium_collection)
       flash[:notice] = 'Showcase was successfully updated.'
     end
-    redirect_to :action => "edit", :exhibit_id=>@showcase.atrium_exhibit_id
+    redirect_to :action => "edit", :collection_id=>@showcase.atrium_collection_id
   end
 
   def show
@@ -61,7 +61,7 @@ class AtriumShowcasesController < ApplicationController
     if @atrium_browse_page && !@atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
       logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
       selected_document_ids = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',')
-      logger.debug("Exhibit Selected Highlight: #{selected_document_ids.inspect}")
+      logger.debug("Collection Selected Highlight: #{selected_document_ids.inspect}")
       @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
     end
   end
@@ -70,6 +70,6 @@ class AtriumShowcasesController < ApplicationController
     @showcase = Atrium::Showcase.find(params[:id])
     Atrium::Showcase.destroy(params[:id])
     flash[:notice] = 'Showcase'+params[:id] +'was deleted successfully.'
-    redirect_to :controller=>"atrium_exhibits", :action => "edit", :id=>@showcase.atrium_exhibit_id
+    redirect_to :controller=>"atrium_collections", :action => "edit", :id=>@showcase.atrium_collection_id
   end
 end

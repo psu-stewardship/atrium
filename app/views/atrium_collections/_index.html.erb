@@ -1,0 +1,19 @@
+<%- collections = get_collections_list -%>
+<%- if collections.size > 0 -%>
+  <ul class="collection-list">
+    <%- collections.each do |collection| -%>
+      <li>
+        <h2><%=link_to collection.title.blank? ? "Unnamed Collection" : collection.title, atrium_collection_path(collection) %></h2>
+      </li>
+    <%- end -%>
+  </ul>
+<%- else -%>
+  <p>No collections found.</p>
+<%- end -%>
+
+<%- if current_user -%>
+    <%- @atrium_collection = Atrium::Collection.new-%>
+    <%= form_for (@atrium_collection) do |f| %>
+      <%= f.submit 'Create New Collection' %>
+    <%- end -%>
+<%- end -%>

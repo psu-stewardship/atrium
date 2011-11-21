@@ -1,7 +1,7 @@
 class AtriumDescriptionsController < ApplicationController
 
   include Blacklight::SolrHelper
-  include Atrium::ExhibitsHelper
+  include Atrium::CollectionsHelper
   include Atrium::SolrHelper
   include CatalogHelper
   include BlacklightHelper
@@ -10,7 +10,7 @@ class AtriumDescriptionsController < ApplicationController
   before_filter :atrium_html_head
   layout 'atrium'
 
-  before_filter :initialize_exhibit
+  before_filter :initialize_collection
 
   def new
    @atrium_browse_page = Atrium::BrowsePage.find(params[:atrium_browse_page_id])
@@ -32,7 +32,7 @@ class AtriumDescriptionsController < ApplicationController
   def update
      @atrium_description = Atrium::Description.find(params[:id])
     if @atrium_description.update_attributes(params[:atrium_description])
-      #refresh_browse_level_label(@atrium_exhibit)
+      #refresh_browse_level_label(@atrium_collection)
       flash[:notice] = 'Description was successfully updated.'
     end
     redirect_to :action => "edit", :id=>@atrium_description.id

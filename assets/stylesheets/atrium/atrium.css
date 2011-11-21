@@ -18,17 +18,17 @@ select {
 }
 
 /** Sidebar  **/
-.blacklight-atrium_exhibits-edit .sidebar h2,
+.blacklight-atrium_collections-edit .sidebar h2,
 .blacklight-atrium_showcases-edit .sidebar h2 {
   margin-bottom:.3em;
 }
 
-.exhibit-controls {
+.collection-controls {
   margin-left:1em;
   margin-top:0;
 }
 
-.exhibit-controls li {
+.collection-controls li {
   list-style-type:none;
 }
 

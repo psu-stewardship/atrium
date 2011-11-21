@@ -2,15 +2,15 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::Showcase do
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
-    @exhibit.save
-    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @collection = Atrium::Collection.new
+    @collection.save
+    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
     @showcase.save
   end
 
   after(:each) do
     @showcase.delete
-    @exhibit.delete
+    @collection.delete
   end
 
   describe "#label" do

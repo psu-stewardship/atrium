@@ -22,7 +22,7 @@
 </div>
 <%= render :partial=>'shared/sort_and_per_page', :locals => {:response=>@browse_response} if @browse_response.response['numFound'] > 10 %>
 
-<div id="documents" class="exhibit-listing">
+<div id="documents" class="collection-listing">
   <%#unless featured_list.blank? -%>
     <%# if @browse_response.docs.current_page.eql?(1) %>
         <h2>Featured Sources</h2>
@@ -58,7 +58,7 @@
 </div>
 
 
-<%= render :partial=>'shared/exhibit_complete_list', :locals => {:document_list=>@browse_document_list, :response=>@browse_response} %>
+<%= render :partial=>'shared/collection_complete_list', :locals => {:document_list=>@browse_document_list, :response=>@browse_response} %>
 
 <div class="pagination">
   <%= will_paginate @browse_response.docs, :page_links => false, :class => 'prev_next_links' %>

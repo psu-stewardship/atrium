@@ -12,11 +12,11 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
-    when /the new exhibit page/
-      new_atrium_exhibit_path
+    when /the new collection page/
+      new_atrium_collection_path
 
-    when /the configure exhibit page/
-      '/atrium_exhibits/\./edit'
+    when /the configure collection page/
+      '/atrium_collections/\./edit'
       
     when /the catalog page/
       catalog_index_path

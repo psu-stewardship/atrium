@@ -22,13 +22,13 @@
 <div id="hd">
         <div class="yui-g">
           <div class="yui-u first">
-            <%- if params[:exhibit_id] || (params[:controller] == "exhibits" && params[:id]) -%>
+            <%- if params[:collection_id] || (params[:controller] == "collections" && params[:id]) -%>
               <table>
                 <tr>
                   <td>
-                    <%- params[:exhibit_id] ? exhibit_id = params[:exhibit_id] : exhibit_id = params[:id] -%>
-                    <%- @atrium_exhibit.nil? ? exhibit = Atrium::Exhibit.find(exhibit_id) : exhibit = @atrium_exhibit -%>
-                    <h3><%# link_to_exhibit :exhibit_id=>exhibit_id, :label=>"#{exhibit.title}", :style=>"text-decoration:none;border-bottom:medium none" %></h3>
+                    <%- params[:collection_id] ? collection_id = params[:collection_id] : collection_id = params[:id] -%>
+                    <%- @atrium_collection.nil? ? collection = Atrium::Collection.find(collection_id) : collection = @atrium_collection -%>
+                    <h3><%# link_to_collection :collection_id=>collection_id, :label=>"#{collection.title}", :style=>"text-decoration:none;border-bottom:medium none" %></h3>
                   </td>
                 </tr>
               </table>
@@ -53,30 +53,30 @@
 
         <div class="yui-b sidebar">
           <%- if params[:controller] == "catalog" -%>
-            <%- if params[:render_search].blank? || params[:class] == "edit_exhibit" -%>
-              <%- if params[:exhibit_id] -%>
-                <h3><%# link_to_exhibit(:label=>"Back to Browse Exhibit") %></h3>
+            <%- if params[:render_search].blank? || params[:class] == "edit_collection" -%>
+              <%- if params[:collection_id] -%>
+                <h3><%# link_to_collection(:label=>"Back to Browse Collection") %></h3>
               <%- end -%>
             <%- else -%>
-              <%# render :partial => 'shared/exhibit_search_form' %>
-              <%= render :partial => 'atrium_exhibits/navigation' %>
-              <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+              <%# render :partial => 'shared/collection_search_form' %>
+              <%= render :partial => 'atrium_collections/navigation' %>
+              <%= render :partial => 'atrium_collections/edit_navigation' %>
             <%- end -%>
-          <%- elsif params[:controller] == "atrium_exhibits" && !(params[:action] == "show")-%>
-            <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+          <%- elsif params[:controller] == "atrium_collections" && !(params[:action] == "show")-%>
+            <%= render :partial => 'atrium_collections/edit_navigation' %>
           <%- elsif params[:controller] == "atrium_showcases"&& !(params[:action] == "show")-%>
-            <%= render :partial => 'atrium_exhibits/edit_navigation' %>
+            <%= render :partial => 'atrium_collections/edit_navigation' %>
           <%- elsif params[:controller] == "atrium_showcases" && params[:action] == "show" && params[:edit_browse_page]=="true"-%>
              <%= render :partial => 'atrium_browse_pages/browse_page_navigation' %>
-          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && params[:edit_browse_page]=="true"-%>
+          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && params[:edit_browse_page]=="true"-%>
              <%= render :partial => 'atrium_browse_pages/browse_page_navigation' %>
-          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show"-%>
-            <%= render :partial => 'shared/exhibit_search_form' %>
-            <%= render :partial => 'atrium_exhibits/navigation' %>
+          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show"-%>
+            <%= render :partial => 'shared/collection_search_form' %>
+            <%= render :partial => 'atrium_collections/navigation' %>
           <%- elsif params[:controller] == "atrium_descriptions"-%>
-          <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "atrium_exhibits" && params[:action] == "index")-%>
-            <%= render :partial => 'shared/exhibit_search_form' %>
-            <%= render :partial => 'atrium_exhibits/navigation' %>
+          <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "atrium_collections" && params[:action] == "index")-%>
+            <%= render :partial => 'shared/collection_search_form' %>
+            <%= render :partial => 'atrium_collections/navigation' %>
           <%- end -%>
           <%= sidebar_items.join('').html_safe %>
         </div>

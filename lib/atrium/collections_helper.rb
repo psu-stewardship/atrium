@@ -1,4 +1,4 @@
-module Atrium::ExhibitsHelper
+module Atrium::CollectionsHelper
 
   # Standard display of a facet value in a list. Used in both _facets sidebar
   # partial and catalog/facet expanded list. Will output facet value name as
@@ -10,12 +10,12 @@ module Atrium::ExhibitsHelper
     logger.debug("Params: #{params.inspect}")
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
-    if params[:exhibit_id]
-      #p.merge!(:id=>params[:exhibit_id])
-      p.merge!(:exhibit_id=>params[:exhibit_id])
-    elsif params[:id] && params[:controller] == "atrium_exhibits"
+    if params[:collection_id]
+      #p.merge!(:id=>params[:collection_id])
+      p.merge!(:collection_id=>params[:collection_id])
+    elsif params[:id] && params[:controller] == "atrium_collections"
       #p.merge!(:id=>params[:id])
-      p.merge!(:exhibit_id=>params[:id])
+      p.merge!(:collection_id=>params[:id])
       #p.merge!(:controller=>params[:controller])
     end
     if params[:edit_browse_page]
@@ -25,7 +25,7 @@ module Atrium::ExhibitsHelper
     p = remove_related_facet_params(facet_solr_field, p, browse_facets, showcase_number)
     p = add_browse_facet_params(facet_solr_field,value,p)
     #it should only return a path for current facet selection plus parent selected values so if generating for multiple levels, than need to ignore some potentially
-    #params[:action] == "edit" ? edit_atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"})) : atrium_exhibit_path(p.merge!({:class=>"browse_facet_select"}))
+    #params[:action] == "edit" ? edit_atrium_collection_path(p.merge!({:class=>"browse_facet_select"})) : atrium_collection_path(p.merge!({:class=>"browse_facet_select"}))
     atrium_showcase_path(p.merge!({:class=>"browse_facet_select"}))
   end
 
@@ -44,19 +44,19 @@ module Atrium::ExhibitsHelper
     p = HashWithIndifferentAccess.new
     p.merge!(:f=>params[:f].dup) if params[:f]
     p = remove_related_facet_params(facet_solr_field, p, browse_facets, showcase_number)
-    if params[:exhibit_id]
-      p.merge!(:id=>params[:exhibit_id])
-      p.merge!(:exhibit_id=>params[:exhibit_id])
-    elsif params[:id] && params[:controller] == "atrium_exhibits"
+    if params[:collection_id]
+      p.merge!(:id=>params[:collection_id])
+      p.merge!(:collection_id=>params[:collection_id])
+    elsif params[:id] && params[:controller] == "atrium_collections"
       p.merge!(:id=>params[:id])
-      p.merge!(:exhibit_id=>params[:id])
+      p.merge!(:collection_id=>params[:id])
       p.merge!(:controller=>params[:controller])
     end
     if params[:edit_browse_page]
       p.merge!(:edit_browse_page=>true)
     end
     p.merge!(:id=>showcase_number)
-   # params[:action] == "edit" ? edit_atrium_exhibit_path(p) : atrium_exhibit_path(p)
+   # params[:action] == "edit" ? edit_atrium_collection_path(p) : atrium_collection_path(p)
     atrium_showcase_path(p)
   end
 
@@ -97,29 +97,29 @@ module Atrium::ExhibitsHelper
     pluralize(count, 'document')
   end
 
-  def get_exhibits_list
-    Atrium::Exhibit.find(:all)
+  def get_collections_list
+    Atrium::Collection.find(:all)
   end
 
-  # Return the link to browse an exhibit
+  # Return the link to browse an collection
   # @return [String] a formatted url to be used in href's etc.
-  def browse_exhibit_link
-    atrium_exhibit_path(get_exhibit_id)
+  def browse_collection_link
+    atrium_collection_path(get_collection_id)
   end
 
-  # Returns the current exhibit id in the parameters.
-  # If the current controller is atrium_exhibits it expects the exhibit id to be in params[:id]
-  # Otherwise, it expects it to be in params[:exhibit_id]
-  # @return [String] the exhibit id
-  def get_exhibit_id
-    params[:controller] == "atrium_exhibits" ? params[:id] : params[:exhibit_id]
+  # Returns the current collection id in the parameters.
+  # If the current controller is atrium_collections it expects the collection id to be in params[:id]
+  # Otherwise, it expects it to be in params[:collection_id]
+  # @return [String] the collection id
+  def get_collection_id
+    params[:controller] == "atrium_collections" ? params[:id] : params[:collection_id]
   end
 
-  # Return the link to edit an exhibit
+  # Return the link to edit an collection
   # @param [String] a css class to use in the link if necessary
   # @return [String] a formatted url to be used in href's etc.
-  def edit_exhibit_link(css_class=nil)
-    edit_atrium_exhibit_path(get_exhibit_id, :class => css_class, :render_search=>"false")
+  def edit_collection_link(css_class=nil)
+    edit_atrium_collection_path(get_collection_id, :class => css_class, :render_search=>"false")
   end
 
 end

@@ -17,23 +17,23 @@ module Atrium::Catalog
   include Atrium::SolrHelper
 
   def self.included(klass)
-    klass.before_filter :initialize_exhibit
+    klass.before_filter :initialize_collection
   end
 
   def index
     stylesheet_links << ['atrium/atrium', {:media=>'all'}]
 
     #put in atrium index code here
-    if params[:save_exhibit_filter_button]
-      logger.debug("pressed save exhibit filter button")
-      if @atrium_exhibit
+    if params[:save_collection_filter_button]
+      logger.debug("pressed save collection filter button")
+      if @atrium_collection
         filter_query_params = search_session.clone
-        filter_query_params.delete(:save_exhibit_filter_button)
-        filter_query_params.delete(:exhibit_id)
-        @atrium_exhibit.update_attributes(:filter_query_params=>filter_query_params)
-        redirect_to edit_atrium_exhibit_path(@atrium_exhibit.id)
+        filter_query_params.delete(:save_collection_filter_button)
+        filter_query_params.delete(:collection_id)
+        @atrium_collection.update_attributes(:filter_query_params=>filter_query_params)
+        redirect_to edit_atrium_collection_path(@atrium_collection.id)
       else
-        redirect_to new_atrium_exhibit_path
+        redirect_to new_atrium_collection_path
       end
     elsif params[:save_showcase_filter_button]
       params[:showcase_id] ? showcase_id = params[:showcase_id] : showcase_id = params[:edit_showcase_filter]
@@ -42,7 +42,7 @@ module Atrium::Catalog
       if @showcase
         filter_query_params = search_session.clone
         filter_query_params.delete(:save_showcase_filter_button)
-        filter_query_params.delete(:exhibit_id)
+        filter_query_params.delete(:collection_id)
         filter_query_params.delete(:showcase_id)
         @showcase.update_attributes(:filter_query_params=>filter_query_params)
         redirect_to edit_atrium_showcase_path(@showcase.id)
@@ -57,10 +57,10 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params ||= {}
-      @extra_controller_params = prepare_extra_controller_params_for_exhibit_query(@atrium_exhibit,@showcase,params,@extra_controller_params) if @atrium_exhibit || @showcase
+      @extra_controller_params = prepare_extra_controller_params_for_collection_query(@atrium_collection,@showcase,params,@extra_controller_params) if @atrium_collection || @showcase
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params = reset_extra_controller_params_after_exhibit_query(@atrium_exhibit,@showcase,@extra_controller_params) if @atrium_exhibit || @showcase
+      @extra_controller_params = reset_extra_controller_params_after_collection_query(@atrium_collection,@showcase,@extra_controller_params) if @atrium_collection || @showcase
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 

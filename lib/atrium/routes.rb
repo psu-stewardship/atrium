@@ -24,19 +24,19 @@ module Atrium
     end
 
     def default_route_sets
-      [:atrium_exhibits, :catalog, :get]
+      [:atrium_collections, :catalog, :get]
     end
 
     module RouteSets
 
-      def atrium_exhibits
+      def atrium_collections
         add_routes do |options|
-          resources :atrium_exhibits, :atrium_showcases do
+          resources :atrium_collections, :atrium_showcases do
             resource :atrium_browse_pages
           end
           resources :atrium_descriptions
-          match 'atrium_exhibits/:id/showcase_order',        :to => 'atrium_exhibit_showcase_order#index',       :as => 'atrium_exhibit_showcase_order'
-          match 'atrium_exhibits/:id/showcase_order/update', :to => 'atrium_exhibit_showcase_order#update',      :as => 'update_atrium_exhibit_showcase_order', :via => :post
+          match 'atrium_collections/:id/showcase_order',        :to => 'atrium_collection_showcase_order#index',       :as => 'atrium_collection_showcase_order'
+          match 'atrium_collections/:id/showcase_order/update', :to => 'atrium_collection_showcase_order#update',      :as => 'update_atrium_collection_showcase_order', :via => :post
           match 'atrium_showcases/:id/facet_order',          :to => 'atrium_showcase_facet_order#index',         :as => 'atrium_showcase_facet_order'
           match 'atrium_showcases/:id/facet_order/update',   :to => 'atrium_showcase_facet_order#update',        :as => 'update_atrium_showcase_facet_order', :via => :post
           match 'atrium_browse_pages/featured/:id',          :to => 'atrium_browse_pages#featured',              :as => 'atrium_browse_page_featured'

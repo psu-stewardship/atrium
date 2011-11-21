@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["hydra-tech@googlegroups.com"]
   s.homepage    = "http://projecthydra.org"
   s.summary     = %q{Atrium Rails Engine (requires Rails3) }
-  s.description = %q{Atrium is a Rails Engine for for creating exhibits in either a Blacklight or Hydra context. The full hydra stack includes: Blacklight, Fedora, Solr, active-fedora, solrizer, and om}
+  s.description = %q{Atrium is a Rails Engine for for creating collections in either a Blacklight or Hydra context. The full hydra stack includes: Blacklight, Fedora, Solr, active-fedora, solrizer, and om}
 
   s.add_dependency 'rails', '~>3.0.10'
   s.add_dependency 'blacklight', '~>3.0.0'

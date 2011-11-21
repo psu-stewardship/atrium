@@ -2,15 +2,15 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::Search::Facet do
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
-    @exhibit.save
-    @filter_facet = Atrium::Search::Facet.new({:atrium_exhibit_id=>@exhibit.id,:name=>"my_facet"})
+    @collection = Atrium::Collection.new
+    @collection.save
+    @filter_facet = Atrium::Search::Facet.new({:atrium_collection_id=>@collection.id,:name=>"my_facet"})
     @filter_facet.save
   end
 
   after(:each) do
     @filter_facet.delete
-    @exhibit.delete
+    @collection.delete
     begin
     @fail_facet.delete
     rescue
@@ -24,7 +24,7 @@ describe Atrium::Search::Facet do
     end
 
     it "name must be defined" do
-      @fail_facet = Atrium::Search::Facet.new({:atrium_exhibit_id=>@exhibit.id})
+      @fail_facet = Atrium::Search::Facet.new({:atrium_collection_id=>@collection.id})
       threw_exception = false
       begin
         @fail_facet.save!
@@ -35,8 +35,8 @@ describe Atrium::Search::Facet do
     end
   end
 
-  describe "#atrium_exhibit" do
-    it "atrium exhibit cannot be null" do
+  describe "#atrium_collection" do
+    it "atrium collection cannot be null" do
         @fail_facet = Atrium::Search::Facet.new({:name=>"my_facet"})
       threw_exception = false
       begin
@@ -47,8 +47,8 @@ describe Atrium::Search::Facet do
       threw_exception.should == true
     end
 
-    it "atrium exhibit should be correct" do
-      @filter_facet.exhibit.should == @exhibit
+    it "atrium collection should be correct" do
+      @filter_facet.collection.should == @collection
     end
   end
 end

@@ -1,6 +1,6 @@
 class AtriumShowcaseFacetOrderController < ApplicationController
   def index
-    @facet_order = Atrium::Exhibit.find(params[:id]).facet_order rescue nil
+    @facet_order = Atrium::Collection.find(params[:id]).facet_order rescue nil
 
     respond_to do |format|
       format.json  { render :json => @facet_order }

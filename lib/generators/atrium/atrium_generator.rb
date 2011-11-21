@@ -91,8 +91,8 @@ EOF
     # Add Atrium behaviors and Filters to ApplicationHelper
     def inject_atrium_helper_behavior
       insert_into_file "app/helpers/application_helper.rb", :after => 'module ApplicationHelper' do
-        "\n  # Adds a atrium exhibits behaviors into the application helper \n " +        
-          "  include Atrium::ExhibitsHelper\n" +
+        "\n  # Adds a atrium collections behaviors into the application helper \n " +
+          "  include Atrium::CollectionsHelper\n" +
           "  include CatalogHelper\n"
       end
     end
@@ -136,7 +136,7 @@ EOF
     # Setup the database migrations
     def copy_migrations
       # Can't get this any more DRY, because we need this order.
-      better_migration_template "create_atrium_exhibits.rb"
+      better_migration_template "create_atrium_collections.rb"
       better_migration_template "create_atrium_search_facets.rb"
       better_migration_template "create_atrium_showcases.rb"
       better_migration_template "create_atrium_browse_pages.rb"

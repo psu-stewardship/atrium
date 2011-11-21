@@ -1,0 +1,6 @@
+<%= render :partial => "shared/collection_title_header" %>
+<%- if @atrium_collection.collection_description%>
+  <%= @atrium_collection.collection_description.html_safe %>
+<%- else %>
+  <%= render :partial => "shared/default_collection_text"  %>
+<%- end %>

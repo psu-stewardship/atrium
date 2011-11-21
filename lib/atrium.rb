@@ -29,5 +29,5 @@ module Atrium
   
 end
 
-require 'atrium/exhibits_helper.rb'
+require 'atrium/collections_helper.rb'
 require 'atrium/solr_helper.rb'

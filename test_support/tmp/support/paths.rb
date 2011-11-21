@@ -21,10 +21,10 @@ module NavigationHelpers
       edit_catalog_path($1)
     when /the catalog index page/
       catalog_index_path
-    when /the new exhibit page/
-      new_atrium_exhibit_path
-    when /the edit exhibit page for id (.+)/
-      edit_atrium_exhibit_path($1)
+    when /the new collection page/
+      new_atrium_collection_path
+    when /the edit collection page for id (.+)/
+      edit_atrium_collection_path($1)
     # Add more mappings here.
     # Here is a more fancy example:
     #

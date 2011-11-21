@@ -2,9 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Atrium::BrowseLevel do
   before(:each) do
-    @exhibit = Atrium::Exhibit.new
-    @exhibit.save
-    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id,:set_number=>1)
+    @collection = Atrium::Collection.new
+    @collection.save
+    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
     @showcase.save
     @browse_level = Atrium::BrowseLevel.new(:atrium_showcase_id=>@showcase.id,:level_number=>1)
     @browse_level.save
