@@ -38,9 +38,9 @@
 <p>
   An collection is a subset of a collection. The scope of the collection can be set to any possible query made in the search interface.
 </p>
-<%- query_params = {:collection_id=>@atrium_collection.id,:edit_collection_filter=>@atrium_collection.id} -%>
+<%- query_params = {} -%>
 <%- query_params.merge!(@atrium_collection.filter_query_params) if @atrium_collection.filter_query_params -%>
-<%= link_to("Set Collection Scope", catalog_index_path(query_params)).html_safe %>
+<%= link_to("Set Collection Scope", edit_atrium_collection_filter_path(@atrium_collection.id, :f=>query_params[:f], :q=>query_params[:q])).html_safe %>
 
 <h3>Showcases</h3>
 

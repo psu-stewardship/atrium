@@ -70,18 +70,23 @@ module Atrium::Catalog
       extra_head_content << view_context.auto_discovery_link_tag(:atom, url_for(params.merge(:format => 'atom')), :title => "Atom for results")
       extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
-      @extra_controller_params ||= {}
-      @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) if params[:browse_level_id]
+      @extra_controller_params = {}
+      if params[:browse_level_id]
+        @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) 
+        @showcase = @browse_level.showcase if @browse_level
+        @atrium_collection = @showcase.collection if @showcase
+      end
+
       #do not mixin whatever level I am on if I am editing the settings
-      showcase = @showcase unless params[:edit_showcase_filter]
       collection = @atrium_collection unless params[:edit_collection_filter]
-      browse_level = @browse_level unless params[:edit_browse_level_filter]
+      showcase = @showcase unless params[:edit_showcase_filter] || params[:edit_collection_filter]
+      browse_level = @browse_level unless params[:edit_showcase_filter] || params[:edit_collection_filter] || params[:edit_browse_level_filter]
+      logger.debug("collection is: #{collection.inspect}")
+      logger.debug("showcase is: #{showcase.inspect}")
+      logger.debug("browse level is: #{browse_level.inspect}")
       @extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,@extra_controller_params) if collection || showcase || browse_level
-      puts "on search collection is: #{@atrium_collection.inspect}"
-      puts "on search showcase is: #{@showcase.inspect}"
-      puts "on search browse_level is: #{@browse_level.inspect}"
-      puts "on search params: #{params.inspect}"
-      puts "on search extra params: #{@extra_controller_params.inspect}"
+      logger.debug("params before search are: #{params.inspect}")
+      logger.debug("extra params before search are: #{@extra_controller_params.inspect}")
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
       @extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,@extra_controller_params) if collection || showcase || browse_level
@@ -89,7 +94,7 @@ module Atrium::Catalog
       search_session[:total] = @response.total unless @response.nil?
 
       respond_to do |format|
-        format.html { save_current_search_params }
+        format.html { save_current_search_params unless params[:edit_showcase_filter] ||  params[:edit_collection_filter] || params[:edit_browse_level_filter]}
         format.rss  { render :layout => false }
         format.atom { render :layout => false }
       end
