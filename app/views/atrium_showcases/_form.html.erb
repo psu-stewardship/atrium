@@ -1,91 +1,25 @@
-<%- if @showcase -%>
-  <%= form_for(@showcase, :html => {:class => 'atrium'}) do |f| %>
-    <fieldset>
-      <legend>General Configuration</legend>
-      <ol>
-        <li>
-          <%= f.label :label, 'Title:' %>
-          <%= f.text_field :label %>
-        </li>
-      </ol>
-    </fieldset>
 
-    <h3>Showcase Scope</h3>
-    <p>
-      A showcase is a subset of a collection or collection. The scope of the showcase can be set to any possible query made in the search interface.
-    </p>
-    <%- collection_id = @showcase.atrium_collection_id if @showcase.atrium_collection_id -%>
-    <%- query_params = {:collection_id=>collection_id,:edit_showcase_filter=>@showcase.id, :showcase_id=>@showcase.id} -%>
-    <%- query_params.merge!(@showcase.filter_query_params) if @showcase.filter_query_params -%>
-    <%= link_to("Set Showcase Scope", catalog_index_path(query_params)).html_safe %>
+<p>Initialized showcase: <%= "Browse_Page: #{@atrium_showcase.inspect}" %></p>
 
-    <h3>Group Showcase Items by Facets</h3>
-    <p>
-      Items present in a showcase can be further scoped by facet selections. These facets
-      are arranged in a single-level tree with each facet nested beneath its parent.
-    </p>
+
 
     <fieldset>
-      <legend>Current Facets</legend>
-      <%- if @showcase.browse_levels.any? -%>
-        <table>
-          <thead>
-            <tr>
-              <th>&nbsp;</th>
-              <th>&nbsp;</th>
-              <th>Facet</th>
-              <th>Label</th>
-              <th>Filter</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody data-resource="<%= update_atrium_showcase_facet_order_path %>" data-primary-label="Group By:" data-secondary-label="Then By:" class="sortable">
-            <%- @showcase.browse_levels.each_with_index do |level,index| -%>
-              <tr data-id="<%= level.id %>" data-order="<%= level.level_number %>" class="ui-state-default">
-                <%= f.fields_for :browse_levels, level do |level_form| %>
-		  <%- collection_id = @showcase.atrium_collection_id if @showcase.atrium_collection_id -%>
-                  <%- level_query_params = {:collection_id=>collection_id,:edit_browse_level_filter=>level.id, :browse_level_id=>level.id, :showcase_id=>@showcase.id} -%>
-		  <%- level_query_params.merge!(level.filter_query_params) if level.filter_query_params -%>
-                  <td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
-                  <td class="label"><%= level.level_number == 1 ? 'Group By:' : 'Then By:' %></td>
-                  <td><%=facet_field_labels[level.solr_facet_name]%></td>
-                  <td><%=level_form.text_field :label, :value=>level.label%></td>
-                  <td><%= link_to("Set Group By Filter", catalog_index_path(level_query_params)).html_safe %></td>
-                  <td><%=level_form.check_box :_destroy %></td>
-                <% end %>
-              </tr>
-            <%- end -%>
-          </tbody>
-        </table>
-      <%- end -%>
+     <legend>Browse Page</legend>
+       <div id="catalog-form" title="Catalog" style="display:none">
+         <span id="show_selected"> </span>
+         <%- unless @atrium_showcase.nil?-%>
+           <%= form_for(@atrium_showcase) do |f| %>
+            <%= f.text_field :atrium_exhibit_id %>
+            <%= f.fields_for :showcase_items, @atrium_showcase.showcase_items do |item| %>
+              <%= item.label :key, "key:" %>
+              <%= item.text_field :key, :size => 10, :value => @atrium_showcase.showcase_items["key"]  %>
+              <%= item.label :key, "Doc_ids:" %>
+              <%= item.text_field :solr_doc_ids, :size => 10, :value => @atrium_showcase.showcase_items["solr_doc_ids"]   %>
+              <%= item.hidden_field :solr_doc_ids %>
+            <% end %>
+            <%= f.submit 'Update browse' %>
+           <% end %>
+         <% end %>
+      </div>
     </fieldset>
-    <p>
-      <%= f.submit 'Update Showcase and Facets' %>
-    </p>
-  <%- end -%>
-  <%= form_for(@showcase) do |f| %>
-    <%- @level = Atrium::BrowseLevel.new-%>
-    <%- @showcase.set_number = @atrium_collection.showcases.size + 1 -%>
-    <%- @showcase.atrium_collection_id = @atrium_collection.id %>
-    <%= f.fields_for :browse_levels, @level do |level_fields| %>
-      <%- if @showcase.browse_levels.empty? -%>
-        <%- available_facets = Blacklight.config[:facet][:field_names] -%>
-      <%- else -%>
-        <%- facet_names = @showcase.browse_levels.collect {|level| level.solr_facet_name}-%>
-        <%- available_facets = Blacklight.config[:facet][:field_names].reject {|facet| facet_names.include?(facet)} -%>
-      <%- end -%>
-      <%- @level.level_number = @showcase.browse_levels.size + 1 -%>
-      <%= level_fields.hidden_field :level_number %>
-      <table>
-        <tr>
-          <td>
-            <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
-            <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
-          </td>
-          <td><%= f.submit 'Add A Facet' %></td>
-        </tr>
-      </table>
-    <% end %>
-  <% end %>
 
-<%- end -%>

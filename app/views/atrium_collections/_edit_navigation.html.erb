@@ -4,16 +4,16 @@
     <li><%= link_to 'View Collection', @atrium_collection %></li>
     <li><%= link_to 'Configure Collection', edit_atrium_collection_path(@atrium_collection.id) %></li>
     <li><%= link_to 'Configure Collection Page', @atrium_collection %></li>
-    <li><%= link_to 'Configure Browse Page',  new_atrium_collection_atrium_browse_pages_path(@atrium_collection,:atrium_browse_page_type=>"atrium_collection")%></li>
+    <li><%= link_to 'Configure Showcase',  new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection")%></li>
   </ul>
-  <%- unless @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
-    <dl id="showcases">
-      <%- @showcase_navigation_data.each do |showcase| -%>
-        <dt><%= showcase.title%></dt>
-        <dd><%= link_to 'Configure Showcase', edit_atrium_showcase_path(showcase) %></dd>
+  <%- unless @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
+    <dl id="exhibits">
+      <%- @exhibit_navigation_data.each do |exhibit| -%>
+        <dt><%= exhibit.title%></dt>
+        <dd><%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(exhibit) %></dd>
         <dd>
-          <%# link_to 'Configure Browse Page',  new_atrium_browse_page_path(:atrium_parent_id=>showcase.set_number, :atrium_parent_type=>"showcase", :collection_id => showcase.atrium_collection_id)%>
-          <%= link_to 'Configure Browse Page',  new_atrium_showcase_atrium_browse_pages_path(showcase,:atrium_browse_page_type=>"atrium_showcase")%>
+          <%# link_to 'Configure Browse Page',  new_atrium_showcase_path(:atrium_parent_id=>exhibit.set_number, :atrium_parent_type=>"exhibit", :collection_id => exhibit.atrium_collection_id)%>
+          <%= link_to 'Configure Showcase',  new_atrium_exhibit_atrium_showcases_path(exhibit,:atrium_showcase_type=>"atrium_exhibit")%>
         </dd>
       <%- end -%>
     </dl>

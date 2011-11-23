@@ -7,9 +7,9 @@ module ApplicationHelper
     display_thumnail( document ) ? ' with-thumbnail' : ''
   end
 
-  def top_level_browse_page(showcase_id)
-    browse_pages = Atrium::BrowsePage.find_by_atrium_showcase_id(showcase_id)
-    browse_page = browse_pages.first unless browse_pages.empty?
+  def top_level_showcase(exhibit_id)
+    showcases = Atrium::Showcase.find_by_atrium_exhibit_id(exhibit_id)
+    showcase = showcases.first unless showcases.empty?
   end
 end
 

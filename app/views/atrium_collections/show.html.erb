@@ -1,6 +1,6 @@
-<div class="browse_page_configure">
-  <%- if @atrium_browse_page && params[:edit_browse_page]%>
-    <%=render :partial=>'shared/browse_page_configure_menu'%>
+<div class="showcase_configure">
+  <%- if @atrium_showcase && params[:edit_showcase]%>
+    <%=render :partial=>'shared/showcase_configure_menu'%>
   <%- end %>
 </div>
 
@@ -19,11 +19,11 @@
 <%=render :partial=>'shared/collection_title_header'%>
 <%#render :partial=>'navigation'%>
 
-<%# if @atrium_browse_page && @atrium_browse_page.descriptions -%>
-<%- if @atrium_browse_page && @atrium_browse_page.descriptions-%>
+<%# if @atrium_showcase && @atrium_showcase.descriptions -%>
+<%- if @atrium_showcase && @atrium_showcase.descriptions-%>
   <h2>Description</h2>
    <ol>
-    <%- @atrium_browse_page.descriptions.each do |desc| -%>
+    <%- @atrium_showcase.descriptions.each do |desc| -%>
     <li>
       <%= desc.description.html_safe%>
     </li>

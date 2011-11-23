@@ -1,21 +1,21 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::BrowsePage::Item::Featured do
+describe Atrium::Showcase::Item::Featured do
   before(:each) do
-    @browse_page = Atrium::BrowsePage.new
-    @browse_page.save
-    @item = Atrium::BrowsePage::Item::Featured.new({:atrium_browse_page_id=>@browse_page.id})
+    @showcase = Atrium::Showcase.new
+    @showcase.save
+    @item = Atrium::Showcase::Item::Featured.new({:atrium_showcase_id=>@showcase.id})
     @item.save
   end
 
   after(:each) do
     @item.delete
-    @browse_page.delete
+    @showcase.delete
   end
 
   describe "#type" do
-    it "should return type Atrium::BrowsePage::Item::Featured" do
-      @item.type.should == "Atrium::BrowsePage::Item::Featured"
+    it "should return type Atrium::Showcase::Item::Featured" do
+      @item.type.should == "Atrium::Showcase::Item::Featured"
     end
   end
 end

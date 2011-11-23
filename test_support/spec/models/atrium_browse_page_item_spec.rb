@@ -1,21 +1,21 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::BrowsePage::Item do
+describe Atrium::Showcase::Item do
   before(:each) do
     @collection = Atrium::Collection.new
     @collection.save!
-    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
+    @exhibit = Atrium::Exhibit.new(:atrium_collection_id=>@collection.id,:set_number=>1)
+    @exhibit.save!
+    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id)
     @showcase.save!
-    @browse_page = Atrium::BrowsePage.new(:atrium_showcase_id=>@showcase.id)
-    @browse_page.save!
-    @item = Atrium::BrowsePage::Item.new({:atrium_browse_page_id=>@browse_page.id})
+    @item = Atrium::Showcase::Item.new({:atrium_showcase_id=>@showcase.id})
     @item.save
   end
 
   after(:each) do
-    @browse_page.delete
-    @item.delete
     @showcase.delete
+    @item.delete
+    @exhibit.delete
     @collection.delete
     begin
     @fail_item.delete
@@ -50,9 +50,9 @@ describe Atrium::BrowsePage::Item do
     end
   end
 
-  describe "#browse_page" do
-    it "browse_page cannot be null" do
-      @fail_item = Atrium::BrowsePage::Item.new({:solr_doc_id=>"ns:20"})
+  describe "#showcase" do
+    it "showcase cannot be null" do
+      @fail_item = Atrium::Showcase::Item.new({:solr_doc_id=>"ns:20"})
       threw_exception = false
       begin
         @fail_item.save!
@@ -62,8 +62,8 @@ describe Atrium::BrowsePage::Item do
       threw_exception.should == true
     end
 
-    it "browse_page should be correct" do
-      @item.browse_page.should == @browse_page
+    it "showcase should be correct" do
+      @item.showcase.should == @showcase
     end
   end
 end

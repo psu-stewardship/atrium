@@ -64,12 +64,12 @@
             <%- end -%>
           <%- elsif params[:controller] == "atrium_collections" && !(params[:action] == "show")-%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
-          <%- elsif params[:controller] == "atrium_showcases"&& !(params[:action] == "show")-%>
+          <%- elsif params[:controller] == "atrium_exhibits"&& !(params[:action] == "show")-%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
-          <%- elsif params[:controller] == "atrium_showcases" && params[:action] == "show" && params[:edit_browse_page]=="true"-%>
-             <%= render :partial => 'atrium_browse_pages/browse_page_navigation' %>
-          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && params[:edit_browse_page]=="true"-%>
-             <%= render :partial => 'atrium_browse_pages/browse_page_navigation' %>
+          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && params[:edit_showcase]=="true"-%>
+             <%= render :partial => 'atrium_showcases/showcase_navigation' %>
+          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && params[:edit_showcase]=="true"-%>
+             <%= render :partial => 'atrium_showcases/showcase_navigation' %>
           <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show"-%>
             <%= render :partial => 'shared/collection_search_form' %>
             <%= render :partial => 'atrium_collections/navigation' %>

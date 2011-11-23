@@ -1,33 +1,33 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::BrowsePage do
+describe Atrium::Showcase do
   before(:each) do
     @collection = Atrium::Collection.new
     @collection.save
-    @showcase = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>1)
+    @exhibit = Atrium::Exhibit.new(:atrium_collection_id=>@collection.id,:set_number=>1)
+    @exhibit.save
+    @showcase = Atrium::Showcase.new(:atrium_exhibit_id=>@exhibit.id)
     @showcase.save
-    @browse_page = Atrium::BrowsePage.new(:atrium_showcase_id=>@showcase.id)
-    @browse_page.save
   end
 
   after(:each) do
-    @browse_page.delete
     @showcase.delete
+    @exhibit.delete
     @collection.delete
     begin
       @item.delete
     rescue
     end
     begin
-      @fail_browse_page.delete
+      @fail_showcase.delete
     rescue 
     end
     begin
-      @browse_page2.delete
+      @showcase2.delete
     rescue
     end
     begin
-      @showcase2.delete
+      @exhibit2.delete
     rescue
     end
     begin
@@ -44,8 +44,8 @@ describe Atrium::BrowsePage do
     it "should throw exception if try to create without solr_doc_id" do
       threw_exception = false
       begin
-        @browse_page.featured_items.create
-        @browse_page.save!
+        @showcase.featured_items.create
+        @showcase.save!
       rescue
         threw_exception = true
       end
@@ -53,19 +53,19 @@ describe Atrium::BrowsePage do
     end
     
     it "should be able to create featured item in nested create" do
-      @item = @browse_page.featured_items.create(:solr_doc_id=>"ns:46")
-      @browse_page.featured_items.should == [@item]
-      @browse_page.featured_items.first.solr_doc_id.should == "ns:46"
-      @browse_page.featured_items.first.type.should == "Atrium::BrowsePage::Item::Featured"
+      @item = @showcase.featured_items.create(:solr_doc_id=>"ns:46")
+      @showcase.featured_items.should == [@item]
+      @showcase.featured_items.first.solr_doc_id.should == "ns:46"
+      @showcase.featured_items.first.type.should == "Atrium::Showcase::Item::Featured"
     end
 
     it "should be able to delete an existing featured item" do
-      @item = @browse_page.featured_items.create(:solr_doc_id=>"ns:46")
-      @browse_page.save
-      @browse_page.update_attributes({:featured_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
-      @browse_page.featured_items.first.marked_for_destruction?.should == true
-      @browse_page.save!
-      @browse_page.reload.featured_items.size.should == 0
+      @item = @showcase.featured_items.create(:solr_doc_id=>"ns:46")
+      @showcase.save
+      @showcase.update_attributes({:featured_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
+      @showcase.featured_items.first.marked_for_destruction?.should == true
+      @showcase.save!
+      @showcase.reload.featured_items.size.should == 0
     end
   end
 
@@ -73,8 +73,8 @@ describe Atrium::BrowsePage do
     it "should throw exception if try to create without solr_doc_id" do
       threw_exception = false
       begin
-        @browse_page.related_items.create
-        @browse_page.save!
+        @showcase.related_items.create
+        @showcase.save!
       rescue
         threw_exception = true
       end
@@ -82,20 +82,20 @@ describe Atrium::BrowsePage do
     end
     
     it "should be able to create related item in nested create" do
-      @item = @browse_page.related_items.create(:solr_doc_id=>"ns:46")
-      @browse_page.save!
-      @browse_page.related_items.should == [@item]
-      @browse_page.related_items.first.solr_doc_id.should == "ns:46"
-      @browse_page.related_items.first.type.should == "Atrium::BrowsePage::Item::Related"
+      @item = @showcase.related_items.create(:solr_doc_id=>"ns:46")
+      @showcase.save!
+      @showcase.related_items.should == [@item]
+      @showcase.related_items.first.solr_doc_id.should == "ns:46"
+      @showcase.related_items.first.type.should == "Atrium::Showcase::Item::Related"
     end
 
     it "should be able to delete an existing related item" do
-      @item = @browse_page.related_items.create(:solr_doc_id=>"ns:46")
-      @browse_page.save
-      @browse_page.update_attributes({:related_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
-      @browse_page.related_items.first.marked_for_destruction?.should == true
-      @browse_page.save!
-      @browse_page.reload.related_items.size.should == 0
+      @item = @showcase.related_items.create(:solr_doc_id=>"ns:46")
+      @showcase.save
+      @showcase.update_attributes({:related_items_attributes => [{:id => @item.id, :_destroy => '1'}]})
+      @showcase.related_items.first.marked_for_destruction?.should == true
+      @showcase.save!
+      @showcase.reload.related_items.size.should == 0
     end
   end
 
@@ -103,8 +103,8 @@ describe Atrium::BrowsePage do
     it "should throw exception if try to create without solr_doc_id" do
       threw_exception = false
       begin
-        @browse_page.descriptions.create
-        @browse_page.save!
+        @showcase.descriptions.create
+        @showcase.save!
       rescue
         threw_exception = true
       end
@@ -120,16 +120,16 @@ describe Atrium::BrowsePage do
     end
   end
 
-  describe "#showcase" do
-    it "should return correct showcase" do
-      @browse_page.showcase.should == @showcase
+  describe "#exhibit" do
+    it "should return correct exhibit" do
+      @showcase.exhibit.should == @exhibit
     end
 
     it "should throw an exception if collection not set" do
-      @fail_browse_page = Atrium::BrowsePage.new
+      @fail_showcase = Atrium::Showcase.new
       threw_exception = false
       begin
-        @fail_browse_page.save!
+        @fail_showcase.save!
       rescue
         threw_exception = true
       end
@@ -139,75 +139,75 @@ describe Atrium::BrowsePage do
 
   describe "#facet_selections" do
     it "should allow no facet selection if looking at top level" do
-      @browse_page.facet_selections.size.should == 0
-      @browse_page.save!
+      @showcase.facet_selections.size.should == 0
+      @showcase.save!
       #it will throw an exception if this does not work
     end
 
-    it "should only allow setting browse_page facet selection associated with facets that are defined within collection" do
+    it "should only allow setting showcase facet selection associated with facets that are defined within collection" do
       pending "..."
     end
 
     it "should be able to set the facet selection for a browse page" do
-      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"}) 
-      @browse_page.save!
-      @browse_page.facet_selections.should == [@facet_selection]
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @showcase.save!
+      @showcase.facet_selections.should == [@facet_selection]
     end
   end
 
   describe "#initialize" do
     it "should allow no facet selections defined" do
-      @browse_page = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
-      @browse_page.save!
-      @browse_page.facet_selections.should == []
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase.save!
+      @showcase.facet_selections.should == []
     end
   end
 
   describe "#with_selected_facets" do
     it "should return correct browse page with no facets selected" do
-      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
-      @browse_page2.save!
-      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-      Atrium::BrowsePage.with_selected_facets(@showcase.id).first.should == @browse_page
+      @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase2.save!
+      @facet_selection2 = @showcase2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      Atrium::Showcase.with_selected_facets(@exhibit.id).first.should == @showcase
     end
 
     it "should return correct browse page with one facet selected" do
-      @browse_page = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
-      @browse_page.save!
-      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"}) 
-      @browse_page.save!
-      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
-      @browse_page2.save!
-      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-       Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @browse_page
+      @showcase = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase.save!
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @showcase.save!
+      @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase2.save!
+      @facet_selection2 = @showcase2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+       Atrium::Showcase.with_selected_facets(@exhibit.id,{@facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @showcase
     end
     
     it "should return correct browse page with one facet selected but a browse page exists with same facet plus another" do
-      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
-      @facet_selection2 = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-      @browse_page.save!
-      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase.id})
-      @browse_page2.save!
-      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-      Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @browse_page2
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @facet_selection2 = @showcase.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      @showcase.save!
+      @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit.id})
+      @showcase2.save!
+      @facet_selection2 = @showcase2.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      Atrium::Showcase.with_selected_facets(@exhibit.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @showcase2
     end
 
     it "should return correct browse page with two facets selected" do
-      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
-      @facet_selection2 = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
-      @browse_page.save!
-      Atrium::BrowsePage.with_selected_facets(@showcase.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value,
-                                              @facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @browse_page
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @facet_selection2 = @showcase.facet_selections.create({:solr_facet_name=>"my_facet2",:value=>"testing2"})
+      @showcase.save!
+      Atrium::Showcase.with_selected_facets(@exhibit.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value,
+                                              @facet_selection.solr_facet_name=>@facet_selection.value}).first.should == @showcase
     end
 
-    it "should return correct browse page with same facet selections but different showcase" do
-      @facet_selection = @browse_page.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
-      @showcase2 = Atrium::Showcase.new(:atrium_collection_id=>@collection.id,:set_number=>2)
+    it "should return correct browse page with same facet selections but different exhibit" do
+      @facet_selection = @showcase.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      @exhibit2 = Atrium::Exhibit.new(:atrium_collection_id=>@collection.id,:set_number=>2)
+      @exhibit2.save!
+      @showcase2 = Atrium::Showcase.new({:atrium_exhibit_id=>@exhibit2.id})
       @showcase2.save!
-      @browse_page2 = Atrium::BrowsePage.new({:atrium_showcase_id=>@showcase2.id})
-      @browse_page2.save!
-      @facet_selection2 = @browse_page2.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
-      Atrium::BrowsePage.with_selected_facets(@showcase2.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @browse_page2
+      @facet_selection2 = @showcase2.facet_selections.create({:solr_facet_name=>"my_facet",:value=>"testing"})
+      Atrium::Showcase.with_selected_facets(@exhibit2.id,{@facet_selection2.solr_facet_name=>@facet_selection2.value}).first.should == @showcase2
     end
   end
 end

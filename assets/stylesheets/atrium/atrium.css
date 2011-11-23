@@ -19,7 +19,7 @@ select {
 
 /** Sidebar  **/
 .blacklight-atrium_collections-edit .sidebar h2,
-.blacklight-atrium_showcases-edit .sidebar h2 {
+.blacklight-atrium_exhibits-edit .sidebar h2 {
   margin-bottom:.3em;
 }
 
@@ -32,7 +32,7 @@ select {
   list-style-type:none;
 }
 
-#showcases dt {
+#exhibits dt {
   font-weight:bold;
   margin-top:.6em;
 }
@@ -99,17 +99,17 @@ form.atrium th {
   border-bottom:none;
 }
 
-ol.showcase-listing {
+ol.exhibit-listing {
   margin-left:0;
   padding:1em;
 }
 
-ol.showcase-listing li {
+ol.exhibit-listing li {
   position:relative;
   list-style-type:none;
 }
 
-ol.showcase-listing .controls {
+ol.exhibit-listing .controls {
   position:absolute;
   right:.6em;
 }

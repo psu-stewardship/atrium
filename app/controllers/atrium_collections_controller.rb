@@ -27,40 +27,44 @@ class AtriumCollectionsController < ApplicationController
     render :partial => "shared/featured_search", :locals=>{:content=>params[:content_type]}
   end
 
+  def home_page_text_config
+    @atrium_collection= Atrium::Collection.find(params[:id])
+  end
+
   def show
     #@atrium_collection = Atrium::Collection.find(params[:id])
-    @showcase_navigation_data = get_showcase_navigation_data
-    if(params[:showcase_number])
-      @showcase = Atrium::Showcase.find(params[:showcase_number])
-      @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@showcase.id,@showcase.class.name, params[:f]).first
+    @exhibit_navigation_data = get_exhibit_navigation_data
+    if(params[:collection_number])
+      @collection = Atrium::Exhibit.find(params[:collection_number])
+      @atrium_showcase= Atrium::Showcase.with_selected_facets(@collection.id,@collection.class.name, params[:f]).first
     else
-      @atrium_browse_page= Atrium::BrowsePage.with_selected_facets(@atrium_collection.id,@atrium_collection.class.name, params[:f]).first
-      #get_atrium_browse_page(params[:showcase_number], params[:f]).first
+      @atrium_showcase= Atrium::Showcase.with_selected_facets(@atrium_collection.id,@atrium_collection.class.name, params[:f]).first
+      #get_atrium_showcase(params[:collection_number], params[:f]).first
     end
 
-    if(params[:browse_page_id] && @atrium_browse_page.nil?)
-      @atrium_browse_page = Atrium::BrowsePage.find(params[:browse_page_id])
+    if(params[:showcase_id] && @atrium_showcase.nil?)
+      @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])
     end
-    logger.debug("Atrium Browse Page: #{@atrium_browse_page.inspect}")
-    if @atrium_browse_page && !@atrium_browse_page.browse_page_items[:solr_doc_ids].nil?
-      logger.debug("#{@atrium_browse_page.inspect}, #{@atrium_browse_page.browse_page_items[:solr_doc_ids]}")
-      selected_document_ids = @atrium_browse_page.browse_page_items[:solr_doc_ids].split(',')
+    logger.debug("Atrium Browse Page: #{@atrium_showcase.inspect}")
+    if @atrium_showcase && !@atrium_showcase.showcase_items[:solr_doc_ids].nil?
+      logger.debug("#{@atrium_showcase.inspect}, #{@atrium_showcase.showcase_items[:solr_doc_ids]}")
+      selected_document_ids = @atrium_showcase.showcase_items[:solr_doc_ids].split(',')
       logger.debug("Collection Selected Highlight: #{selected_document_ids.inspect}")
       @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
     end
-    #puts "browse_level_navigation_data: #{@showcase_navigation_data.first.browse_levels.first.values.inspect}"
+    #puts "browse_level_navigation_data: #{@exhibit_navigation_data.first.browse_levels.first.values.inspect}"
   end
 
   def edit
     #@atrium_collection = Atrium::Collection.find(params[:id])
-    @showcase_navigation_data = get_showcase_navigation_data
+    @exhibit_navigation_data = get_exhibit_navigation_data
   end
 
   def update
     @atrium_collection = Atrium::Collection.find(params[:id])
     respond_to do |format|
       if @atrium_collection.update_attributes(params[:atrium_collection])
-        refresh_showcase
+        refresh_collection
         flash[:notice] = 'Collection was successfully updated.'
         format.html  { render :action => "edit" }
       else
@@ -94,8 +98,8 @@ end
 
 private
 
-def refresh_showcase
-  @showcase_navigation_data = get_showcase_navigation_data
+def refresh_collection
+  @exhibit_navigation_data = get_exhibit_navigation_data
 end
 
 def refresh_browse_level_label(atrium_collection)

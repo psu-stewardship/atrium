@@ -35,19 +35,19 @@ module Atrium::Catalog
       else
         redirect_to new_atrium_collection_path
       end
-    elsif params[:save_showcase_filter_button]
-      params[:showcase_id] ? showcase_id = params[:showcase_id] : showcase_id = params[:edit_showcase_filter]
-      @showcase = Atrium::Showcase.find(showcase_id) if showcase_id
-      logger.debug("pressed save showcase filter button")
-      if @showcase
+    elsif params[:save_exhibit_filter_button]
+      params[:exhibit_id] ? exhibit_id = params[:exhibit_id] : exhibit_id = params[:edit_exhibit_filter]
+      @exhibit = Atrium::Exhibit.find(exhibit_id) if exhibit_id
+      logger.debug("pressed save exhibit filter button")
+      if @exhibit
         filter_query_params = search_session.clone
-        filter_query_params.delete(:save_showcase_filter_button)
+        filter_query_params.delete(:save_exhibit_filter_button)
         filter_query_params.delete(:collection_id)
-        filter_query_params.delete(:showcase_id)
-        @showcase.update_attributes(:filter_query_params=>filter_query_params)
-        redirect_to edit_atrium_showcase_path(@showcase.id)
+        filter_query_params.delete(:exhibit_id)
+        @exhibit.update_attributes(:filter_query_params=>filter_query_params)
+        redirect_to edit_atrium_exhibit_path(@exhibit.id)
       else
-        redirect_to new_atrium_showcase_path
+        redirect_to new_atrium_exhibit_path
       end
     elsif params[:save_browse_level_filter_button]
       params[:browse_level_id] ? browse_level_id = params[:browse_level_id] : browse_level_id = params[:edit_browse_level_filter]
@@ -59,9 +59,9 @@ module Atrium::Catalog
         filter_query_params.delete(:collection_id)
         filter_query_params.delete(:browse_level_id)
         @browse_level.update_attributes(:filter_query_params=>filter_query_params)
-        redirect_to edit_atrium_showcase_path(@browse_level.atrium_showcase_id)
+        redirect_to edit_atrium_exhibit_path(@browse_level.atrium_exhibit_id)
       else
-        redirect_to new_atrium_showcase_path
+        redirect_to new_atrium_exhibit_path
       end
     else
       delete_or_assign_search_session_params
@@ -73,28 +73,28 @@ module Atrium::Catalog
       @extra_controller_params = {}
       if params[:browse_level_id]
         @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) 
-        @showcase = @browse_level.showcase if @browse_level
-        @atrium_collection = @showcase.collection if @showcase
+        @exhibit = @browse_level.exhibit if @browse_level
+        @atrium_collection = @exhibit.collection if @exhibit
       end
 
       #do not mixin whatever level I am on if I am editing the settings
       collection = @atrium_collection unless params[:edit_collection_filter]
-      showcase = @showcase unless params[:edit_showcase_filter] || params[:edit_collection_filter]
-      browse_level = @browse_level unless params[:edit_showcase_filter] || params[:edit_collection_filter] || params[:edit_browse_level_filter]
+      exhibit = @exhibit unless params[:edit_exhibit_filter] || params[:edit_collection_filter]
+      browse_level = @browse_level unless params[:edit_exhibit_filter] || params[:edit_collection_filter] || params[:edit_browse_level_filter]
       logger.debug("collection is: #{collection.inspect}")
-      logger.debug("showcase is: #{showcase.inspect}")
+      logger.debug("exhibit is: #{exhibit.inspect}")
       logger.debug("browse level is: #{browse_level.inspect}")
-      @extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,showcase,browse_level,params,@extra_controller_params) if collection || showcase || browse_level
+      @extra_controller_params = prepare_extra_controller_params_for_collection_query(collection,exhibit,browse_level,params,@extra_controller_params) if collection || exhibit || browse_level
       logger.debug("params before search are: #{params.inspect}")
       logger.debug("extra params before search are: #{@extra_controller_params.inspect}")
       (@response, @document_list) = get_search_results(params,@extra_controller_params)
       #reset to settings before was merged with user params
-      @extra_controller_params = reset_extra_controller_params_after_collection_query(collection,showcase,browse_level,@extra_controller_params) if collection || showcase || browse_level
+      @extra_controller_params = reset_extra_controller_params_after_collection_query(collection,exhibit,browse_level,@extra_controller_params) if collection || exhibit || browse_level
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 
       respond_to do |format|
-        format.html { save_current_search_params unless params[:edit_showcase_filter] ||  params[:edit_collection_filter] || params[:edit_browse_level_filter]}
+        format.html { save_current_search_params unless params[:edit_exhibit_filter] ||  params[:edit_collection_filter] || params[:edit_browse_level_filter]}
         format.rss  { render :layout => false }
         format.atom { render :layout => false }
       end

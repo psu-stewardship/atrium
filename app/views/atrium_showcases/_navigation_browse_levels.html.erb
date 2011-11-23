@@ -1,3 +1,5 @@
+
+
 <!-- this partial recursively calls itself as necessary to render the navigation browse level data -->
 <% unless browse_levels.nil? || browse_facets.nil? || exhibit_number.nil?-%>
   <%- browse_level = browse_levels.first -%>
@@ -8,9 +10,9 @@
     <ul>
       <%- browse_level.values.each do |value| -%>
         <li>
-          <%- if !browse_level.selected.nil? && browse_level.selected == value && exhibit_number.to_i == params[:id].to_i-%>
+          <%- if !browse_level.selected.nil? && browse_level.selected == value && exhibit_number.to_i == params[:exhibit_number].to_i-%>
 	    <span class="selected">
-	      <%- selected_path = get_selected_browse_facet_path(solr_facet_name, value, browse_facets, exhibit_number) -%>
+	      <%- selected_path = get_selected_browse_facet_path(solr_facet_name, value, browse_facets, exhibit_number,:edit_showcase=>true) -%>
               <%= link_to("-", selected_path, :class=>"remove") %>
               <%= link_to(value, selected_path, :class=>"browse_facet") %>
             </span>
@@ -18,10 +20,20 @@
 	      <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:browse_levels=>browse_levels.slice(1,browse_levels.length-1), :browse_facets=>browse_facets.slice(1, browse_facets.length-1),:exhibit_number=>exhibit_number}%>
 	    <%- end -%>
 	  <%- else -%>
-	    <%= link_to(value, get_browse_facet_path(solr_facet_name,value,browse_facets, exhibit_number)) %>
+	    <%= link_to(value, get_browse_facet_path(solr_facet_name, value, browse_facets, exhibit_number)) %>
 	  <%- end -%>
 	</li>
       <%- end -%>
     </ul>
+    <%# debug @atrium_showcase.inspect %>
   <%- end -%>
+    <%- if current_user && params[:edit_showcase] -%>
+      <%- if !@atrium_showcase -%>
+        <%= link_to "Customize this page: #{exhibit_number} with selected facet #{params[:f].inspect}", new_atrium_exhibit_atrium_showcases_path(@exhibit,:atrium_showcase_type=>"atrium_exhibit", :facet_selection=>params[:f]), :class=>"customize"%>
+      <%- else %>
+       <%= link_to 'View this page', atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f])%>
+          <%#atrium_collection_path(:id => params[:id], :f=>params[:f], :exhibit_number=>params[:exhibit_number]) -%>
+      <%- end %>
+    <%- end %>
 <%- end -%>
+
