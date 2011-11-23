@@ -59,7 +59,7 @@ describe Atrium::CollectionsHelper do
     end
     it "should redirect to collection action" do
       response = helper.get_browse_facet_path("facet_solr_field", "item_value", ["facet_field_1","facet_field_2"], "1")
-      response.should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&f[facet_solr_field][]=item_value&showcase_number=1"
+      response.should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&f[facet_solr_field][]=item_value&exhibit_number=1"
     end
 
     it "if an item is selected and generating a path for alternate selection at the same level then the path should not include any child facet selections that may exist" do
@@ -75,7 +75,7 @@ describe Atrium::CollectionsHelper do
       #                     {:solr_facet_name=>"facet_field_2",:label=>"my_label2",:selected=>"value2a",:values=>["value2","value2a"]}]
       #test making link for something not currently selected that should have child facet selection removed
       browse_facets = ["facet_field_1","facet_field_2"]
-      helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"1").should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1a&showcase_number=1"
+      helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"1").should == "/atrium_collections/collection_PID?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1a&exhibit_number=1"
     end
   end
 
@@ -99,7 +99,7 @@ describe Atrium::CollectionsHelper do
       #})      
       response = helper.get_selected_browse_facet_path("facet_field_1", item, ["facet_field_1", "browse_facet"],"1")
       #all browse facets should be removed since at the top, and the only current facet in the params is facet_field_1, so facet_field_2 stays
-      response.should == "/atrium_collections/collection_PID?collection_id=collection_PID&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&showcase_number=1"
+      response.should == "/atrium_collections/collection_PID?collection_id=collection_PID&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&exhibit_number=1"
     end
   end
 

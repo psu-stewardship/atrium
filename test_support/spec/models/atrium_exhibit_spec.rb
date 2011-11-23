@@ -25,17 +25,17 @@ describe Atrium::Collection do
     end
   end
 
-  describe "showcases" do
+  describe "exhibits" do
     it "should return array of browse sets used in browsing" do
-      @collection.showcases.create({:label=>"My Browse Set",:set_number=>1})
-      @collection.showcases.create({:label=>"",:set_number=>2})
-      (@collection.showcases.collect {|x| x.label}).should == ["My Browse Set",""]
+      @collection.exhibits.create({:label=>"My Browse Set",:set_number=>1})
+      @collection.exhibits.create({:label=>"",:set_number=>2})
+      (@collection.exhibits.collect {|x| x.label}).should == ["My Browse Set",""]
     end
 
     it "should return browse sets sorted by set number" do
-      @collection.showcases.create({:label=>"My Browse Set",:set_number=>2})
-      @collection.showcases.create({:label=>"",:set_number=>1})
-      (@collection.showcases.collect {|x| x.label}).should == ["","My Browse Set"]
+      @collection.exhibits.create({:label=>"My Browse Set",:set_number=>2})
+      @collection.exhibits.create({:label=>"",:set_number=>1})
+      (@collection.exhibits.collect {|x| x.label}).should == ["","My Browse Set"]
     end
   end
 

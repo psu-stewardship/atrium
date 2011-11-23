@@ -138,10 +138,10 @@ EOF
       # Can't get this any more DRY, because we need this order.
       better_migration_template "create_atrium_collections.rb"
       better_migration_template "create_atrium_search_facets.rb"
+      better_migration_template "create_atrium_exhibits.rb"
       better_migration_template "create_atrium_showcases.rb"
-      better_migration_template "create_atrium_browse_pages.rb"
-      better_migration_template "create_atrium_browse_page_items.rb"
-      better_migration_template "create_atrium_browse_page_facet_selections.rb"
+      better_migration_template "create_atrium_showcase_items.rb"
+      better_migration_template "create_atrium_showcase_facet_selections.rb"
       better_migration_template "create_atrium_browse_levels.rb"
       better_migration_template "create_atrium_descriptions.rb"
     end

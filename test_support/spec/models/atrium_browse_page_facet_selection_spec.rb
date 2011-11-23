@@ -1,15 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Atrium::BrowsePage::FacetSelection do
+describe Atrium::Showcase::FacetSelection do
   before(:each) do
-    @browse_page = Atrium::BrowsePage.new
-    @browse_page.save
-    @facet_selection = Atrium::BrowsePage::FacetSelection.new({:atrium_browse_page_id=>@browse_page.id, :value=>"connecticut", :solr_facet_name=>"publisher_facet"})
+    @showcase = Atrium::Showcase.new
+    @showcase.save
+    @facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id, :value=>"connecticut", :solr_facet_name=>"publisher_facet"})
   end
 
   after(:each) do
     @facet_selection.delete
-    @browse_page.delete
+    @showcase.delete
     begin
       @fail_facet_selection.delete
     rescue
@@ -18,7 +18,7 @@ describe Atrium::BrowsePage::FacetSelection do
 
   describe "#value" do
     it "value cannot be nil" do
-      @fail_facet_selection = Atrium::BrowsePage::FacetSelection.new({:atrium_browse_page_id=>@browse_page.id,:solr_facet_name=>"my_facet"})
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id,:solr_facet_name=>"my_facet"})
       threw_exception = false
       begin
         @fail_facet_selection.save!
@@ -35,7 +35,7 @@ describe Atrium::BrowsePage::FacetSelection do
 
   describe "#solr_facet_name" do
     it "facet cannot be null" do
-      @fail_facet_selection = Atrium::BrowsePage::FacetSelection.new({:atrium_browse_page_id=>@browse_page.id})
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:atrium_showcase_id=>@showcase.id})
       threw_exception = false
       begin
         @fail_facet_selection.save!
@@ -50,9 +50,9 @@ describe Atrium::BrowsePage::FacetSelection do
     end
   end
 
-  describe "#browse_page" do
-    it "browse_page cannot be null" do
-      @fail_facet_selection = Atrium::BrowsePage::FacetSelection.new({:solr_facet_name=>"my_facet"})
+  describe "#showcase" do
+    it "showcase cannot be null" do
+      @fail_facet_selection = Atrium::Showcase::FacetSelection.new({:solr_facet_name=>"my_facet"})
       threw_exception = false
       begin
         @fail_facet_selection.save!

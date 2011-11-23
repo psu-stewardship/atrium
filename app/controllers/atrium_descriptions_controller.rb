@@ -13,7 +13,7 @@ class AtriumDescriptionsController < ApplicationController
   before_filter :initialize_collection
 
   def new
-   @atrium_browse_page = Atrium::BrowsePage.find(params[:atrium_browse_page_id])
+   @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
     #render :layout => false
   end
 

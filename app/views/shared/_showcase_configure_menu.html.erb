@@ -1,0 +1,38 @@
+<%# javascript_includes << ["ckeditor"] %>
+
+<h1>You are configuring your browse page, Here are your options</h1>
+
+<%- params[:controller]=="atrium_collections" ? collection_id = params[:id] : collection_id = params[:collection_id] -%>
+
+<%- if  @atrium_showcase.showcases_type=="Atrium::Exhibit" %>
+<%= link_to 'Select Featured', atrium_showcase_featured_path(:id=>@atrium_showcase.id,:collection_id=>collection_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_exhibit_atrium_showcases_path(@exhibit, :showcase_id=>@atrium_showcase.id) %>
+| <%= link_to 'Add new description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class=>'description_colorbox'%>
+<%- else %>
+    <%=link_to 'Select Featured', atrium_showcase_featured_path(:id=>@atrium_showcase.id,:collection_id=>collection_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_collection_atrium_showcases_path(@atrium_collection, :showcase_id=>@atrium_showcase.id) %>
+    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class=>'description_colorbox'%>
+<%- end %>
+
+  <ol>
+    <%- @atrium_showcase.descriptions.each do |desc| -%>
+    <li>
+      <%= desc.description.html_safe%>
+      <%= link_to 'Edit description', edit_atrium_description_path(desc), :class=>'description_colorbox'%>
+    </li>
+    <%- end -%>
+  </ol>
+
+
+<div class="description">
+  <%- @atrium_descriptions = Atrium::Description.new-%>
+  <%= form_for(@atrium_descriptions) do |f| %>
+    <ol>
+      <li>
+        <%- @atrium_descriptions.atrium_showcase_id = @atrium_showcase.id -%>
+        <%= f.hidden_field :atrium_showcase_id -%>
+        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+      </li>
+    </ol>
+    <%= f.submit 'Add Description' %>
+  <% end %>
+</div>
+

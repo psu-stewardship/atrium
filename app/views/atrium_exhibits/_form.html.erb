@@ -1,0 +1,91 @@
+<%- if @exhibit -%>
+  <%= form_for(@exhibit, :html => {:class => 'atrium'}) do |f| %>
+    <fieldset>
+      <legend>General Configuration</legend>
+      <ol>
+        <li>
+          <%= f.label :label, 'Title:' %>
+          <%= f.text_field :label %>
+        </li>
+      </ol>
+    </fieldset>
+
+    <h3>Exhibit Scope</h3>
+    <p>
+      A exhibit is a subset of a collection or collection. The scope of the exhibit can be set to any possible query made in the search interface.
+    </p>
+    <%- collection_id = @exhibit.atrium_collection_id if @exhibit.atrium_collection_id -%>
+    <%- query_params = {:collection_id=>collection_id,:edit_exhibit_filter=>@exhibit.id, :exhibit_id=>@exhibit.id} -%>
+    <%- query_params.merge!(@exhibit.filter_query_params) if @exhibit.filter_query_params -%>
+    <%= link_to("Set Exhibit Scope", catalog_index_path(query_params)).html_safe %>
+
+    <h3>Group Exhibit Items by Facets</h3>
+    <p>
+      Items present in a exhibit can be further scoped by facet selections. These facets
+      are arranged in a single-level tree with each facet nested beneath its parent.
+    </p>
+
+    <fieldset>
+      <legend>Current Facets</legend>
+      <%- if @exhibit.browse_levels.any? -%>
+        <table>
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>&nbsp;</th>
+              <th>Facet</th>
+              <th>Label</th>
+              <th>Filter</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody data-resource="<%= update_atrium_exhibit_facet_order_path %>" data-primary-label="Group By:" data-secondary-label="Then By:" class="sortable">
+            <%- @exhibit.browse_levels.each_with_index do |level,index| -%>
+              <tr data-id="<%= level.id %>" data-order="<%= level.level_number %>" class="ui-state-default">
+                <%= f.fields_for :browse_levels, level do |level_form| %>
+		  <%- collection_id = @exhibit.atrium_collection_id if @exhibit.atrium_collection_id -%>
+                  <%- level_query_params = {:collection_id=>collection_id,:edit_browse_level_filter=>level.id, :browse_level_id=>level.id, :exhibit_id=>@exhibit.id} -%>
+		  <%- level_query_params.merge!(level.filter_query_params) if level.filter_query_params -%>
+                  <td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
+                  <td class="label"><%= level.level_number == 1 ? 'Group By:' : 'Then By:' %></td>
+                  <td><%=facet_field_labels[level.solr_facet_name]%></td>
+                  <td><%=level_form.text_field :label, :value=>level.label%></td>
+                  <td><%= link_to("Set Group By Filter", catalog_index_path(level_query_params)).html_safe %></td>
+                  <td><%=level_form.check_box :_destroy %></td>
+                <% end %>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+      <%- end -%>
+    </fieldset>
+    <p>
+      <%= f.submit 'Update Exhibit and Facets' %>
+    </p>
+  <%- end -%>
+  <%= form_for(@exhibit) do |f| %>
+    <%- @level = Atrium::BrowseLevel.new-%>
+    <%- @exhibit.set_number = @atrium_collection.exhibits.size + 1 -%>
+    <%- @exhibit.atrium_collection_id = @atrium_collection.id %>
+    <%= f.fields_for :browse_levels, @level do |level_fields| %>
+      <%- if @exhibit.browse_levels.empty? -%>
+        <%- available_facets = Blacklight.config[:facet][:field_names] -%>
+      <%- else -%>
+        <%- facet_names = @exhibit.browse_levels.collect {|level| level.solr_facet_name}-%>
+        <%- available_facets = Blacklight.config[:facet][:field_names].reject {|facet| facet_names.include?(facet)} -%>
+      <%- end -%>
+      <%- @level.level_number = @exhibit.browse_levels.size + 1 -%>
+      <%= level_fields.hidden_field :level_number %>
+      <table>
+        <tr>
+          <td>
+            <%= level_fields.label :solr_facet_name, 'Solr Facet:' %>
+            <%= level_fields.select(:solr_facet_name, available_facets.collect {|solr_fname| [facet_field_labels[solr_fname],solr_fname]})%>
+          </td>
+          <td><%= f.submit 'Add A Facet' %></td>
+        </tr>
+      </table>
+    <% end %>
+  <% end %>
+
+<%- end -%>

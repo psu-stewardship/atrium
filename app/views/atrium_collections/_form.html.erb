@@ -19,14 +19,12 @@
         <%= f.collection_select :search_facet_names, Blacklight.config[:facet][:field_names].map{|field_name| Atrium::Search::FacetSelection.new(:field_name => field_name)}, :field_name, :label, {}, :multiple => true, :class => 'chosen', :'data-placeholder' => 'Select desired facets from the Collection' %>
       <li/>
     </ol>
-    <a class='inline' href="#inline_content">Add Collection Home Page description</a>
-    <!--<div style='display:none'>-->
-      <div id='inline_content'>
-        <%= f.label :label, 'Description:' %>
-        <%= f.text_area :collection_description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
-      </div>
-    <!--</div>-->
+    <%= link_to 'Add Collection Home Page description', atrium_collection_text_configure_path(:id => @atrium_collection.id), :class=>'description_colorbox'%>
 
+   <p>
+     <%= f.label :label, 'Description:' %>
+     <%= @atrium_collection.collection_description.html_safe %>
+   </p>
 
     <p>
       <%= f.submit 'Update Collection Configuration' %>
@@ -42,30 +40,32 @@
 <%- query_params.merge!(@atrium_collection.filter_query_params) if @atrium_collection.filter_query_params -%>
 <%= link_to("Set Collection Scope", edit_atrium_collection_filter_path(@atrium_collection.id, :f=>query_params[:f], :q=>query_params[:q])).html_safe %>
 
-<h3>Showcases</h3>
+<h3>Exhibits</h3>
 
-<% if @atrium_collection.showcases.any? %>
-  <ol data-resource="<%= update_atrium_collection_showcase_order_path %>" class="showcase-listing sortable">
-    <% @atrium_collection.showcases.each do |showcase| %>
-      <li data-id="<%= showcase.id %>" data-order="<%= showcase.set_number %>" class="ui-state-default">
+<% if @atrium_collection.exhibits.any? %>
+  <ol data-resource="<%= update_atrium_collection_exhibit_order_path %>" class="exhibit-listing sortable">
+    <% @atrium_collection.exhibits.each do |exhibit| %>
+      <li data-id="<%= exhibit.id %>" data-order="<%= exhibit.set_number %>" class="ui-state-default">
         <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
-        <%= showcase.title %>
+        <%= exhibit.title %>
         <span class="controls">
-          <%= link_to 'Configure', edit_atrium_showcase_path(showcase) %>
+          <%= link_to 'Configure', edit_atrium_exhibit_path(exhibit) %>
         </span>
       </li>
     <% end %>
   </ol>
 <% else %>
-  <em>There are no showcases in this collection.</em>
+  <em>There are no exhibits in this collection.</em>
 <% end %>
 
-<%= form_for(@atrium_collection) do |f| %>
-  <%- @showcase = Atrium::Showcase.new-%>
-  <%= f.fields_for :showcases, @showcase do |showcase_fields| %>
-    <%- @showcase.set_number = @atrium_collection.showcases.size + 1 -%>
-    <%= showcase_fields.hidden_field :set_number %>
-    <%= f.submit 'Add a Showcase to this Collection' %>
+  <%= form_for(@atrium_collection) do |f| %>
+  <%- @exhibit = Atrium::Exhibit.new-%>
+  <%= f.fields_for :exhibits, @exhibit do |exhibit_fields| %>
+    <%- @exhibit.set_number = @atrium_collection.exhibits.size + 1 -%>
+    <%= exhibit_fields.hidden_field :set_number %>
+    <%= f.submit 'Add a Exhibit to this Collection' %>
   <% end %>
 <% end %>
+
+
 

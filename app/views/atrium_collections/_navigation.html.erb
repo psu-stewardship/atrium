@@ -1,34 +1,34 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
 <li>
   <%- if current_user -%>
-    <%= link_to "Customize Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_browse_pages_path(@atrium_collection,:atrium_browse_page_type=>"atrium_collection"), :class=>"customize"%>
-
+    <%# link_to "Configure Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection"), :class=>"customize"%>
+    <%= link_to "Configure Collection #{@atrium_exhbit}" ,{:action=>"edit", :id=>@atrium_collection.id}, :class=>"customize"%>
   <%- end %>
 </li>
-<%# debug  @showcase_navigation_data%>
+<%# debug  @exhibit_navigation_data%>
 <div class="facet-list">
-  <%- if @showcase_navigation_data.nil? || @showcase_navigation_data.empty? -%>
+  <%- if @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
       <ul>
-        <%- @atrium_collection.showcases.each do |showcase| -%>
+        <%- @atrium_collection.exhibits.each do |exhibit| -%>
           <%- if current_user -%>
           <li>
-            <%= link_to "Customize Showcase: #{showcase.title}", new_atrium_showcase_atrium_browse_pages_path(showcase,:edit_browse_page=>true, :facet_selection=>params[:f]),:class=>"customize"%>
+            <%= link_to "Customize Exhibit: #{exhibit.title}", new_atrium_exhibit_atrium_showcases_path(exhibit,:edit_showcase=>true, :facet_selection=>params[:f]),:class=>"customize"%>
           </li>
           <%- end -%>
         <%- end %>
       </ul>
   <%- else %>
     <!-- recursively render the browse sets-->
-    <%- @showcase_navigation_data.each do |showcase| -%>
-      <%- unless showcase.browse_levels.nil? || showcase.browse_levels.empty? -%>
-        <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:showcase_number=>showcase.set_number, :browse_levels=>showcase.browse_levels, :browse_facets=>showcase.browse_facet_names}%>
+    <%- @exhibit_navigation_data.each do |exhibit| -%>
+      <%- unless exhibit.browse_levels.nil? || exhibit.browse_levels.empty? -%>
+        <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>
       <%- end -%>
       <%- if current_user  -%>
-        <%- if !params[:edit_browse_page] -%>
-          <%- if params[:id].to_i== showcase.set_number %>
-            <%= link_to "Customize Showcase: #{showcase.set_number}", new_atrium_showcase_atrium_browse_pages_path(showcase, :facet_selection => params[:f] ), :class=>"customize"%>
+        <%- if !params[:edit_showcase] -%>
+          <%- if params[:id].to_i== exhibit.set_number %>
+            <%= link_to "Customize this page", new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection => params[:f] ), :class=>"customize"%>
           <%- else %>
-            <%= link_to "Customize Showcase: #{showcase.set_number}", new_atrium_showcase_atrium_browse_pages_path(showcase), :class=>"customize"%>
+            <%= link_to "Customize this page", new_atrium_exhibit_atrium_showcases_path(exhibit), :class=>"customize"%>
           <%- end %>
         <%- end %>
       <%- end %>
