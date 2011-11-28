@@ -84,8 +84,6 @@
       iframe:true
     });
 
-    $(".inline").colorbox()
-
     $('.description').hide();
     $('.add_description').click(function(){
         var $this = $(this);

@@ -14,7 +14,7 @@ class AtriumDescriptionsController < ApplicationController
 
   def new
    @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
-    #render :layout => false
+    render :layout => false
   end
 
   def create
@@ -26,7 +26,7 @@ class AtriumDescriptionsController < ApplicationController
 
   def edit
     @atrium_description = Atrium::Description.find(params[:id])
-    #render :layout => false
+    render :layout => false
   end
 
   def update

@@ -122,4 +122,16 @@ module Atrium::CollectionsHelper
     edit_atrium_collection_path(get_collection_id, :class => css_class, :render_search=>"false")
   end
 
+  def get_customize_page_path
+    logger.debug("Params: #{params.inspect}")
+    if params[:controller] == "atrium_exhibits"
+      exhibit=Atrium::Exhibit.find(params[:id])
+      path = new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection => params[:f])
+    elsif params[:controller] == "atrium_collections"
+      collection=Atrium::Collection.find(params[:id])
+      path= new_atrium_collection_atrium_showcases_path(collection)
+    end
+    return path
+  end
+
 end
