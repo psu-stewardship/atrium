@@ -22,7 +22,7 @@
    <ol>
     <%- @atrium_showcase.descriptions.each do |desc| -%>
     <li>
-      <%= desc.description.html_safe%>
+      <%= desc.description.html_safe if desc.description %>
     </li>
     <%- end -%>
   </ol>

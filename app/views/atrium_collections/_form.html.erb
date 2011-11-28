@@ -23,7 +23,7 @@
 
    <p>
      <%= f.label :label, 'Description:' %>
-     <%= @atrium_collection.collection_description.html_safe %>
+     <%= @atrium_collection.collection_description.html_safe if @atrium_collection.collection_description %>
    </p>
 
     <p>
