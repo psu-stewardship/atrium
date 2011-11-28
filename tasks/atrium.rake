@@ -1,29 +1,23 @@
 require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'thor/core_ext/file_binary_read'
+require 'jettywrapper'
 
 namespace :atrium do
 
   desc "Execute Continuous Integration build (docs, tests with coverage)"
   task :ci do
     Rake::Task["atrium:doc"].invoke
-    Rake::Task["hydra:jetty:config"].invoke
 
-    require 'jettywrapper'
     jetty_params = {
-      :jetty_home => File.expand_path(File.dirname(__FILE__) + '/../jetty'),
-      :quiet => false,
-      :jetty_port => 8983,
-      :solr_home => File.expand_path(File.dirname(__FILE__) + '/../jetty/solr'),
-      :fedora_home => File.expand_path(File.dirname(__FILE__) + '/../jetty/fedora/default'),
+      :jetty_home   => File.expand_path(File.dirname(__FILE__) + '/../jetty'),
+      :quiet        => false,
+      :jetty_port   => 8983,
+      :solr_home    => File.expand_path(File.dirname(__FILE__) + '/../jetty/solr'),
       :startup_wait => 30
     }
-
-    # does this make jetty run in TEST environment???
     error = Jettywrapper.wrap(jetty_params) do
       Rake::Task['atrium:setup_test_app'].invoke
-      Rake::Task['solr:marc:index_test_data'].invoke
-      #puts %x[rake atrium:fixtures:refresh RAILS_ENV=test] # calling hydra:fixtures:refresh from the root of the test app
       Rake::Task['atrium:test'].invoke
     end
     raise "test failures: #{error}" if error
@@ -168,6 +162,11 @@ namespace :atrium do
     %x[bundle install --local]
     errors << 'Error running bundle install in test app' unless $?.success?
 
+    puts "Running rake db:migrate"
+    %x[bundle exec rake db:migrate]
+    %x[bundle exec rake db:migrate RAILS_ENV=test]
+    raise "Errors: #{errors.join("; ")}" unless errors.empty?
+
     puts "Installing cucumber in test app"
     %x[bundle exec rails g cucumber:install]
     errors << 'Error installing cucumber in test app' unless $?.success?
@@ -176,23 +175,19 @@ namespace :atrium do
     %x[bundle exec rails g blacklight --devise]
     errors << 'Error generating default blacklight install' unless $?.success?
 
-    puts "Loading blacklight marc test data into Solr"
-    %x[bundle exec rake solr:marc:index_test_data]
-
     puts "Generating default atrium install"
     %x[bundle exec rails g atrium -df] # using -f to force overwriting of solr.yml
     errors << 'Error generating default atrium install' unless $?.success?
 
-    puts "Running rake db:migrate"
-    %x[bundle exec rake db:migrate]
-    %x[bundle exec rake db:migrate RAILS_ENV=test]
-    raise "Errors: #{errors.join("; ")}" unless errors.empty?
+    puts "Loading blacklight marc test data into Solr"
+    %x[bundle exec rake solr:marc:index_test_data]
 
     FileUtils.cd('../../')
   end
 
   task :set_test_host_path do
     TEST_HOST_PATH = File.join(File.expand_path(File.dirname(__FILE__)),'..','tmp','test_app')
+    puts "Test app path:\n#{TEST_HOST_PATH}"
   end
 
   #
@@ -201,6 +196,8 @@ namespace :atrium do
 
   desc "Run tests against test app"
   task :test => [:use_test_app]  do
+    puts "Run Pending migrations"
+    puts  %x[bundle exec rake db:migrate]
 
     puts "Running rspec tests"
     puts  %x[bundle exec rake atrium:spec:rcov]
@@ -209,7 +206,7 @@ namespace :atrium do
     puts "Running cucumber tests"
     puts %x[bundle exec rake atrium:cucumber]
 
-    FileUtils.cd('../../')
+    FileUtils.cd(File.expand_path(File.dirname(__FILE__)))
     puts "Completed test suite"
   end
 
