@@ -140,7 +140,10 @@ GEM
       multi_json
       multi_xml
     i18n (0.5.0)
-    jettywrapper (0.0.10)
+    jettywrapper (1.1.0)
+      activesupport (>= 3.0.0)
+      childprocess
+      i18n
       logger
       mediashelf-loggable
     json (1.6.1)
@@ -268,7 +271,7 @@ DEPENDENCIES
   devise
   factory_girl
   gherkin
-  jettywrapper (~> 0.0.10)
+  jettywrapper (~> 1.1.0)
   mocha
   rake
   rspec (>= 2.0.0)
