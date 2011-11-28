@@ -23,17 +23,14 @@
       <%- unless exhibit.browse_levels.nil? || exhibit.browse_levels.empty? -%>
         <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>
       <%- end -%>
-      <%- if current_user  -%>
-        <%- if !params[:edit_showcase] -%>
-          <%- if params[:id].to_i== exhibit.set_number %>
-            <%= link_to "Customize this page", new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection => params[:f] ), :class=>"customize"%>
-          <%- else %>
-            <%= link_to "Customize this page", new_atrium_exhibit_atrium_showcases_path(exhibit), :class=>"customize"%>
-          <%- end %>
-        <%- end %>
-      <%- end %>
     <%- end -%>
   <%- end -%>
+
+  <%- if current_user  -%>
+    <%- if !params[:edit_showcase] -%>
+      <%= link_to "Customize this page", get_customize_page_path, :class=>"customize"%>
+    <%- end %>
+  <%- end %>
 </div>
 
 

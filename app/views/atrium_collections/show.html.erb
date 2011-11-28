@@ -4,32 +4,21 @@
   <%- end %>
 </div>
 
-<div id="showHead">
-  <div id="showUtils">
-    <span class="edit-browse">
-      <%# if editor? -%>
-        <%= link_to 'Edit', {:action=>"edit", :id=>@atrium_collection.id} %> |
-        <%= link_to 'Back to Search', catalog_index_path %>
-      <%# end -%>
-    </span>
-  </div>
-</div>
-
-
 <%=render :partial=>'shared/collection_title_header'%>
 <%#render :partial=>'navigation'%>
 
-<%# if @atrium_showcase && @atrium_showcase.descriptions -%>
-<%- if @atrium_showcase && @atrium_showcase.descriptions-%>
-  <h2>Description</h2>
-   <ol>
-    <%- @atrium_showcase.descriptions.each do |desc| -%>
-    <li>
-      <%= desc.description.html_safe%>
-    </li>
-    <%- end -%>
-  </ol>
-<%- end -%>
+<span id="show_description">
+  <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
+    <h2>Description</h2>
+     <ol>
+      <%- @atrium_showcase.descriptions.each do |desc| -%>
+      <li>
+        <%= desc.description%>
+      </li>
+      <%- end -%>
+    </ol>
+ <%- end -%>
+</span>
 
 <%- if false #@atrium_collection && @atrium_collection.collections.any? -%>
   <h2>Collection details</h2>

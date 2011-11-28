@@ -1,15 +1,6 @@
 
 <%# render :partial => 'atrium_showcases/navigation_browse_levels', :locals=>{:exhibit_number=>@exhibit.set_number, :browse_levels=>@exhibit.browse_levels, :browse_facets=>@exhibit.browse_facet_names}%>
 <%# debug "Browse PAGE:#{@atrium_showcase.inspect}" %>
-<li>
-<%- if current_user && params[:edit_showcase] && params[:controller] == "atrium_collections"-%>
-  <%- if !@atrium_showcase -%>
-    <%= link_to 'Configure Collection', new_atrium_collection_atrium_showcases_path(@atrium_collection, :facet_selection=>params[:f]), :class=>"customize"%>
-  <%- else %>
-    <%= link_to 'View this collection', atrium_collection_path(:id => params[:id], :f=>params[:f])%>
-  <%- end %>
-<%- end %>
-</li>
 <%- unless @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
     <!-- recursively render the browse sets-->
   <%- @exhibit_navigation_data.each do |exhibit| -%>
@@ -22,6 +13,15 @@
     <%- end -%>
   <%- end -%>
 <%- end -%>
+
+<%- if current_user && params[:edit_showcase] -%>
+  <%- if !@atrium_showcase -%>
+    <%= link_to "Customize this page", get_customize_page_path, :class=>"customize"%>
+  <%- else %>
+    <%- path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)-%>
+    <%= link_to 'View this page',path %>
+  <%- end %>
+<%- end %>
 
 
 
