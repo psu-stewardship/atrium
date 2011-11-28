@@ -3,7 +3,7 @@
   <ul class="collection-controls">
     <li><%= link_to 'View Collection', @atrium_collection %></li>
     <li><%= link_to 'Configure Collection', edit_atrium_collection_path(@atrium_collection.id) %></li>
-    <li><%= link_to 'Configure Showcase',  new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection")%></li>
+    <li><%= link_to 'Customize Collection Home Page',  new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection")%></li>
   </ul>
   <%- unless @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
     <dl id="exhibits">
@@ -11,8 +11,7 @@
         <dt><%= exhibit.title%></dt>
         <dd><%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(exhibit) %></dd>
         <dd>
-          <%# link_to 'Configure Browse Page',  new_atrium_showcase_path(:atrium_parent_id=>exhibit.set_number, :atrium_parent_type=>"exhibit", :collection_id => exhibit.atrium_collection_id)%>
-          <%= link_to 'Configure Showcase',  new_atrium_exhibit_atrium_showcases_path(exhibit,:atrium_showcase_type=>"atrium_exhibit")%>
+          <%= link_to 'Customize Exhibit Home Page',  new_atrium_exhibit_atrium_showcases_path(exhibit,:atrium_showcase_type=>"atrium_exhibit")%>
         </dd>
       <%- end -%>
     </dl>

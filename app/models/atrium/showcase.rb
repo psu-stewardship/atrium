@@ -32,6 +32,16 @@ class Atrium::Showcase < ActiveRecord::Base
     showcase_items[:type] unless showcase_items.blank?
   end
 
+  def parent
+    if showcases_type && showcases_id
+      begin
+        showcases_type.constantize.find(showcases_id)
+      rescue
+        logger.error("Invalid showcase parent type set for showcase id: #{id}")
+        nil
+      end
+    end
+  end
 
   def solr_doc_ids
     showcase_items[:solr_doc_ids]  unless showcase_items.blank?

@@ -129,10 +129,21 @@ class AtriumShowcasesController < ApplicationController
     session[:copy_folder_document_ids] = session[:folder_document_ids]
     session[:folder_document_ids] = []
     @atrium_showcase = Atrium::Showcase.find(params[:id])
+    parent = @atrium_showcase.parent if @atrium_showcase.parent
+    if parent.is_a?(Atrium::Collection)
+      collection_id = parent.id
+    elsif parent.is_a?(Atrium::Exhibit)
+      exhibit_id = parent.id
+      collection = parent.collection
+      collection_id = collection.id if collection
+    else
+      collection_id = params[:collection_id]
+      exhibit_id = params[:exhibit_id]
+    end
     logger.debug("#{@atrium_showcase.inspect}, #{@atrium_showcase.showcase_items[:solr_doc_ids]}")
     session[:folder_document_ids] = @atrium_showcase.showcase_items[:solr_doc_ids].split(',') unless @atrium_showcase.showcase_items[:solr_doc_ids].nil?
     #make sure to pass in a search_fields parameter so that it shows search results immediately
-    redirect_to catalog_index_path(:add_featured=>true,:collection_id=>params[:collection_id],:search_field=>"all_fields",:f=>params[:f])
+    redirect_to catalog_index_path(:add_featured=>true,:collection_id=>collection_id,:exhibit_id=>exhibit_id,:search_field=>"all_fields",:f=>params[:f])
   end
 
   def selected_featured
