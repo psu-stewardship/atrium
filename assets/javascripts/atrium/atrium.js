@@ -98,5 +98,85 @@
           });
     });
 
+     $('.edit-text').editable(submitEditableText,{
+         indicator : 'Saving...',
+         tooltip   : 'Click to edit...'
+     });
+
+     function submitEditableText(value, settings) {
+       var edits = new Object();
+       var result = value;
+       edits[settings.name] = [value];
+       var params = $('div.edit-text').attr("data-column-name")+"="+value;
+        var returned = $.ajax({
+         type: "PUT",
+         url: $('div.edit-text').attr("data-update-uri"),
+         dataType: "html",
+         data: params,
+         success: function(data){
+           $(".div.edit-text").text(value)
+         },
+         error: function(xhr, textStatus, errorThrown){
+     		$.noticeAdd({
+             inEffect:               {opacity: 'show'},      // in effect
+             inEffectDuration:       600,                    // in effect duration in milliseconds
+             stayTime:               6000,                   // time in milliseconds before the item has to disappear
+             text:                   'Your changes failed'+ xhr.statusText + ': '+ xhr.responseText,
+             stay:                   true,                  // should the notice item stay or not?
+             type:                   'error'                // could also be error, success
+            });
+         }
+      });
+      return value;
+     }
+
+     function submitEditableTextArea(value, settings) {
+       var edits = new Object();
+       var result = value;
+       edits[settings.name] = [value];
+       var params = $('div.edit-textarea').attr("data-column-name")+"="+value;
+        var returned = $.ajax({
+         type: "PUT",
+         url: $('div.edit-textarea').attr("data-update-uri"),
+         dataType: "html",
+         data: params,
+         success: function(data){
+           $(".div.edit-text").text(value)
+         },
+         error: function(xhr, textStatus, errorThrown){
+     		$.noticeAdd({
+             inEffect:               {opacity: 'show'},      // in effect
+             inEffectDuration:       600,                    // in effect duration in milliseconds
+             stayTime:               6000,                   // time in milliseconds before the item has to disappear
+             text:                   'Your changes failed'+ xhr.statusText + ': '+ xhr.responseText,
+             stay:                   true,                  // should the notice item stay or not?
+             type:                   'error'                // could also be error, success
+            });
+         }
+      });
+      return value;
+     }
+
+     $('.edit-textarea').editable(submitEditableTextArea, {
+          method    : "PUT",
+          type      : "ckeditor",
+          submit    : "OK",
+          cancel    : "Cancel",
+          placeholder : "click to edit description",
+          onblur    : "ignore",
+          name      : "textarea",
+          id        : "field_id",
+          indicator : 'Saving...',
+          tooltip   : 'Click to edit...',
+          height    : "100",
+          ckeditor  : { toolbar:
+                        [
+                            ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'linkItem'],
+                            ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
+                            ['UIColor', 'PageBreak'], ['Source'], ['Maximize', 'ShowBlocks','-','About']
+                        ]
+                      }
+     });
+
   });
 })(jQuery);

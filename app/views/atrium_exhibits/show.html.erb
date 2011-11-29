@@ -4,7 +4,9 @@
   <%- end %>
 </div>
 
-<h2><b>Exhibit Title:</b>&nbsp;&nbsp;<%=@exhibit.title%></h2>
+<h2><b>Exhibit Title:</b>&nbsp;&nbsp;
+  <div class="edit-text" id="div_1" data-column-name="atrium_exhibit[label]" data-update-uri=<%=atrium_exhibit_path(@exhibit)%>><%=@exhibit.title%></div>
+</h2>
 
 <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
   <h2>Description</h2>

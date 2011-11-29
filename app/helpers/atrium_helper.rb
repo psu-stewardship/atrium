@@ -12,7 +12,7 @@ module AtriumHelper
       javascript_includes << ["application"]
     else
       stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
-      javascript_includes << ['jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js','jquery.ckeditor.min.js','atrium/atrium']
+      javascript_includes << ['jquery.jeditable.mini','jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
     end
   end
 

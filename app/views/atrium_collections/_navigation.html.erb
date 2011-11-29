@@ -2,9 +2,10 @@
 <li>
   <%- if current_user -%>
     <%# link_to "Configure Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection"), :class=>"customize"%>
-    <%= link_to "Configure Collection #{@atrium_exhbit}" ,{:action=>"edit", :id=>@atrium_collection.id}, :class=>"customize"%>
+    <%= link_to "Configure Collection" ,{:action=>"edit", :id=>@atrium_collection.id}, :class=>"customize"%>
   <%- end %>
 </li>
+<li><%= link_to 'View Collection', @atrium_collection %></li>
 <%# debug  @exhibit_navigation_data%>
 <div class="facet-list">
   <%- if @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
