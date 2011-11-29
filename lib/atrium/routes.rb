@@ -43,6 +43,10 @@ module Atrium
           match 'atrium_exhibits/:id/facet_order/update',   :to => 'atrium_exhibit_facet_order#update',        :as => 'update_atrium_exhibit_facet_order', :via => :post
           match 'atrium_showcases/featured/:id',          :to => 'atrium_showcases#featured',              :as => 'atrium_showcase_featured'
           match 'atrium_showcases/configure/:id',         :to => 'atrium_showcases#configure_showcase', :as => 'atrium_showcase_configure'
+          match 'atrium_collections/:collection_id/catalog/:id', :to => 'catalog#show', :as => 'atrium_collection_catalog'
+          match 'atrium_collections/:collection_id/browse/:id', :to => 'catalog#show', :as => 'atrium_collection_browse', :defaults=>{:atrium_collection_browse=>true}
+          match 'atrium_collections/:collection_id/exhibits/:exhibit_id/browse/:id', :to => 'catalog#show', :as => 'atrium_collection_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
+          match 'atrium_exhibits/:exhibit_id/browse/:id', :to => 'catalog#show', :as => 'atrium_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
         end
       end
 

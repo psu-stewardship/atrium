@@ -51,13 +51,28 @@ module AtriumHelper
   # catalog_path accepts a HashWithIndifferentAccess object. The solr query params are stored in the session,
   # so we only need the +counter+ param here. We also need to know if we are viewing to document as part of search results.
   def link_to_document(doc, opts={:label=>Blacklight.config[:index][:show_link].to_sym, :counter => nil, :results_view => true})
-    params[:controller] == "collections" ? collection_id = params[:id] : collection_id = params[:collection_id]
-    if collection_id
-      label = render_document_index_label doc, opts
-      args = {:collection_id=>collection_id}
-      args.merge!(:f=>params[:f]) if params[:f] && (params[:controller] != "catalog" || !params[:render_search].blank?)
-      args.merge!(:render_search=>"false") unless params[:controller] == "catalog"
-      link_to_with_data(label, catalog_path(doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+    params[:controller] == "atrium_collections" ? collection_id = params[:id] : collection_id = params[:collection_id]
+    params[:controller] == "atrium_showcases" ? exhibit_id = params[:id] : exhibit_id = params[:showcase_id]
+    params[:controller] == "atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id]
+    label = render_document_index_label doc, opts
+    args = {}
+    args.merge!(:f=>params[:f]) if params[:f] && params[:controller] != "catalog"
+    #try to retrieve collection id if not set
+    if exhibit_id && !collection_id
+      begin
+        exhibit = Atrium::Exhibit.find(exhibit_id)
+        collection_id = exhibit.collection.id if exhibit && exhibit.collection
+      rescue
+      end
+    end
+
+    if exhibit_id && collection_id
+      link_to_with_data(label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+    #elsif exhibit_id
+    #  link_to_with_data(label, atrium_exhibit_browse_path(exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+    elsif collection_id
+      params[:controller] == "catalog" ? current_path = atrium_collection_catalog_path(collection_id, doc.id, args) : current_path = atrium_collection_browse_path(collection_id, doc.id, args)
+      link_to_with_data(label, current_path, {:method => :put, :class => label.parameterize, :data => opts}).html_safe
     else
       super
     end
@@ -81,4 +96,17 @@ module AtriumHelper
     end
   end
 
+  # Override this from BlacklightHelper so we can have a link back to browsing a collection
+  # Create a link back to the index screen, keeping the user's facet, query and paging choices intact by using session.
+  def link_back_to_catalog(opts={:label=>'Back to Search'})
+    if params[:atrium_collection_browse]
+      params[:controller] == "atrium_collections" ? collection_id = params[:id] : collection_id = params[:collection_id]
+      link_to "Back to Browse Collection", atrium_collection_path(collection_id)
+    elsif params[:atrium_exhibit_browse]
+      params[:controller] == "atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id]
+      link_to "Back to Browse Exhibit", atrium_exhibit_path(exhibit_id,:f=>params[:f])
+    else
+      super
+    end
+  end
 end

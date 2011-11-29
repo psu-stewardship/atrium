@@ -2,11 +2,11 @@
 <li>
   <%- if current_user -%>
     <%# link_to "Configure Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection"), :class=>"customize"%>
-    <%= link_to "Configure Collection" ,{:action=>"edit", :id=>@atrium_collection.id}, :class=>"customize"%>
+    <%= link_to "Configure Collection #{@atrium_exhbit}" ,edit_atrium_collection_path(@atrium_collection.id, :class=>"customize")%>
   <%- end %>
 </li>
 <li><%= link_to 'View Collection', @atrium_collection %></li>
-<%# debug  @exhibit_navigation_data%>
+<%# debug  @exhibit_navigation_data.inspect%>
 <div class="facet-list">
   <%- if @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
       <ul>
@@ -28,7 +28,7 @@
   <%- end -%>
 
   <%- if current_user  -%>
-    <%- if !params[:edit_showcase] -%>
+    <%- if !params[:edit_showcase] && !params[:atrium_collection_browse] && !params[:atrium_exhibit_browse] -%>
       <%= link_to "Customize this page", get_customize_page_path, :class=>"customize"%>
     <%- end %>
   <%- end %>

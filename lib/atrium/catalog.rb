@@ -15,9 +15,19 @@ module Atrium::Catalog
   extend ActiveSupport::Concern
   include Blacklight::Catalog
   include Atrium::SolrHelper
+  include BlacklightHelper
 
   def self.included(klass)
     klass.before_filter :initialize_collection
+  end
+
+  def show
+    super
+    if params[:atrium_collection_browse] || params[:atrium_exhibit_browse]
+      @exhibit_navigation_data = get_exhibit_navigation_data
+      
+      render :layout => "atrium" 
+    end
   end
 
   def index

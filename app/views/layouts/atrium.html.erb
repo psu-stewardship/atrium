@@ -55,14 +55,13 @@
 
         <div class="yui-b sidebar">
           <%- if params[:controller] == "catalog" -%>
-            <%- if params[:render_search].blank? || params[:class] == "edit_collection" -%>
+            <%- if (params[:atrium_collection_browse].blank? && params[:atrium_exhibit_browse].blank?) || params[:class] == "edit_collection" -%>
               <%- if params[:collection_id] -%>
-                <h3><%# link_to_collection(:label=>"Back to Browse Collection") %></h3>
+                <h3><%= link_to("Back to Browse Collection", atrium_collection_path(params[:collection_id])) %></h3>
               <%- end -%>
             <%- else -%>
-              <%# render :partial => 'shared/collection_search_form' %>
+	      <%= render :partial => 'shared/collection_search_form' %>
               <%= render :partial => 'atrium_collections/navigation' %>
-              <%= render :partial => 'atrium_collections/edit_navigation' %>
             <%- end -%>
           <%- elsif params[:controller] == "atrium_collections" && !(params[:action] == "show")-%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
