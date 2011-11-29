@@ -26,8 +26,13 @@ module Atrium::Catalog
     if params[:atrium_collection_browse] || params[:atrium_exhibit_browse]
       @exhibit_navigation_data = get_exhibit_navigation_data
       
-      render :layout => "atrium" 
+      #render :layout => "atrium"
+      render "browse_show", :layout=> "atrium"
     end
+  end
+
+  def browse_show
+    render :layout => "atrium"
   end
 
   def index
