@@ -64,5 +64,9 @@
   <% end %>
 <% end %>
 
+<% if @atrium_collection %>
+  <%= button_to "Delete this Collection", atrium_collection_path(@atrium_collection.id), :method=>:delete, :class=>:destroy,:confirm=>"Are you really want to delete this collection?" %>
+<% end %>
+
 
 

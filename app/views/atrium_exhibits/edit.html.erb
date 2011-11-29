@@ -1,7 +1,10 @@
 <%= link_to 'Back to Collection', edit_atrium_collection_path(@exhibit.atrium_collection_id) %>  |
-<%= link_to 'Back to Search', catalog_index_path %> |
-<%= link_to "Delete Exhibit #{@exhibit.id}", atrium_exhibit_path(@exhibit.id), :method => :delete, :confirm => "Are you really want to delete this exhibit?"%>
+<%= link_to 'Back to Search', catalog_index_path %>
 
 <h1>Configure Exhibit</h1>
 
 <%= render :partial => "form" %>
+
+<% if @exhibit %>
+      <%= button_to "Delete this Exhibit", atrium_exhibit_path(@exhibit.id), :method=>:delete, :class=>:destroy,:confirm=>"Are you really want to delete this exhibit?" %>
+<% end %>

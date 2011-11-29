@@ -3,6 +3,8 @@
    versions of Atrium change this file. Instead, use your own JS file
    which over-rides things in this JS file, as described below: Modified on startup */
 
+jQuery.noConflict();
+
 (function($){
   $(document).ready(function(){
     $('select.chosen').chosen();
