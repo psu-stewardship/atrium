@@ -109,4 +109,13 @@ module AtriumHelper
       super
     end
   end
+
+  def save_collection_id_in_session(collection_id)
+    session[:collection_id] = collection_id
+  end
+
+  def save_exhibit_id_in_session(exhibit_id)
+    session[:exhibit_id] = exhibit_id
+  end
+
 end
