@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'blacklight', '~>3.0.0'
   s.add_dependency 'active-fedora', '>= 2.3.3'
   s.add_dependency 'builder'
+  s.add_dependency 'cancan'
   s.add_dependency 'columnize'
   s.add_dependency 'crack'
   s.add_dependency 'curb'

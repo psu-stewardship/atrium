@@ -11,7 +11,7 @@
   <p>No collections found.</p>
 <%- end -%>
 
-<%- if current_user -%>
+<%- if (current_user) && (can? :create, Atrium::Collection)  -%>
     <%- @atrium_collection = Atrium::Collection.new-%>
     <%= form_for (@atrium_collection) do |f| %>
       <%= f.submit 'Create New Collection' %>
