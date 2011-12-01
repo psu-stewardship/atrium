@@ -1,5 +1,5 @@
 <h2><b>Collection Title:</b>&nbsp;&nbsp;
-  <div class="edit-text" id="collection_id" data-column-name="atrium_collection[title]" data-update-uri=<%=atrium_collection_path(@atrium_collection) %>>
+  <div  id="title_id" data-column-name="atrium_collection[title]" class="<%= params[:edit_showcase]&&(current_user) && (can? :create, Atrium::Collection) ?  "edit-text": "no-edit"%>" data-update-uri=<%=atrium_collection_path(@atrium_collection) %>>
     <%=@atrium_collection.title%>
   </div></h2>
 <%# selected_facets = get_selected_browse_facets(@browse_facets) -%>
