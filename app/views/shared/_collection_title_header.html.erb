@@ -1,10 +1,5 @@
-<h2><b>Collection Title:</b>&nbsp;&nbsp;
-  <div  id="title_id" data-column-name="atrium_collection[title]" class="<%= session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Collection) ?  "edit-text": "no-edit"%>" data-update-uri=<%=atrium_collection_path(@atrium_collection) %>>
-    <%=@atrium_collection.title%>
-  </div></h2>
-<%# selected_facets = get_selected_browse_facets(@browse_facets) -%>
-<%# @browse_facets.each do |facet| -%>
-  <%# if selected_facets[facet.to_sym] -%>
-    <h2><%#"<b>#{facet_field_labels[facet.to_s]}:</b>  #{selected_facets[facet.to_sym]}"%></h2>
-  <%# end -%>
-<%# end -%>
+<h2>
+  <div id="title_id" data-column-name="atrium_collection[title]" class="<%= session[:edit_showcase] && (can? :create, Atrium::Collection) ?  "edit-text": "no-edit"%>" data-update-uri=<%= atrium_collection_path(@atrium_collection) %>>
+    <%= @atrium_collection.title %>
+  </div>
+</h2>

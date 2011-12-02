@@ -46,6 +46,15 @@ select {
   padding:1em .3em;
 }
 
+/** Pages **/
+#show_description ul {
+  margin-left:0;
+}
+
+#show_description ul li {
+  list-style-type:none;
+}
+
 /** Lists **/
 ol.sortable {
   list-style-type:none;

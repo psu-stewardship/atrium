@@ -4,15 +4,23 @@
   <%- end %>
 </div>
 
-<h2><b>Exhibit Title:</b>&nbsp;&nbsp;
-  <div class="<%= session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Exhibit) ?  "edit-text": "no-edit"%>" id="div_1" data-column-name="atrium_exhibit[label]" data-update-uri=<%=atrium_exhibit_path(@exhibit)%>><%=@exhibit.title%></div>
+<h2>
+  <div class="<%= params[:edit_showcase] && (can? :create, Atrium::Exhibit) ?  "edit-text": "no-edit"%>" id="div_1" data-column-name="atrium_exhibit[label]" data-update-uri=<%=atrium_exhibit_path(@exhibit)%>>
+    <%= @exhibit.title %>
+  </div>
 </h2>
 
-<span id="show_description">
-  <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
-    <%= render :partial=>'shared/list_descriptions', :locals=>{:descriptions=>@atrium_showcase.descriptions} %>
-  <%- end -%>
-</span>
+<%- if @atrium_showcase && @atrium_showcase.descriptions.any? -%>
+   <ul>
+    <%- @atrium_showcase.descriptions.each do |desc| -%>
+    <li>
+      <div class="<%= params[:edit_showcase] && (can? :create, Atrium::Exhibit) ?  "edit-textarea": "no-edit"%>" id="div_desc" data-column-name="atrium_description[description]" data-update-uri=<%= atrium_description_path(desc) %>>
+        <%= desc.description.html_safe unless desc.description.blank? %>
+      </div>
+    </li>
+    <%- end -%>
+  </ul>
+<%- end -%>
 
 <span id="show_selected">
 <%- if !@documents.blank? -%>
@@ -23,7 +31,6 @@
 <hr />
 
 <h2>Complete Sources</h2>
-<a id="toggle_sources" href="#" title="Hide the complete listing of sources.">Hide Complete Sources</a>
 <div id="complete_sources">
   <%= render :partial=>'atrium_collections/browse_index'%>
 </div>
