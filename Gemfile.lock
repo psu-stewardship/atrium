@@ -28,6 +28,8 @@ PATH
       rails (~> 3.0.10)
       rake
       rcov
+      rsolr (= 1.0.2)
+      rsolr-ext (= 1.0.3)
       sanitize
       solr-ruby
       solrizer (>= 1.1.0)
@@ -219,7 +221,7 @@ GEM
       json (~> 1.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rsolr (1.0.6)
+    rsolr (1.0.2)
       builder (>= 2.1.2)
     rsolr-ext (1.0.3)
       rsolr (>= 1.0.2)

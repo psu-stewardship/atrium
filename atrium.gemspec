@@ -49,6 +49,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'block_helpers'
   s.add_dependency 'sanitize'
 
+### Remove after updating Blacklight
+  s.add_dependency 'rsolr',     '1.0.2'
+  s.add_dependency 'rsolr-ext', '1.0.3'
+###
+
   s.add_development_dependency 'rake'
   s.add_development_dependency 'cucumber', '>=0.8.5'
   s.add_development_dependency 'cucumber-rails', '>=1.0.0'
