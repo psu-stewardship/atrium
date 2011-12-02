@@ -1,12 +1,13 @@
 class Atrium::Exhibit < ActiveRecord::Base
+  set_table_name :atrium_exhibits
+
   has_many :browse_levels, :class_name => 'Atrium::BrowseLevel', :foreign_key => 'atrium_exhibit_id', :order => 'level_number ASC'
-  has_many :showcases,  :class_name => 'Atrium::Showcase',  :as=>:showcases
+  has_many :showcases,     :class_name => 'Atrium::Showcase',  :as => :showcases
+
   belongs_to :collection, :class_name => 'Atrium::Collection', :foreign_key => 'atrium_collection_id'
 
-  accepts_nested_attributes_for :browse_levels, :allow_destroy=>true
+  accepts_nested_attributes_for :browse_levels, :allow_destroy => true
   accepts_nested_attributes_for :showcases
-
-  set_table_name :atrium_exhibits
 
   serialize :filter_query_params
 
@@ -30,4 +31,5 @@ class Atrium::Exhibit < ActiveRecord::Base
       Atrium::BrowseLevel.find(id).update_attributes!(:level_number => order) if valid_ids.include?(id.to_i)
     end
   end
+
 end
