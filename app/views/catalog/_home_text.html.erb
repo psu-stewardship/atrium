@@ -1,9 +1,6 @@
 <%- if params[:collection_id] -%>
-  <%=render :partial=>'collection_home_text'%>
+  <%= render :partial => 'collection_home_text'%>
 <%- else -%>
-  <%=render :partial=>'default_home_text'%>
+  <%= render :partial => 'default_home_text'%>
+  <%= render :partial => 'atrium_collections/listing' %>
 <%- end -%>
-
-<h2>Browse Current collections</h2>
-<p>Instead of searching, if you would like to browse existing collections they are listed below</p>
-<%=render :partial=>'atrium_collections/index'%>
