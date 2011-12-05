@@ -5,7 +5,10 @@
     <%= link_to "Configure Collection #{@atrium_exhbit}" ,edit_atrium_collection_path(@atrium_collection.id, :class=>"customize")%>
   <%- end %>
 </li>
-<li><%= link_to 'View Collection', @atrium_collection %></li>
+<li>
+  <%# link_to 'View Collection', @atrium_collection %>
+  <%= link_to 'View Collection',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
+</li>
 <%# debug  @exhibit_navigation_data.inspect%>
 <div class="facet-list">
   <%- if @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
@@ -13,7 +16,7 @@
         <%- @atrium_collection.exhibits.each do |exhibit| -%>
           <%- if current_user -%>
           <li>
-            <%= link_to "Customize Exhibit: #{exhibit.title}", new_atrium_exhibit_atrium_showcases_path(exhibit,:edit_showcase=>true, :facet_selection=>params[:f]),:class=>"customize"%>
+            <%= link_to "Customize Exhibit: #{exhibit.title}", new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection=>params[:f]),:class=>"customize"%>
           </li>
           <%- end -%>
         <%- end %>
@@ -28,7 +31,7 @@
   <%- end -%>
 
   <%- if current_user  -%>
-    <%- if !params[:edit_showcase] && !params[:atrium_collection_browse] && !params[:atrium_exhibit_browse] -%>
+    <%- if !session[:edit_showcase] && !params[:atrium_collection_browse] && !params[:atrium_exhibit_browse] -%>
       <%= link_to "Customize this page", get_customize_page_path, :class=>"customize"%>
     <%- end %>
   <%- end %>

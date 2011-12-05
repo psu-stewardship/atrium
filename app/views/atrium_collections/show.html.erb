@@ -1,25 +1,16 @@
 <div class="showcase_configure">
-  <%- if @atrium_showcase && params[:edit_showcase]%>
+  <%- if @atrium_showcase && session[:edit_showcase]%>
     <%=render :partial=>'shared/showcase_configure_menu'%>
   <%- end %>
 </div>
 
 <%=render :partial=>'shared/collection_title_header'%>
 
-  <span id="show_description">
-    <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
-    <h2>Description</h2>
-     <ol>
-      <%- @atrium_showcase.descriptions.each do |desc| -%>
-      <li>
-        <div class="<%= params[:edit_showcase]&&(current_user) && (can? :create, Atrium::Collection) ?  "edit-textarea": "no-edit"%>" id="div_desc" data-column-name="atrium_description[description]" data-update-uri=<%=atrium_description_path(desc)%>>
-          <%= desc.description.html_safe if desc.description %>
-        </div>
-      </li>
-      <%- end -%>
-    </ol>
-    <%- end -%>
-  </span>
+<span id="show_description">
+  <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
+    <%= render :partial=>'shared/list_descriptions', :locals=>{:descriptions=>@atrium_showcase.descriptions} %>
+  <%- end -%>
+</span>
 
 <span id="show_selected">
   <%- if !@documents.blank? -%>

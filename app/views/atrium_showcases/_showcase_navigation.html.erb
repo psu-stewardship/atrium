@@ -14,12 +14,13 @@
   <%- end -%>
 <%- end -%>
 
-<%- if current_user && params[:edit_showcase] -%>
+<%- if current_user && session[:edit_showcase] -%>
   <%- if !@atrium_showcase -%>
     <%= link_to "Customize this page", get_customize_page_path, :class=>"customize"%>
   <%- else %>
-    <%- path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)-%>
-    <%= link_to 'View this page',path %>
+    <%# path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)-%>
+    <%# link_to 'View this page',path %>
+    <%= link_to 'View this page',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
   <%- end %>
 <%- end %>
 

@@ -12,6 +12,11 @@ class AtriumDescriptionsController < ApplicationController
 
   before_filter :initialize_collection
 
+  def index
+    @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
+    render :layout => false
+  end
+
   def new
    @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
     render :layout => false
@@ -43,4 +48,12 @@ class AtriumDescriptionsController < ApplicationController
     render :layout => false
   end
 
+  def destroy
+    #Need to delete in AJAX way
+    @atrium_description = Atrium::Description.find(params[:id])
+    Atrium::Description.destroy(params[:id])
+    text = 'Description'+params[:id] +'was deleted successfully.'
+    render :text => text
   end
+
+end

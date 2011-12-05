@@ -83,7 +83,27 @@ jQuery.noConflict();
     $('.description_colorbox').colorbox({
       width:'880px',
       height:'80%',
-      iframe:true
+      iframe:true,
+      onClosed:function(){
+        var url = $(this).attr('action');
+        $.ajax({
+          type: 'GET',
+          url: url,
+          dataType: 'html',
+          cache: true,
+          beforeSend: function() {
+            $('#cboxLoadedContent').empty();
+            $('#cboxLoadingGraphic').show();
+          },
+          complete: function() {
+            $('#cboxLoadingGraphic').hide();
+          },
+          success: function(data) {
+            $('#show_description').html(data);
+            $('#catalog-form').show();
+          }
+        });
+      }
     });
 
     $('.description').hide();
@@ -99,6 +119,24 @@ jQuery.noConflict();
             }
           });
     });
+
+    $("a.destroy_description", this).live("click", function(e) {
+       var $descNode = $(this).closest('li')
+       var url = $(this).attr('action');
+       $.ajax({
+         type: "DELETE",
+         url: url,
+         dataType: "html",
+         beforeSend: function() {
+   			$descNode.animate({'backgroundColor':'#fb6c6c'},300);
+         },
+         success: function() {
+           $descNode.slideUp(300,function() {
+             $descNode.remove();
+           });
+         }
+       });
+     });
 
      $('.edit-text').editable(submitEditableText,{
          indicator : 'Saving...',

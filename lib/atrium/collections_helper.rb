@@ -18,9 +18,9 @@ module Atrium::CollectionsHelper
       p.merge!(:collection_id=>params[:id])
       #p.merge!(:controller=>params[:controller])
     end
-    if params[:edit_showcase]
-      p.merge!(:edit_showcase=>true)
-    end
+    #if params[:edit_showcase]
+    #  p.merge!(:edit_showcase=>true)
+    #end
     p.merge!(:id=>exhibit_number)
     p = remove_related_facet_params(facet_solr_field, p, browse_facets, exhibit_number)
     p = add_browse_facet_params(facet_solr_field,value,p)
@@ -52,9 +52,9 @@ module Atrium::CollectionsHelper
       p.merge!(:collection_id=>params[:id])
       p.merge!(:controller=>params[:controller])
     end
-    if params[:edit_showcase]
-      p.merge!(:edit_showcase=>true)
-    end
+    #if params[:edit_showcase]
+    #  p.merge!(:edit_showcase=>true)
+    #end
     p.merge!(:id=>exhibit_number)
    # params[:action] == "edit" ? edit_atrium_collection_path(p) : atrium_collection_path(p)
     atrium_exhibit_path(p)
