@@ -9,7 +9,7 @@
 | <%= link_to 'Add new description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class=>'description_colorbox'%>
 <%- else %>
     <%=link_to 'Select Featured', atrium_showcase_featured_path(:id=>@atrium_showcase.id,:collection_id=>collection_id, :f=>params[:f]), :class=>'select_colorbox', :action=> atrium_collection_atrium_showcases_path(@atrium_collection, :showcase_id=>@atrium_showcase.id) %>
-    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class=>'description_colorbox'%>
+    | <%= link_to 'Add new description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class=>'description_colorbox', :action=> atrium_descriptions_path(:atrium_showcase_id=>@atrium_showcase.id)%>
 <%- end %>
 
 

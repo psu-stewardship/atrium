@@ -118,4 +118,9 @@ module AtriumHelper
     session[:exhibit_id] = exhibit_id
   end
 
+  def set_edit_showcase_in_session
+    logger.debug("Setting edit showcase")
+    session[:edit_showcase] = true
+  end
+
 end

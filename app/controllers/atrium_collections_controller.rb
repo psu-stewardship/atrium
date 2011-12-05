@@ -32,7 +32,6 @@ class AtriumCollectionsController < ApplicationController
   end
 
   def show
-    #@atrium_collection = Atrium::Collection.find(params[:id])
     @exhibit_navigation_data = get_exhibit_navigation_data
     if(params[:collection_number])
       @collection = Atrium::Exhibit.find(params[:collection_number])
@@ -41,6 +40,8 @@ class AtriumCollectionsController < ApplicationController
       @atrium_showcase= Atrium::Showcase.with_selected_facets(@atrium_collection.id,@atrium_collection.class.name, params[:f]).first
       #get_atrium_showcase(params[:collection_number], params[:f]).first
     end
+
+    logger.debug("Finding Atrium Browse Page: #{@atrium_showcase.inspect}")
 
     if(params[:showcase_id] && @atrium_showcase.nil?)
       @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])

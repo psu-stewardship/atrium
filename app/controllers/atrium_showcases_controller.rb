@@ -17,8 +17,8 @@ class AtriumShowcasesController < ApplicationController
     @exhibit = Atrium::Exhibit.find(params[:atrium_exhibit_id])
     @exhibit_navigation_data = get_exhibit_navigation_data
     logger.debug("Exhibit: #{@exhibit.inspect}, Browse level:#{@exhibit.browse_levels.inspect}")
-    redirect_to atrium_collection_path(:edit_showcase=>true,:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id)
-    #render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}
+    set_edit_showcase_in_session
+    redirect_to atrium_collection_path(:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id)
   end
 
   def new
@@ -63,13 +63,15 @@ class AtriumShowcasesController < ApplicationController
 
   def edit
     @atrium_showcase = Atrium::Showcase.find(params[:id])
-
+    set_edit_showcase_in_session
     if @atrium_showcase.showcases_type=="atrium_exhibit"
       @exhibit= Atrium::Exhibit.find_by_id(@atrium_showcase.showcases_id)
-      redirect_to atrium_collection_path(:edit_showcase=>true,:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
+      #redirect_to atrium_collection_path(:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
+      redirect_to atrium_collection_showcase_path(@exhibit.atrium_collection_id, :showcase_id=>params[:id], :exhibit_number=>@exhibit.id,  :f=>params[:f])
     else
       @atrium_collection= Atrium::Collection.find_by_id(@atrium_showcase.showcases_id)
-      redirect_to atrium_collection_path(:edit_showcase=>true,:id=>@atrium_collection.id, :showcase_id=>params[:id], :f=>params[:f])
+      #redirect_to atrium_collection_path(:id=>@atrium_collection.id, :showcase_id=>params[:id], :f=>params[:f])
+      redirect_to atrium_collection_showcase_path(@atrium_collection.id, params[:id], :f=>params[:f])
     end
     #@exhibit = Atrium::Exhibit.find(@atrium_showcase.atrium_exhibit_id)
 
@@ -85,11 +87,6 @@ class AtriumShowcasesController < ApplicationController
   end
 
   def show
-  #  @atrium_showcase = Atrium::Showcase.find(params[:id])
-  #  selected_document_ids = @atrium_showcase.showcase_items["solr_doc_ids"]
-  #  logger.debug("Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
-  #  @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
-  #  render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
     @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])
     @atrium_showcase.showcase_items ||= Hash.new
     selected_document_ids = session[:folder_document_ids]
@@ -100,8 +97,6 @@ class AtriumShowcasesController < ApplicationController
     logger.debug("@atrium_showcase: #{@atrium_showcase.inspect},Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
     @response, @documents = get_solr_response_for_field_values("id",@atrium_showcase.showcase_items[:solr_doc_ids].split(',') || [])
     render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
-    #@exhibit = Atrium::Exhibit.find(@atrium_showcase.atrium_exhibit_id)
-    #redirect_to atrium_collection_path(:edit_showcase=>true,:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
   end
 
   def destroy
@@ -116,12 +111,14 @@ class AtriumShowcasesController < ApplicationController
 
     @exhibit_navigation_data = get_exhibit_navigation_data
     logger.debug("Exhibit: #{@exhibit.inspect}")
+    set_edit_showcase_in_session
     if @atrium_showcase.showcases_type=="Atrium::Exhibit"
-      redirect_to atrium_exhibit_path(@atrium_showcase.showcases_id,:edit_showcase=>true,:atrium_showcase_type=>"atrium_exhibit", :f=>params[:f])
+      redirect_to atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f])
       #redirect_to atrium_collection_path(:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
     else
       @atrium_collection= Atrium::Collection.find_by_id(@atrium_showcase.showcases_id)
-      redirect_to atrium_collection_path(:edit_showcase=>true,:id=>@atrium_showcase.showcases_id, :showcase_id=>params[:id], :f=>params[:f])
+      #redirect_to atrium_collection_path(:id=>@atrium_showcase.showcases_id, :showcase_id=>params[:id], :f=>params[:f])
+      redirect_to atrium_collection_showcase_path(@atrium_showcase.showcases_id, params[:id], :f=>params[:f])
     end
   end
 
@@ -155,6 +152,13 @@ class AtriumShowcasesController < ApplicationController
     render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}
   end
 
+  def refresh_showcase
+    @atrium_showcase = Atrium::Showcase.find(params[:id])
+    path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)
+    unset_edit_showcase_in_session
+    redirect_to path
+  end
+
   private
 
   def parent_object
@@ -171,6 +175,11 @@ class AtriumShowcasesController < ApplicationController
       when params[:article_id] then article_url(parent)
       when params[:news_id] then news_url(parent)
     end
+  end
+
+  def unset_edit_showcase_in_session
+    logger.debug("unsetting edit showcase")
+    session[:edit_showcase] = nil
   end
 
 end

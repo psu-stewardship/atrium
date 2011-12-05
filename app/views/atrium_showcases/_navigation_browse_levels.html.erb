@@ -10,7 +10,7 @@
         <li>
           <%- if !browse_level.selected.nil? && browse_level.selected == value && exhibit_number.to_i == params[:exhibit_number].to_i-%>
 	    <span class="selected">
-	      <%- selected_path = get_selected_browse_facet_path(solr_facet_name, value, browse_facets, exhibit_number,:edit_showcase=>true) -%>
+	      <%- selected_path = get_selected_browse_facet_path(solr_facet_name, value, browse_facets, exhibit_number) -%>
               <%= link_to("-", selected_path, :class=>"remove") %>
               <%= link_to(value, selected_path, :class=>"browse_facet") %>
             </span>
