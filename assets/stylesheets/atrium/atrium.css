@@ -1,6 +1,74 @@
 /* Global */
 
-/* Custom bits of data forms */
+body {
+  padding:0;
+}
+
+#doc, #doc2, #doc3, #doc4 {
+  margin-top:15px;
+}
+
+/** Banner **/
+
+#banner {
+  background-color:#F00;
+  font-size: 1.2em;
+  line-height:3.2em;
+  padding:.1em .6em;
+  position:relative;
+  text-align:left;
+}
+
+#banner .controls {
+  line-height:3.5em;
+  margin:0;
+  position:absolute;
+  right:.6em;
+  top:0;
+}
+
+#banner .controls li {
+  display:inline;
+  list-style-type:none;
+}
+
+#banner .button {
+  background-color:#CCC;
+  border-color: #FFF #000 #000 #FFF;
+  border-style:solid;
+  border-width:1px;
+  display:inline-block;
+  line-height:1.2em;
+  padding:.3em .5em;
+}
+
+/** Navigation menu **/
+#exhibit-menu {
+  margin:0 0 .3em 0;
+  padding:1px;
+  line-height:3.2em;
+  text-align:left;
+  border-width:1px 0;
+  border-style:solid;
+  border-color:#CCC;
+}
+
+#exhibit-menu li {
+  list-style-type:none;
+  display:inline;
+  line-height:1.2em;
+}
+
+#exhibit-menu a {
+  padding:.5em 1em;
+  border-bottom:none;
+}
+
+#exhibit-menu a:hover {
+  background-color:#EFEFEF;
+}
+
+/** Custom bits of data forms **/
 
 legend {
   color: #999;

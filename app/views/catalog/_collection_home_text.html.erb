@@ -4,3 +4,4 @@
 <%- else %>
   <%= render :partial => "shared/default_collection_text"  %>
 <%- end %>
+<h3><%= link_to 'Browse this Collection', atrium_collection_path(params[:collection_id]) %></h3>

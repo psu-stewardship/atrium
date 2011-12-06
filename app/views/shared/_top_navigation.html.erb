@@ -1,0 +1,9 @@
+<% if @atrium_collection.exhibits.any? %>
+<div class="yui-g">
+  <ul id="exhibit-menu">
+    <% @atrium_collection.exhibits.each do |exhibit| %>
+      <li><%= link_to exhibit.title, atrium_exhibit_path(exhibit) %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
