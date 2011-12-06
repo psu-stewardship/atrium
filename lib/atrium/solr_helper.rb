@@ -84,8 +84,10 @@ module Atrium::SolrHelper
   #      @browse_document_list [Array] An array of SolrDocuments for the current browse scope
   #
   def initialize_collection
+    #debugger; true
     if params[:controller] == "atrium_collections"
-      collection_id = params[:id]
+      collection_id = params[:id]            if params.has_key? :id
+      collection_id = params[:collection_id] if params.has_key? :collection_id
     elsif params[:controller] =="atrium_exhibits"
       @exhibit = Atrium::Exhibit.find(params[:id])
       collection = @exhibit.collection if @exhibit
@@ -99,13 +101,13 @@ module Atrium::SolrHelper
         begin
           @showcase = Atrium::Showcase.find(params[:id])
         rescue
-          #just do nothing here if 
+          #just do nothing here if
         end
       end
 
       if @showcase && @showcase.parent
         if @showcase.parent.is_a?(Atrium::Collection)
-          @atrium_collection = @showcase.parent 
+          @atrium_collection = @showcase.parent
           collection_id = @atrium_collection.id
         elsif @showcase.parent.is_a?(Atrium::Exhibit)
           @exhibit = @showcase.parent
@@ -129,14 +131,14 @@ module Atrium::SolrHelper
       raise "No collection was found with id: #{collection_id}" if @atrium_collection.nil?
       @exhibits = @atrium_collection.exhibits
       if params[:exhibit_number]
-        exhibit_index = params[:exhibit_number].to_i 
+        exhibit_index = params[:exhibit_number].to_i
         @exhibit = @exhibits.fetch(exhibit_index-1) if @exhibits && exhibit_index && exhibit_index <= @exhibits.size
       elsif params[:exhibit_id]
         @exhibit = Atrium::Exhibit.find(params[:exhibit_id])
       end
       logger.debug("Collection: #{@atrium_collection}")
       @extra_controller_params ||= {}
-      params[:browse_level_id] ? @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]): @browse_level = get_current_browse_level(@exhibit)  
+      params[:browse_level_id] ? @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]): @browse_level = get_current_browse_level(@exhibit)
       @extra_controller_params = prepare_extra_controller_params_for_collection_query(@atrium_collection,@exhibit,@browse_level,params,@extra_controller_params)
       (@response, @document_list) = get_search_results(params, @extra_controller_params)
       #reset to just filters in collection filter
@@ -162,13 +164,13 @@ module Atrium::SolrHelper
     fq.concat(ex_filter_query_params[:fq]) if (ex_filter_query_params && ex_filter_query_params[:fq])
     #mixin exhibit facet filters
     if exhibit_filter_query_params && exhibit_filter_query_params[:fq]
-      exhibit_filter_query_params[:fq].each do |fq_param| 
+      exhibit_filter_query_params[:fq].each do |fq_param|
         fq << fq_param unless fq.include?(fq_param)
       end
     end
     #mixin browse level facet filters
     if bl_filter_query_params && bl_filter_query_params[:fq]
-      bl_filter_query_params[:fq].each do |fq_param| 
+      bl_filter_query_params[:fq].each do |fq_param|
         fq << fq_param unless fq.include?(fq_param)
       end
     end
@@ -365,7 +367,7 @@ module Atrium::SolrHelper
     if exhibit
       #keep recursing until lowest level that has a facet selected is found
       exhibit.browse_levels.each do |browse_level|
-        cur_browse_level = browse_level if browse_level.solr_facet_name && facet_selected?(browse_level.solr_facet_name) 
+        cur_browse_level = browse_level if browse_level.solr_facet_name && facet_selected?(browse_level.solr_facet_name)
       end
     end
     cur_browse_level

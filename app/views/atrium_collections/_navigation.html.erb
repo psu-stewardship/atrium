@@ -6,10 +6,10 @@
   <%- end %>
 </li>
 <li>
-  <%# link_to 'View Collection', @atrium_collection %>
-  <%= link_to 'View Collection',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
+  <%= link_to 'View Collection', @atrium_collection %>
+  <%# link_to 'View Collection',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
 </li>
-<%# debug  @exhibit_navigation_data.inspect%>
+
 <div class="facet-list">
   <%- if @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
       <ul>
@@ -36,7 +36,3 @@
     <%- end %>
   <%- end %>
 </div>
-
-
-
-
