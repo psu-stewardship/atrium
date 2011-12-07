@@ -21,6 +21,6 @@
     <%= link_to 'Add New Description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(:atrium_showcase_id=>@atrium_showcase.id) %>
   </li>
   <li class="last">
-    <%= link_to "Stop Editing", '/', :class => 'button close' %>
+    <%= link_to "Stop Editing", stop_atrium_customization_path(@atrium_showcase.for_exhibit? ? {:type => 'exhibit', :id => @exhibit.id} : {:type => 'collection', :id => @atrium_collection.id}), :class => 'button close' %>
   </li>
 </ul>
