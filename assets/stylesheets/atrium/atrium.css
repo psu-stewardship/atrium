@@ -5,7 +5,7 @@ body {
 }
 
 #doc, #doc2, #doc3, #doc4 {
-  margin-top:15px;
+  border-top:5px solid #484748;
 }
 
 /** Banner **/

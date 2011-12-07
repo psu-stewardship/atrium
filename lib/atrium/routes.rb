@@ -50,6 +50,8 @@ module Atrium
           match 'atrium_exhibits/:exhibit_id/browse/:id',                            :to => 'catalog#show',                               :as => 'atrium_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
           match 'atrium_showcases/:showcase_id/descriptions',                        :to => 'atrium_descriptions#index',                  :as => 'atrium_descriptions'
           match 'atrium_showcases/:showcase_id/descriptions/new',                    :to => 'atrium_descriptions#new',                    :as => 'new_atrium_description'
+          match 'atrium/customization/start',                                        :to => 'atrium_customization#start',                :as => 'start_atrium_customization'
+          match 'atrium/customization/stop',                                         :to => 'atrium_customization#stop',                 :as => 'stop_atrium_customization'
         end
       end
 
