@@ -32,7 +32,6 @@ PATH
       rsolr (= 1.0.2)
       rsolr-ext (= 1.0.3)
       sanitize
-      sanitize
       solr-ruby
       solrizer (>= 1.1.0)
       solrizer-fedora (>= 1.1.0)

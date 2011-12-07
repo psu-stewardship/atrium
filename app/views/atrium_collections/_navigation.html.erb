@@ -6,8 +6,7 @@
   <%- end %>
 </li>
 <li>
-  <%= link_to 'View Collection', @atrium_collection %>
-  <%# link_to 'View Collection',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
+  <%= link_to 'View Collection',  @atrium_showcase? atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) : @atrium_collection  %>
 </li>
 
 <div class="facet-list">

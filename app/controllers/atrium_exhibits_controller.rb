@@ -50,7 +50,7 @@ class AtriumExhibitsController < ApplicationController
       #refresh_browse_level_label(@atrium_collection)
       flash[:notice] = 'Exhibit was successfully updated.'
     end
-    redirect_to :action => "edit", :collection_id=>@exhibit.atrium_collection_id
+    redirect_to :action => "edit"
   end
 
   def show

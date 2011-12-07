@@ -49,8 +49,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'yard'
   s.add_dependency 'block_helpers'
   s.add_dependency 'sanitize'
-  s.add_dependency 'sanitize'
-
 ### Remove after updating Blacklight
   s.add_dependency 'rsolr',     '1.0.2'
   s.add_dependency 'rsolr-ext', '1.0.3'

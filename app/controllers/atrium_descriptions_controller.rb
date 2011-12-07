@@ -13,12 +13,12 @@ class AtriumDescriptionsController < ApplicationController
   before_filter :initialize_collection
 
   def index
-    @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
+    @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])
     render :layout => false
   end
 
   def new
-   @atrium_showcase = Atrium::Showcase.find(params[:atrium_showcase_id])
+   @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])
     render :layout => false
   end
 

@@ -35,20 +35,21 @@ module Atrium
             resource :atrium_showcases
           end
           resources :atrium_descriptions
-          match 'atrium_collections/:id/exhibit_order',                              :to => 'atrium_collection_exhibit_order#index',     :as => 'atrium_collection_exhibit_order'
-          match 'atrium_collections/:id/exhibit_order/update',                       :to => 'atrium_collection_exhibit_order#update',    :as => 'update_atrium_collection_exhibit_order', :via => :post
-          match 'atrium_collections/:collection_id/catalog',                         :to => 'catalog#index',                             :as => 'atrium_collection_home', :via => :get
-          match 'atrium_collections/configure/:id',                                  :to => 'atrium_collections#home_page_text_config',  :as => 'atrium_collection_text_configure'
-          match 'atrium_exhibits/:id/facet_order',                                   :to => 'atrium_exhibit_facet_order#index',          :as => 'atrium_exhibit_facet_order'
-          match 'atrium_exhibits/:id/facet_order/update',                            :to => 'atrium_exhibit_facet_order#update',         :as => 'update_atrium_exhibit_facet_order', :via => :post
-          match 'atrium_showcases/featured/:id',                                     :to => 'atrium_showcases#featured',                 :as => 'atrium_showcase_featured'
-          match 'atrium_showcases/configure/:id',                                    :to => 'atrium_showcases#configure_showcase',       :as => 'atrium_showcase_configure'
-          match 'atrium_showcases/refresh/:id',                                      :to => 'atrium_showcases#refresh_showcase',         :as => 'atrium_showcase_refresh'
-          match 'atrium_collections/:collection_id/catalog/:id',                     :to => 'catalog#show',                              :as => 'atrium_collection_catalog'
-          match 'atrium_collections/:collection_id/browse/:id',                      :to => 'catalog#show',                              :as => 'atrium_collection_browse', :defaults=>{:atrium_collection_browse=>true}
-          match 'atrium_collections/:collection_id/exhibits/:exhibit_id/browse/:id', :to => 'catalog#show',                              :as => 'atrium_collection_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
-          match 'atrium_collections/:collection_id/showcases/:showcase_id',          :to => 'atrium_collections#show',                   :as => 'atrium_collection_showcase'
-          match 'atrium_exhibits/:exhibit_id/browse/:id',                            :to => 'catalog#show',                              :as => 'atrium_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
+          match 'atrium_collections/:id/exhibit_order',                              :to => 'atrium_collection_exhibit_order#index',      :as => 'atrium_collection_exhibit_order'
+          match 'atrium_collections/:id/exhibit_order/update',                       :to => 'atrium_collection_exhibit_order#update',     :as => 'update_atrium_collection_exhibit_order', :via => :post
+          match 'atrium_collections/:collection_id/catalog',                         :to => 'catalog#index',                              :as => 'atrium_collection_home', :via => :get
+          match 'atrium_collections/configure/:id',                                  :to => 'atrium_collections#home_page_text_config',   :as => 'atrium_collection_text_configure'
+          match 'atrium_exhibits/:id/facet_order',                                   :to => 'atrium_exhibit_facet_order#index',           :as => 'atrium_exhibit_facet_order'
+          match 'atrium_exhibits/:id/facet_order/update',                            :to => 'atrium_exhibit_facet_order#update',          :as => 'update_atrium_exhibit_facet_order', :via => :post
+          match 'atrium_showcases/featured/:id',                                     :to => 'atrium_showcases#featured',                  :as => 'atrium_showcase_featured'
+          match 'atrium_showcases/refresh/:id',                                      :to => 'atrium_showcases#refresh_showcase',          :as => 'atrium_showcase_refresh'
+          match 'atrium_collections/:collection_id/catalog/:id',                     :to => 'catalog#show',                               :as => 'atrium_collection_catalog'
+          match 'atrium_collections/:collection_id/browse/:id',                      :to => 'catalog#show',                               :as => 'atrium_collection_browse', :defaults=>{:atrium_collection_browse=>true}
+          match 'atrium_collections/:collection_id/exhibits/:exhibit_id/browse/:id', :to => 'catalog#show',                               :as => 'atrium_collection_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
+          match 'atrium_collections/:id/showcases/:showcase_id',                     :to => 'atrium_collections#show',                    :as => 'atrium_collection_showcase'
+          match 'atrium_exhibits/:exhibit_id/browse/:id',                            :to => 'catalog#show',                               :as => 'atrium_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
+          match 'atrium_showcases/:showcase_id/descriptions',                        :to => 'atrium_descriptions#index',                  :as => 'atrium_descriptions'
+          match 'atrium_showcases/:showcase_id/descriptions/new',                    :to => 'atrium_descriptions#new',                    :as => 'new_atrium_description'
         end
       end
 
@@ -80,3 +81,4 @@ module Atrium
 #match 'generic_contents_object/content/:container_id', :to => 'generic_content_objects#create', :as => 'generic_content_object', :via => :post
   end
 end
+

@@ -9,16 +9,16 @@
         :class => 'select_colorbox button',
         :action => atrium_exhibit_atrium_showcases_path(@exhibit, :showcase_id => @atrium_showcase.id)
       %>
-  <%- else %>
-    <%= link_to 'Select Featured Items',
-      atrium_showcase_featured_path(:id => @atrium_showcase.id, :collection_id => collection_id, :f => params[:f]),
-      :class => 'select_colorbox button',
-      :action => atrium_collection_atrium_showcases_path(@atrium_collection, :showcase_id => @atrium_showcase.id)
+    <%- else %>
+      <%= link_to 'Select Featured Items',
+        atrium_showcase_featured_path(:id => @atrium_showcase.id, :collection_id => collection_id, :f => params[:f]),
+       :class => 'select_colorbox button',
+       :action => atrium_collection_atrium_showcases_path(@atrium_collection, :showcase_id => @atrium_showcase.id)
     %>
-<%- end %>
+   <%- end %>
   </li>
   <li>
-    <%= link_to 'Add New Description', new_atrium_description_path(:atrium_showcase_id => @atrium_showcase.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(:atrium_showcase_id=>@atrium_showcase.id) %>
+    <%= link_to 'Add New Description', new_atrium_description_path(@atrium_showcase.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_showcase.id) %>
   </li>
   <li class="last">
     <%= link_to "Stop Editing", '/', :class => 'button close' %>

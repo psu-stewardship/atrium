@@ -22,14 +22,9 @@ class AtriumShowcasesController < ApplicationController
   end
 
   def new
-    #@atrium_showcase = Atrium::Showcase.new
     @parent=parent_object
     @atrium_showcase= Atrium::Showcase.with_selected_facets(@parent.id, @parent.class.name, params[:facet_selection]).first
-
-        #Atrium::Showcase.with_selected_facets(params[:atrium_exhibit_id]).first
-
     logger.debug("in new: #{@atrium_showcase.inspect}")
-
     unless  @atrium_showcase
       logger.debug("in create params: #{params.inspect}")
       @atrium_showcase = @parent.showcases.build({:showcases_id=>@parent.id, :showcases_type=>@parent.class.name})
@@ -41,46 +36,44 @@ class AtriumShowcasesController < ApplicationController
         }
         @atrium_showcase.save!
       end
-      #@atrium_showcase.showcase_items ||= Hash.new
       logger.info("atrium_showcase = #{@atrium_showcase.inspect}")
-      #@atrium_showcase.save
     end
-    redirect_to :action => "configure_showcase" , :id=>@atrium_showcase.id, :f=>params[:facet_selection]
-
+    set_edit_showcase_in_session
+    if @atrium_showcase.showcases_type=="Atrium::Exhibit"
+      redirect_to atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:facet_selection])
+    else
+      redirect_to atrium_collection_showcase_path(@atrium_showcase.showcases_id, @atrium_showcase.id, :f=>params[:facet_selection])
+    end
   end
 
   def create
     logger.debug("in create params: #{params.inspect}")
-      @atrium_showcase = Atrium::Showcase.new(params[:atrium_exhibit_id])
-      @atrium_showcase.showcase_items ||= Hash.new
-      logger.info("atrium_showcase = #{@atrium_showcase.inspect}")
-      @atrium_showcase.save
-    #@atrium_showcase = Atrium::Showcase.new(params[:atrium_showcase])
-    #@atrium_showcase.showcase_items ||= Hash.new
+    @atrium_showcase = Atrium::Showcase.new(params[:atrium_exhibit_id])
+    @atrium_showcase.showcase_items ||= Hash.new
     logger.info("atrium_showcase = #{@atrium_showcase.inspect}")
-    redirect_to :action => "configure_showcase" , :id=>@atrium_showcase.id, :atrium_exhibit_id=>@atrium_showcase.atrium_exhibit_id
+    @atrium_showcase.save
+    logger.info("atrium_showcase = #{@atrium_showcase.inspect}")
+    set_edit_showcase_in_session
+    if @atrium_showcase.showcases_type=="Atrium::Exhibit"
+      redirect_to atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:facet_selection])
+    else
+      redirect_to atrium_collection_showcase_path(@atrium_showcase.showcases_id, @atrium_showcase.id, :f=>params[:facet_selection])
+    end
   end
 
   def edit
     @atrium_showcase = Atrium::Showcase.find(params[:id])
     set_edit_showcase_in_session
     if @atrium_showcase.showcases_type=="atrium_exhibit"
-      @exhibit= Atrium::Exhibit.find_by_id(@atrium_showcase.showcases_id)
-      #redirect_to atrium_collection_path(:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
-      redirect_to atrium_collection_showcase_path(@exhibit.atrium_collection_id, :showcase_id=>params[:id], :exhibit_number=>@exhibit.id,  :f=>params[:f])
+      redirect_to atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:facet_selection])
     else
-      @atrium_collection= Atrium::Collection.find_by_id(@atrium_showcase.showcases_id)
-      #redirect_to atrium_collection_path(:id=>@atrium_collection.id, :showcase_id=>params[:id], :f=>params[:f])
-      redirect_to atrium_collection_showcase_path(@atrium_collection.id, params[:id], :f=>params[:f])
+      redirect_to atrium_collection_showcase_path(@atrium_showcase.showcases_id, params[:id], :f=>params[:f])
     end
-    #@exhibit = Atrium::Exhibit.find(@atrium_showcase.atrium_exhibit_id)
-
   end
 
   def update
      @atrium_showcase = Atrium::Showcase.find(params[:showcase_id])
     if @atrium_showcase.update_attributes(params[:atrium_showcase])
-      #refresh_browse_level_label(@atrium_collection)
       flash[:notice] = 'Browse was successfully updated.'
     end
     redirect_to :action => "edit", :id=>@atrium_showcase.id, :f=>params[:f]
@@ -134,6 +127,7 @@ class AtriumShowcasesController < ApplicationController
       collection = parent.collection
       collection_id = collection.id if collection
     else
+      logger.error("Atrium showcase parent is invalid. Please check the parent")
       collection_id = params[:collection_id]
       exhibit_id = params[:exhibit_id]
     end
