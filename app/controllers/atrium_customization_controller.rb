@@ -32,7 +32,7 @@ class AtriumCustomizationController < ApplicationController
     when 'collection'
       atrium_collection_path(params[:id])
     when 'exhibit'
-      atrium_exhibits_path(params[:id])
+      atrium_exhibit_path(params[:id])
     else
       request.referrer
     end
