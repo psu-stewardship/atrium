@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.summary     = %q{Atrium Rails Engine (requires Rails3) }
   s.description = %q{Atrium is a Rails Engine for for creating collections in either a Blacklight or Hydra context. The full hydra stack includes: Blacklight, Fedora, Solr, active-fedora, solrizer, and om}
 
-  s.add_dependency 'rails', '~>3.0.10'
-  s.add_dependency 'blacklight', '~>3.0.0'
+  s.add_dependency 'rails', '~> 3.1.3'
+  s.add_dependency 'blacklight', '~> 3.1.2'
   s.add_dependency 'active-fedora', '>= 2.3.3'
   s.add_dependency 'builder'
   s.add_dependency 'cancan'
@@ -41,7 +41,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'solr-ruby'
   s.add_dependency 'solrizer', '>=1.1.0'
   s.add_dependency 'solrizer-fedora', '>=1.1.0'
-  s.add_dependency 'sqlite3-ruby', '1.2.5'
   s.add_dependency 'term-ansicolor'
   s.add_dependency 'trollop'
   s.add_dependency 'will_paginate'
@@ -49,12 +48,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'yard'
   s.add_dependency 'block_helpers'
   s.add_dependency 'sanitize'
-### Remove after updating Blacklight
-  s.add_dependency 'rsolr',     '1.0.2'
-  s.add_dependency 'rsolr-ext', '1.0.3'
-###
 
-  s.add_development_dependency 'rake'
   s.add_development_dependency 'cucumber', '>=0.8.5'
   s.add_development_dependency 'cucumber-rails', '>=1.0.0'
   s.add_development_dependency 'devise' # Expected by Blacklight generator in test app
@@ -62,10 +56,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'gherkin'
   s.add_development_dependency 'jettywrapper', '~> 1.1.0'
   s.add_development_dependency 'mocha'
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '>= 2.0.0'
   s.add_development_dependency 'rspec-rails', '>= 2.0.0' # rspec-rails 2.0.0 requires Rails 3.
   s.add_development_dependency 'ruby-debug'
   s.add_development_dependency 'ruby-debug-base'
+  s.add_development_dependency 'sqlite3'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
