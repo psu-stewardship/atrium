@@ -7,11 +7,14 @@ What it's for
 -------------
 
 Atrium is a tool for:
+
   - grouping items
   - adding context
+
 to an index in a [Blacklight][1]-enabled application.
 
 Atrium provides three mechanisms to achieve this end:
+
   - Collections
   - Exhibits
   - Showcases
