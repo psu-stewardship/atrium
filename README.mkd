@@ -1,0 +1,29 @@
+Atrium
+======
+
+__Atrium is still a work in progress. Do not count on any of the present or promised functionality to exist.__
+
+What it's for
+-------------
+
+Atrium is a tool for:
+  - grouping items
+  - adding context
+to an index in a [Blacklight][1]-enabled application.
+
+Atrium provides three mechanisms to achieve this end:
+  - Collections
+  - Exhibits
+  - Showcases
+
+### Collections
+A collection contains a subset of the items in the complete index as defined by a Solr query. An explicitly declared subset of the total facets can be applied to these items. A collection description and or featured items form the collection can be displayed at the top level collection page. Collections can be themed independently of the base application and other collections.
+
+### Exhibits
+An exhibit is a customizable view of a single topic (as defined by a facet), further scoped by an optional Solr query. An exhibit defines it's own hierarchical list of facets. An exhibit may also have a description and a list of featured items.
+
+### Showcases
+A showcase is a container for storing feature items and descriptions. A showcase can be attached to a collection, exhibit, or to specific combinations of selected facets and facet values within an exhibit. There can be multiple showcases in an exhibit.
+
+
+ [1]: https://github.com/projectblacklight/blacklight
