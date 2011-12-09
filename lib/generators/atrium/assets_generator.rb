@@ -4,8 +4,8 @@
 # add this next line to your one of your environment files --
 # generally you'd only want to do this in 'development', and can
 # add it to environments/development.rb:
-#       require File.join(Blacklight.root, "lib", "generators", "blacklight", "assets_generator.rb")
-#       Blacklight::Assets.start(["--force", "--quiet"])
+#       require File.join(Atrium.root, "lib", "generators", "atrium", "assets_generator.rb")
+#       Atrium::Assets.start(["--force", "--quiet"])
 
 
 # Need the requires here so we can call the generator from environment.rb
@@ -17,35 +17,25 @@ module Atrium
     source_root File.expand_path('../templates', __FILE__)
 
     def assets
-      if use_asset_pipeline?
-        insert_into_file app/"assets/stylesheets/application.css", :after => " *= require_self" do
-%q{
- *
- * Required by Atrium
- *= require 'atrium/atrium'
-}
+      unless IO.read("app/assets/stylesheets/application.css").include?("Atrium")
+        insert_into_file "app/assets/stylesheets/application.css", :after => "/*" do
+  %q{
+  * Required by Atrium:
+  *= require 'atrium/atrium'}
         end
-
-        insert_into_file "assets/javascripts/application.js", :after => "//= require jquery_ujs" do
-%q{
-// Required by Atrium
-//= require jquery-ui
-//= require atrium/atrium
-}
-        end
-        directory("../../../../assets/images/atrium", "public/images/atrium")
-      else
-        # directories are relative to the source_root
-        directory("../../../../assets/images/atrium", "public/images/atrium")
-        directory("../../../../assets/stylesheets", "public/stylesheets")
-        directory("../../../../assets/javascripts", "public/javascripts")
       end
-    end
 
-    private
-    def use_asset_pipeline?
-      (Rails::VERSION::MAJOR >= 3 and Rails::VERSION::MINOR >= 1) and Rails.application.config.assets.enabled
-    end
+      unless IO.read("app/assets/javascripts/application.js").include?('atrium/atrium')
+        insert_into_file "app/assets/javascripts/application.js", :after => "//= require jquery_ujs" do
+  %q{
+  //
+  // Required by Atrium
+  //= require atrium/atrium}
+        end
+      end
 
+      directory("../../../../app/assets/images/atrium", "app/assets/images/atrium")
+    end
   end
 end
+
