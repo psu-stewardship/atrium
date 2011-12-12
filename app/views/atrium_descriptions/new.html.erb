@@ -5,7 +5,7 @@
       <li>
         <%- @atrium_descriptions.atrium_showcase_id = @atrium_showcase.id -%>
         <%= f.hidden_field :atrium_showcase_id -%>
-        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'ckeditor' %>
       </li>
     </ol>
     <%= f.submit 'Add Description' %>

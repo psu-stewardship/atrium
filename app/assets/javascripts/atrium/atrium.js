@@ -8,17 +8,6 @@
   $(document).ready(function(){
     $('select.chosen').chosen();
 
-    $('.jquery-ckeditor').ckeditor(
-     {
-      toolbar: [
-        ['Cut','Copy','Paste','PasteText','PasteFromWord'],
-        ['Bold','Italic','Underline','Strike'],
-        ['Format','-','NumberedList','BulletedList','Blockquote'],
-        ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
-        ['Source','ShowBlocks','Maximize']
-      ]
-    })
-
     $('.sortable').sortable({
       update: function(e, ui){
         var $target        = $(e.target),
