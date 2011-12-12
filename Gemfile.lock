@@ -149,6 +149,9 @@ GEM
       i18n
       logger
       mediashelf-loggable
+    jquery-rails (1.0.19)
+      railties (~> 3.0)
+      thor (~> 0.14)
     json (1.6.3)
     json_pure (1.6.3)
     kaminari (0.12.4)
@@ -284,6 +287,7 @@ DEPENDENCIES
   factory_girl
   gherkin
   jettywrapper (~> 1.1.0)
+  jquery-rails
   mocha
   rake
   rspec (>= 2.0.0)

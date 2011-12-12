@@ -163,9 +163,16 @@ namespace :atrium do
     errors << 'Error running bundle install in test app' unless $?.success?
 
     puts "Running rake db:migrate"
-    %x[bundle exec rake db:migrate]
+    output = %x[bundle exec rake db:migrate]
+    puts output
+    errors << 'Error running db:migrate in test app' unless $?.success?
+
     %x[bundle exec rake db:migrate RAILS_ENV=test]
-    raise "Errors: #{errors.join("; ")}" unless errors.empty?
+    errors << 'Error running db:migrate RAILS_ENV=test in test app' unless $?.success?
+
+    puts "Installing jQuery UJS in test app"
+    %x[bundle exec rails g jquery:install]
+    errors << 'Error installing jquery-rails in test app' unless $?.success?
 
     puts "Installing cucumber in test app"
     %x[bundle exec rails g cucumber:install]

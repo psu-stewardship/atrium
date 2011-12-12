@@ -25,7 +25,7 @@ module Atrium::Catalog
     super
     if params[:atrium_collection_browse] || params[:atrium_exhibit_browse]
       @exhibit_navigation_data = get_exhibit_navigation_data
-      
+
       #render :layout => "atrium"
       render "browse_show", :layout=> "atrium"
     end
@@ -83,11 +83,10 @@ module Atrium::Catalog
 
       extra_head_content << view_context.auto_discovery_link_tag(:rss, url_for(params.merge(:format => 'rss')), :title => "RSS for results")
       extra_head_content << view_context.auto_discovery_link_tag(:atom, url_for(params.merge(:format => 'atom')), :title => "Atom for results")
-      extra_head_content << view_context.auto_discovery_link_tag(:unapi, unapi_url, {:type => 'application/xml',  :rel => 'unapi-server', :title => 'unAPI' })
 
       @extra_controller_params = {}
       if params[:browse_level_id]
-        @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id]) 
+        @browse_level = Atrium::BrowseLevel.find(params[:browse_level_id])
         @exhibit = @browse_level.exhibit if @browse_level
         @atrium_collection = @exhibit.collection if @exhibit
       end

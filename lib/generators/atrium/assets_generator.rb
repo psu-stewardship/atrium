@@ -27,10 +27,10 @@ module Atrium
 
       unless IO.read("app/assets/javascripts/application.js").include?('atrium/atrium')
         insert_into_file "app/assets/javascripts/application.js", :after => "//= require jquery_ujs" do
-  %q{
-  //
-  // Required by Atrium
-  //= require atrium/atrium}
+%q{
+//
+// Required by Atrium
+//= require atrium/atrium}
         end
       end
 

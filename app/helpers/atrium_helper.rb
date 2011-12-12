@@ -47,7 +47,7 @@ module AtriumHelper
   end
 
   # link_to_document(doc, :label=>'VIEW', :counter => 3)
-  # Use the catalog_path RESTful route to create a link to the show page for a specific item. 
+  # Use the catalog_path RESTful route to create a link to the show page for a specific item.
   # catalog_path accepts a HashWithIndifferentAccess object. The solr query params are stored in the session,
   # so we only need the +counter+ param here. We also need to know if we are viewing to document as part of search results.
   def link_to_document(doc, opts={:label=>Blacklight.config[:index][:show_link].to_sym, :counter => nil, :results_view => true})
@@ -78,7 +78,7 @@ module AtriumHelper
     end
   end
 
-  # If collection is defined and in an collection browse view 
+  # If collection is defined and in an collection browse view
   # then do not set limit on facet values displayed.
   # Otherwise use code lifted from catalog controller in blacklight plugin
   def facet_limit_for(facet_field)
