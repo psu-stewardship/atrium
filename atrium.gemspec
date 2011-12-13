@@ -36,8 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack'
   s.add_dependency 'rack-test'
   s.add_dependency 'rake'
-  s.add_dependency 'rcov'
-  s.add_dependency 'rsolr', '1.0.2'
+  s.add_dependency 'rcov'  
   s.add_dependency 'RedCloth', '=4.2.3'
   s.add_dependency 'solr-ruby'
   s.add_dependency 'solrizer', '>=1.1.0'
@@ -48,7 +47,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'yard'
   s.add_dependency 'block_helpers'
   s.add_dependency 'sanitize'
-
+### Remove after updating Blacklight
+  s.add_dependency 'rsolr',     '1.0.2'
+  s.add_dependency 'rsolr-ext', '1.0.3'
+###
   s.add_development_dependency 'cucumber', '>=0.8.5'
   s.add_development_dependency 'cucumber-rails', '>=1.0.0'
   s.add_development_dependency 'devise' # Expected by Blacklight generator in test app

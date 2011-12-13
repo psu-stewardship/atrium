@@ -30,6 +30,8 @@ PATH
       rake
       rcov
       rsolr (= 1.0.2)
+      rsolr (= 1.0.2)
+      rsolr-ext (= 1.0.3)
       sanitize
       solr-ruby
       solrizer (>= 1.1.0)
