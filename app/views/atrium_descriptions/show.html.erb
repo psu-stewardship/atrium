@@ -1,1 +1,13 @@
-<%= @atrium_description.description.html_safe if @atrium_description.description %>
+
+<%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
+
+
+<%- if @atrium_description && @atrium_description.essay && @atrium_description.essay.content %>
+  <h3><%= @atrium_description.title%></h3>
+  <%= @atrium_description.essay.content.html_safe  %>
+
+  <%- if session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Description) %>
+    <%= link_to 'Edit Description', edit_atrium_description_path(@atrium_description.atrium_showcase_id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_description.atrium_showcase_id) %>
+    <a class="destroy_description button" href=# action="<%= atrium_description_path(@atrium_description.id)%>" title="Remove Description"> Delete this description</a>
+  <%- end %>
+<%- end %>

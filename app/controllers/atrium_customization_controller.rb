@@ -30,9 +30,9 @@ class AtriumCustomizationController < ApplicationController
   def build_path_from_params
     case params[:type]
     when 'collection'
-      atrium_collection_path(params[:id])
+      atrium_collection_path(params[:id],:f => params[:f])
     when 'exhibit'
-      atrium_exhibit_path(params[:id])
+      atrium_exhibit_path(params[:id],:f => params[:f])
     else
       request.referrer
     end

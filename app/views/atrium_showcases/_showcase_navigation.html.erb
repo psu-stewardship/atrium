@@ -20,7 +20,7 @@
   <%- else %>
     <%# path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)-%>
     <%# link_to 'View this page',path %>
-    <%= link_to 'View this page',  atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) %>
+    <%= link_to 'View this page',  atrium_showcase_refresh_path(@atrium_showcase.id, :f=>params[:f]) %>
   <%- end %>
 <%- end %>
 

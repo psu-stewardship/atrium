@@ -4,17 +4,11 @@
   </div>
 </h2>
 
-<%- if @atrium_showcase && @atrium_showcase.descriptions.any? -%>
-   <ul>
-    <%- @atrium_showcase.descriptions.each do |desc| -%>
-    <li>
-      <div class="<%= params[:edit_showcase] && (can? :create, Atrium::Exhibit) ?  "edit-textarea": "no-edit"%>" id="div_desc" data-column-name="atrium_description[description]" data-update-uri=<%= atrium_description_path(desc) %>>
-        <%= desc.description.html_safe unless desc.description.blank? %>
-      </div>
-    </li>
-    <%- end -%>
-  </ul>
-<%- end -%>
+
+  <%- if @atrium_showcase && @atrium_showcase.descriptions-%>
+    <%= render :partial=>'shared/list_descriptions', :locals=>{:descriptions=>@atrium_showcase.descriptions} %>
+  <%- end -%>
+
 
 <span id="show_selected">
 <%- if !@documents.blank? -%>

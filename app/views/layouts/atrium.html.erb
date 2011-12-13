@@ -34,7 +34,7 @@
               <%= render :partial=>'/user_util_links' %>
             </div>
           </div>
-          <%= render :partial => 'shared/top_navigation' %>
+          <%# render :partial => 'shared/top_navigation' %>
         </div>
 
 <div id="bd">
@@ -60,9 +60,9 @@
             <%= render :partial => 'atrium_collections/edit_navigation' %>
           <%- elsif params[:controller] == "atrium_exhibits"&& !(params[:action] == "show")-%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
-          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && session[:edit_showcase]=="true"-%>
+          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && session[:edit_showcase]-%>
              <%= render :partial => 'atrium_showcases/showcase_navigation' %>
-          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && session[:edit_showcase]=="true"-%>
+          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && session[:edit_showcase]-%>
              <%= render :partial => 'atrium_showcases/showcase_navigation' %>
           <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show"-%>
             <%= render :partial => 'shared/collection_search_form' %>

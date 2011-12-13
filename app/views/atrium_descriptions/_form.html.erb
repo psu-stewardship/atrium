@@ -1,8 +1,27 @@
 <%= raw(render_head_content) %>
+<li>
+<%= form_for(@atrium_description) do |f| %>
+  <%= f.label :title, 'Description Title:' %>
+  <%= f.text_field :title %>
+  <%= f.radio_button :page_display, 'samepage', :checked => true %>
+  <%= label :page_display_samepage, 'Same Page' %>
+  <%= f.radio_button :page_display, 'newpage' %>
+  <%= label :page_display_newpage, 'New Page' %>
+  <%= f.fields_for :essay, @atrium_description.essay do |essay_fields| %>
+    <%- @atrium_description.essay.content_type = "essay" -%>
+    <%= essay_fields.hidden_field :content_type -%>
+    <%= essay_fields.label :content, 'Essay:' %>
+    <%= essay_fields.text_area :content, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+  <% end %>
+  <%= f.fields_for :summary, @atrium_description.summary do |summary_fields| %>
+    <%- @atrium_description.summary.content_type = "summary" -%>
+    <%= summary_fields.hidden_field :content_type -%>
+    <%= summary_fields.label :content, 'Summary:' %>
+    <%= summary_fields.text_area :content, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+  <% end %>
+  <%= f.submit 'Update' %>
+<% end %>
+</li>
 
-    <%= form_for(@atrium_description) do |f| %>
-      <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'ckeditor', :name=>"editor1" %>
-      <%= f.submit 'Update' %>
-    <% end %>
 
 

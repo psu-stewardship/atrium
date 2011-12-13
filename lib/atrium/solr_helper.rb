@@ -117,6 +117,27 @@ module Atrium::SolrHelper
           collection_id = params[:collection_id]
         end
       end
+    elsif params[:controller] == "atrium_descriptions"
+      if params[:id]
+        begin
+          @description = Atrium::Description.find(params[:id])
+          @showcase= Atrium::Showcase.find(@description.atrium_showcase_id)
+        rescue
+          #just do nothing here if
+        end
+      end
+      if @showcase && @showcase.parent
+        if @showcase.parent.is_a?(Atrium::Collection)
+          @atrium_collection = @showcase.parent
+          collection_id = @atrium_collection.id
+        elsif @showcase.parent.is_a?(Atrium::Exhibit)
+          @exhibit = @showcase.parent
+          @atrium_collection = @exhibit.collection
+          collection_id = @atrium_collection.id
+        else
+          collection_id = params[:collection_id]
+        end
+      end
     else
       collection_id = params[:collection_id]
     end
