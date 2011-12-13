@@ -1,13 +1,21 @@
 <%= raw(render_head_content) %>
-<%- @atrium_descriptions = Atrium::Description.new-%>
-  <%= form_for(@atrium_descriptions) do |f| %>
+  <%# form_for @atrium_description, :as => :post,:url=>atrium_descriptions_path(:showcase_id=>@atrium_description.atrium_showcase_id) do |f| %>
+  <%= form_for @atrium_description do |f| %>
     <ol>
       <li>
-        <%- @atrium_descriptions.atrium_showcase_id = @atrium_showcase.id -%>
+        <%- @atrium_description.atrium_showcase_id = @atrium_showcase.id -%>
         <%= f.hidden_field :atrium_showcase_id -%>
-        <%= f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+        <%= debug @atrium_description.inspect %>
+        <%= f.fields_for :essay, @atrium_description.essay do |essay_fields| %>
+          <%# @atrium_essay.atrium_description_id = @atrium_description.id -%>
+          <%# @atrium_essay.content_type = "essay" -%>
+          <%# essay_fields.hidden_field :atrium_description_id -%>
+          <%- essay_fields.hidden_field :content_type -%>
+          <%= essay_fields.text_area :content, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+        <% end %>
+        <%# f.text_area :description, :rows=> '20', :cols => '120', :class =>'jquery-ckeditor' %>
+        <%= f.submit 'Add Description' %>
       </li>
     </ol>
-    <%= f.submit 'Add Description' %>
   <% end %>
 
