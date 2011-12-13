@@ -144,6 +144,7 @@ EOF
       better_migration_template "create_atrium_showcase_facet_selections.rb"
       better_migration_template "create_atrium_browse_levels.rb"
       better_migration_template "create_atrium_descriptions.rb"
+      better_migration_template "create_atrium_essays.rb"
     end
 
     private  

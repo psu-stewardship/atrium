@@ -48,7 +48,8 @@ module Atrium
           match 'atrium_collections/:collection_id/exhibits/:exhibit_id/browse/:id', :to => 'catalog#show',                               :as => 'atrium_collection_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
           match 'atrium_collections/:id/showcases/:showcase_id',                     :to => 'atrium_collections#show',                    :as => 'atrium_collection_showcase'
           match 'atrium_exhibits/:exhibit_id/browse/:id',                            :to => 'catalog#show',                               :as => 'atrium_exhibit_browse', :defaults=>{:atrium_exhibit_browse=>true}
-          match 'atrium_showcases/:showcase_id/descriptions',                        :to => 'atrium_descriptions#index',                  :as => 'atrium_descriptions'
+          match 'atrium_showcases/:showcase_id/descriptions',                        :to => 'atrium_descriptions#index',                  :as => 'atrium_descriptions', :via => :get
+          match 'atrium_showcases/:showcase_id/descriptions',                        :to => 'atrium_descriptions#create',                 :as => 'atrium_descriptions', :via => :post
           match 'atrium_showcases/:showcase_id/descriptions/new',                    :to => 'atrium_descriptions#new',                    :as => 'new_atrium_description'
           match 'atrium/customization/start',                                        :to => 'atrium_customization#start',                :as => 'start_atrium_customization'
           match 'atrium/customization/stop',                                         :to => 'atrium_customization#stop',                 :as => 'stop_atrium_customization'

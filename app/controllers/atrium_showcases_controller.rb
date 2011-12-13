@@ -148,7 +148,7 @@ class AtriumShowcasesController < ApplicationController
 
   def refresh_showcase
     @atrium_showcase = Atrium::Showcase.find(params[:id])
-    path=@atrium_showcase.showcases_type=="Atrium::Exhibit"?  atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)
+    path=@atrium_showcase.for_exhibit? ? atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f]) :  atrium_collection_path(:id=>@atrium_showcase.showcases_id)
     unset_edit_showcase_in_session
     redirect_to path
   end

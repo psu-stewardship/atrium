@@ -4,3 +4,9 @@
   <%= render :partial => 'default_home_text'%>
   <%= render :partial => 'atrium_collections/listing' %>
 <%- end -%>
+
+<% sidebar_items << capture do %>
+  <%- if params[:collection_id] -%>
+    <%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
+  <%- end %>
+<% end %>

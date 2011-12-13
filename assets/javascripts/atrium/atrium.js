@@ -106,7 +106,7 @@ jQuery.noConflict();
       }
     });
 
-    $('.description').hide();
+    //$('.description').hide();
     $('.add_description').click(function(){
         var $this = $(this);
         $this.parent()
@@ -216,6 +216,14 @@ jQuery.noConflict();
                             ['UIColor', 'PageBreak'], ['Source'], ['Maximize', 'ShowBlocks','-','About']
                         ]
                       }
+     });
+
+     $("div.content").hide();
+
+     $("a.heading").click(function(){
+        $(this).siblings(".intro").toggle()
+        $(this).next("div.content").slideToggle(300);
+        $(this).text($(this).text() == '[Read the complete essay]' ? '[Hide essay]' : '[Read the complete essay]');
      });
 
   });

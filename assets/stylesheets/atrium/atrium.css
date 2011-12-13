@@ -8,6 +8,16 @@ body {
   border-top:5px solid #484748;
 }
 
+a.button {
+  background-color:#CCC;
+  border-color: #FFF #000 #000 #FFF;
+  border-style:solid;
+  border-width:1px;
+  display:inline-block;
+  line-height:1.2em;
+  padding:.3em .5em;
+}
+
 /** Banner **/
 
 #banner {
