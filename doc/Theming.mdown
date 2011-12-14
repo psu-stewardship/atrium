@@ -1,0 +1,57 @@
+Theming
+=======
+
+Theming allows collections to be visually different from each other. The goal of Atrium's theming engine is to make it powerful enough to be useful without necessitating a full-fledged CMS.
+
+There are three components to a theme:
+
+  - Markup
+  - Styles
+  - Images
+
+Markup
+------
+In order for there to be meaningful changes in markup between collection presentations there needs to be an intermediate template layer between the site layout and the elements that compose a collection page. It is important that these templates not be written in ERB because we may allow the templates to be edited within the Atrium web interface. We will use [Liquid][1] as the templating language.
+
+The template will be rendered inside the body tag of a master layout. An example of the desired template syntax follows:
+
+    <header role="banner">
+      <hgroup>
+        <h1>{{ collection.title }}</h1>
+        <h2>{{ collection.tagline }}</h2>
+      </hgroup>
+
+      <div id="search" role="search">
+        {% search collection %}
+      </div>
+    </header>
+
+    <nav id="nav" role="navigation">
+      {% navigation collection %}
+    </nav>
+
+    <div id="main" role="main">
+      <div id="sidebar">
+        {% sidebar collection %}
+      </div>
+
+      {% results collection %}
+
+    </div>
+
+To achieve the desired effect we will need to [write our own liquid tags][2] for some of the interface elements. The HTML generation that takes place in these custom tags could be done in [helper methods that are included in the tag model][3] or by [building our own templating rendering pipeline using Rails components][4]. It is debatable if putting [html generation into helper methods][5] that are then cast as liquid tags is a good idea. There may be other, better ways of doing this but it is important that the template file itself be kept as simple as reasonably possible.
+
+Styles
+------
+Atrium is meant for use in Rails 3.1 and up applications because it depends on the [Rails Asset Pipeline][6]. This greatly simplifies the process of producing minifed static assets, like CSS and JavaScript files. Although the Asset Pipeline allows ERB tags to be inserted into CSS and SCSS files that mechanism cannot be used to overriding styles via the web application interface because the assets are expected to be "frozen" into static files.
+
+Images
+------
+Adding presentational images is left as an exercise to the site implementer. They should be able to be added to the 'app/assets' directory and included via template or stylesheet as needed.
+
+ [1]: http://liquidmarkup.org/
+ [2]: https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers
+ [3]: http://snippets.dzone.com/posts/show/7489
+ [4]: http://amberbit.com/blog/render-views-partials-outside-controllers-rails-3
+ [5]: http://37signals.com/svn/posts/1108-what-belongs-in-a-helper-method
+ [6]: http://guides.rubyonrails.org/asset_pipeline.html
