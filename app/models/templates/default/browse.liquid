@@ -1,0 +1,27 @@
+<header role="banner">
+  <hgroup>
+    <h1>{{ collection.title }}</h1>
+    <h2>{{ collection.tagline }}</h2>
+  </hgroup>
+
+  <div id="search" role="search">
+    {% search collection %}
+  </div>
+</header>
+
+<nav id="nav" role="navigation">
+  {% navigation collection %}
+</nav>
+
+<div id="main" role="main">
+  <div id="sidebar">
+    {% sidebar collection %}
+  </div>
+
+  {% results collection %}
+
+</div>
+
+<div id="footer">
+  {% footer collection %}
+</div>
