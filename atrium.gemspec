@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'json_pure', '>1.4.3'
   s.add_dependency 'launchy'
   s.add_dependency 'linecache'
+  s.add_dependency 'liquid', '~> 2.3.0'
   s.add_dependency 'mime-types'
   s.add_dependency 'multipart-post'
   s.add_dependency 'nokogiri' # Default to using the version required by Blacklight
