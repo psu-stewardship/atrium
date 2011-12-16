@@ -10,6 +10,16 @@ class Atrium::Collection < ActiveRecord::Base
 
   serialize :filter_query_params
 
+  serialize :collection_items, Hash
+
+  def collection_items
+    read_attribute(:collection_items) || write_attribute(:collection_items, {})
+  end
+
+  def solr_doc_ids
+    collection_items[:solr_doc_ids] unless collection_items.blank?
+  end
+
   def search_facet_names
     search_facets.map{|facet| facet.name }
   end

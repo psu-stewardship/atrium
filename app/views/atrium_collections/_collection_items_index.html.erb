@@ -1,0 +1,10 @@
+<%= render :partial=>'atrium_collections/sort_and_per_page', :locals => {:response=>@collection_items_response} if @collection_items_response.response['numFound'] > 10%>
+
+<%= render :partial=>'atrium_collections/results_pagination',:locals => {:response=>@collection_items_response} %>
+
+<%= render :partial => 'atrium_collections/document_list', :locals => {:document_list=>@collection_items_documents, :response=>@collection_items_response}%>
+
+<%= render :partial=>'atrium_collections/results_pagination',:locals => {:response=>@collection_items_response} %>
+
+
+

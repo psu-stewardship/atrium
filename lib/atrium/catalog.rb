@@ -42,10 +42,26 @@ module Atrium::Catalog
     if params[:save_collection_filter_button]
       logger.debug("pressed save collection filter button")
       if @atrium_collection
-        filter_query_params = search_session.clone
-        filter_query_params.delete(:save_collection_filter_button)
-        filter_query_params.delete(:collection_id)
-        @atrium_collection.update_attributes(:filter_query_params=>filter_query_params)
+        if !session[:folder_document_ids].blank?
+          @atrium_collection.collection_items ||= Hash.new
+          selected_document_ids = session[:folder_document_ids]
+          collection_items={}
+          collection_items[:solr_doc_ids]=selected_document_ids.join(',')
+          #@atrium_collection.update_attributes(:collection_items=>collection_items)
+          @atrium_collection.update_attributes(:filter_query_params=>collection_items)
+          session[:folder_document_ids] = session[:copy_folder_document_ids]
+          session[:copy_folder_document_ids]=nil
+          logger.debug("@@atrium_collection: #{@atrium_collection.inspect},Selected Items: #{@atrium_collection.filter_query_params.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
+        else
+          filter_query_params = search_session.clone
+          filter_query_params.delete(:save_collection_filter_button)
+          filter_query_params.delete(:collection_id)
+          filter_query_params.delete :action
+          filter_query_params.delete :id
+          filter_query_params.delete :controller
+          filter_query_params.delete :utf8
+          @atrium_collection.update_attributes(:filter_query_params=>filter_query_params)
+        end
         redirect_to edit_atrium_collection_path(@atrium_collection.id)
       else
         redirect_to new_atrium_collection_path
@@ -55,11 +71,25 @@ module Atrium::Catalog
       @exhibit = Atrium::Exhibit.find(exhibit_id) if exhibit_id
       logger.debug("pressed save exhibit filter button")
       if @exhibit
-        filter_query_params = search_session.clone
-        filter_query_params.delete(:save_exhibit_filter_button)
-        filter_query_params.delete(:collection_id)
-        filter_query_params.delete(:exhibit_id)
-        @exhibit.update_attributes(:filter_query_params=>filter_query_params)
+        if !session[:folder_document_ids].blank?
+          selected_document_ids = session[:folder_document_ids]
+          exhibit_items={}
+          exhibit_items[:solr_doc_ids]=selected_document_ids.join(',')
+          @exhibit.update_attributes(:filter_query_params=>exhibit_items)
+          session[:folder_document_ids] = session[:copy_folder_document_ids]
+          session[:copy_folder_document_ids]=nil
+          logger.debug("exhibit: #{@exhibit.inspect},Selected Items: #{@exhibit.filter_query_params.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
+        else
+          filter_query_params = search_session.clone
+          filter_query_params.delete(:save_exhibit_filter_button)
+          filter_query_params.delete(:collection_id)
+          filter_query_params.delete(:exhibit_id)
+          filter_query_params.delete :action
+          filter_query_params.delete :id
+          filter_query_params.delete :controller
+          filter_query_params.delete :utf8
+          @exhibit.update_attributes(:filter_query_params=>filter_query_params)
+        end
         redirect_to edit_atrium_exhibit_path(@exhibit.id)
       else
         redirect_to new_atrium_exhibit_path

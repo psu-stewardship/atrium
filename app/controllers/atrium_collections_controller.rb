@@ -31,6 +31,28 @@ class AtriumCollectionsController < ApplicationController
     @atrium_collection= Atrium::Collection.find(params[:id])
   end
 
+  def set_collection_scope
+    logger.error("into scoping")
+    session[:copy_folder_document_ids] = session[:folder_document_ids]
+    session[:folder_document_ids] = []
+    @atrium_collection = Atrium::Collection.find(params[:id])
+    logger.debug("#{@atrium_collection.inspect}, #{@atrium_collection.filter_query_params[:solr_doc_ids] if @atrium_collection.filter_query_params}")
+    session[:folder_document_ids] = @atrium_collection.filter_query_params[:solr_doc_ids].split(',') if @atrium_collection.filter_query_params && @atrium_collection.filter_query_params[:solr_doc_ids]
+    p = params.dup
+    p.delete :action
+    p.delete :id
+    p.delete :controller
+    #make sure to pass in a search_fields parameter so that it shows search results immediately
+    redirect_to catalog_index_path(p)
+  end
+
+  def unset_collection_scope
+     @atrium_collection = Atrium::Collection.find(params[:id])
+     @atrium_collection.update_attributes(:filter_query_params=>nil)
+     flash[:notice] = 'Collection scope removed successfully'
+     render :action => "edit"
+  end
+
   def show
     @exhibit_navigation_data = get_exhibit_navigation_data
     if(params[:collection_number])
@@ -41,7 +63,12 @@ class AtriumCollectionsController < ApplicationController
       @atrium_showcase= Atrium::Showcase.with_selected_facets(@atrium_collection.id,@atrium_collection.class.name, params[:f]).first
       #get_atrium_showcase(params[:collection_number], params[:f]).first
     end
-
+    if @atrium_collection && @atrium_collection.filter_query_params && @atrium_collection.filter_query_params[:solr_doc_ids]
+      logger.debug("Items in Collection: #{@atrium_collection.filter_query_params[:solr_doc_ids]}")
+      items_document_ids = @atrium_collection.filter_query_params[:solr_doc_ids].split(',')
+      logger.debug("Collection items: #{items_document_ids.inspect}")
+      @collection_items_response, @collection_items_documents = get_solr_response_for_field_values("id",items_document_ids || [])
+    end
     logger.debug("Finding Atrium Browse Page: #{@atrium_showcase.inspect}")
 
     if(params[:showcase_id] && @atrium_showcase.nil?)

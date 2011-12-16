@@ -1,12 +1,12 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
 <li>
-  <%- if current_user -%>
+  <%- if current_user && (can? :create, Atrium::Collection) -%>
     <%# link_to "Configure Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection"), :class=>"customize"%>
     <%= link_to "Configure Collection #{@atrium_exhbit}" ,edit_atrium_collection_path(@atrium_collection.id, :class=>"customize")%>
   <%- end %>
 </li>
 <li>
-  <%= link_to 'View Collection',  @atrium_showcase? atrium_showcase_refresh_path(@atrium_showcase.showcases_id, :f=>params[:f]) : @atrium_collection  %>
+  <%= link_to 'View Collection',  @atrium_collection  %>
 </li>
 
 <div class="facet-list">
@@ -23,6 +23,8 @@
   <%- else %>
     <!-- recursively render the browse sets-->
     <%- @exhibit_navigation_data.each do |exhibit| -%>
+      <h3 class="facet-heading"><%= link_to exhibit.title,  exhibit  %>
+       </h3>
       <%- unless exhibit.browse_levels.nil? || exhibit.browse_levels.empty? -%>
         <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>
       <%- end -%>

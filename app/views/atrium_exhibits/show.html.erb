@@ -20,5 +20,9 @@
 
 <h2>Complete Sources</h2>
 <div id="complete_sources">
-  <%= render :partial=>'atrium_collections/browse_index'%>
+  <%- if !@collection_items_documents.blank? -%>
+    <%= render :partial=>'atrium_collections/collection_items_index' %>
+  <%- else -%>
+    <%= render :partial=>'atrium_collections/browse_index'%>
+  <%- end -%>
 </div>

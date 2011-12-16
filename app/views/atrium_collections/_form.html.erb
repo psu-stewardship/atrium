@@ -28,12 +28,29 @@
 <% end %>
 
 <h3>Collection Scope</h3>
-<p>
-  An collection is a subset of a collection. The scope of the collection can be set to any possible query made in the search interface.
-</p>
-<%- query_params = {:collection_id=>@atrium_collection.id,:edit_collection_filter=>true} -%>
-<%- query_params.merge!(@atrium_collection.filter_query_params) if @atrium_collection.filter_query_params -%>
-<%= link_to("Set Collection Scope", catalog_index_path(query_params)).html_safe %>
+    <p>
+      An collection is a subset of a collection. The scope of the collection can be set to any possible query made in the search interface.
+    </p>
+    <fieldset>
+      <legend>Current Scope</legend>
+      <%-if @atrium_collection.filter_query_params %>
+        <ul>
+          <%- @atrium_collection.filter_query_params.each do |key,value| %>
+            <li><label><%= key %>: </label><%= value %></li>
+          <%- end %>
+        </ul>
+      <%- end %>
+    </fieldset>
+    <%# @atrium_collection.filter_query_params.inspect unless @atrium_collection.filter_query_params.blank? %>
+    <%- query_params = {:collection_id=>@atrium_collection.id,:edit_collection_filter=>true} -%>
+    <%- query_params.merge!(@atrium_collection.filter_query_params) if @atrium_collection.filter_query_params -%>
+    <%- query_params.delete(:controller) %>
+    <%- query_params.delete(:action) %>
+    <%- query_params.delete(:solr_doc_ids) %>
+    <dl>
+      <dd> <%= link_to("Set Collection Scope", atrium_set_collection_scope_path(query_params)).html_safe %> <%= link_to("Remove Collection Scope", atrium_unset_collection_scope_path(@atrium_collection.id)).html_safe  %></dd>
+    </dl>
+
 
 <h3>Exhibits</h3>
 
@@ -63,7 +80,7 @@
 <% end %>
 
 <% if @atrium_collection %>
-  <%= button_to "Delete this Collection", atrium_collection_path(@atrium_collection.id), :method=>:delete, :class=>:destroy,:confirm=>"Are you really want to delete this collection?" %>
+  <%# button_to "Delete this Collection", atrium_collection_path(@atrium_collection.id), :method=>:delete, :class=>:destroy,:confirm=>"Are you really want to delete this collection?" %>
 <% end %>
 
 

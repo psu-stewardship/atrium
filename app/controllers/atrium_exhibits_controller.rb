@@ -56,6 +56,14 @@ class AtriumExhibitsController < ApplicationController
   def show
     @exhibit= Atrium::Exhibit.find(params[:id])
     @exhibit_navigation_data = get_exhibit_navigation_data
+
+    if @exhibit && @exhibit.filter_query_params && @exhibit.filter_query_params[:solr_doc_ids]
+      logger.debug("Items in Exhibit: #{@exhibit.filter_query_params[:solr_doc_ids]}")
+      items_document_ids = @exhibit.filter_query_params[:solr_doc_ids].split(',')
+      logger.debug("Exhibit items: #{items_document_ids.inspect}")
+      @collection_items_response, @collection_items_documents = get_solr_response_for_field_values("id",items_document_ids || [])
+    end
+
     logger.debug("Browse page: #{@exhibit.showcases}")
     @atrium_showcase=Atrium::Showcase.with_selected_facets(@exhibit.id, @exhibit.class.name, params[:f]).first
     if @atrium_showcase && !@atrium_showcase.showcase_items[:solr_doc_ids].nil?
@@ -64,6 +72,28 @@ class AtriumExhibitsController < ApplicationController
       logger.debug("Collection Selected Highlight: #{selected_document_ids.inspect}")
       @response, @documents = get_solr_response_for_field_values("id",selected_document_ids || [])
     end
+  end
+
+  def set_exhibit_scope
+    logger.error("into scoping")
+    session[:copy_folder_document_ids] = session[:folder_document_ids]
+    session[:folder_document_ids] = []
+    @exhibit = Atrium::Exhibit.find(params[:id])
+    logger.debug("#{@exhibit.inspect}, #{@exhibit.filter_query_params[:solr_doc_ids] if @exhibit.filter_query_params}")
+    session[:folder_document_ids] = @exhibit.filter_query_params[:solr_doc_ids].split(',') if @exhibit.filter_query_params && @exhibit.filter_query_params[:solr_doc_ids]
+    p = params.dup
+    p.delete :action
+    p.delete :id
+    p.delete :controller
+    #make sure to pass in a search_fields parameter so that it shows search results immediately
+    redirect_to catalog_index_path(p)
+  end
+
+  def unset_exhibit_scope
+     @exhibit = Atrium::Exhibit.find(params[:id])
+     @exhibit.update_attributes(:filter_query_params=>nil)
+     flash[:notice] = 'Exhibit scope removed successfully'
+     render :action => "edit"
   end
 
   def destroy
