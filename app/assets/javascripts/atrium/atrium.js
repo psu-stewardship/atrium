@@ -187,7 +187,7 @@
 
      $('.edit-textarea').editable(submitEditableTextArea, {
           method    : "PUT",
-          type      : "ckeditor",
+          //type      : "ckeditor",
           submit    : "OK",
           cancel    : "Cancel",
           placeholder : "click to edit description",
