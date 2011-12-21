@@ -1,12 +1,17 @@
 //= require chosen.jquery
 //= require ckeditor-jquery
-//= require jquery.colorbox
+//= include jquery.colorbox
 //= require jquery.jeditable
+//= require ckeditor/jquery.generateId
+//= require ckeditor/jquery.jeditable.ckeditor
+
 
 
 (function($){
   $(document).ready(function(){
     $('select.chosen').chosen();
+
+    $('.jquery-ckeditor').ckeditor();
 
     $('.sortable').sortable({
       update: function(e, ui){
@@ -87,12 +92,22 @@
             $('#cboxLoadingGraphic').hide();
           },
           success: function(data) {
-            $('#show_description').html(data);
+            var html= loadMore(data);
+            $('#show_description').html(html);
             $('#catalog-form').show();
+
+
           }
         });
       }
     });
+
+    function loadMore(response) {
+        var $html = $(response);
+        $html.find('a.description_colorbox').colorbox({ width: '960px', height: '90%', iframe: true });
+        return $html;
+    }
+
 
     //$('.description').hide();
     $('.add_description').click(function(){
@@ -187,7 +202,7 @@
 
      $('.edit-textarea').editable(submitEditableTextArea, {
           method    : "PUT",
-          //type      : "ckeditor",
+          type      : "ckeditor",
           submit    : "OK",
           cancel    : "Cancel",
           placeholder : "click to edit description",

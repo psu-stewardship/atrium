@@ -11,11 +11,11 @@ module AtriumHelper
       stylesheet_links  << ["application"]
       javascript_includes << ["application"]
     else
-      stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
-      javascript_includes << ['jquery.jeditable.mini','jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
+     # stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
+    #  javascript_includes << ['jquery.jeditable.mini','jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
     end
     stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
-    javascript_includes << ['jquery.jeditable.mini','jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
+    #javascript_includes << ['jquery.jeditable.mini', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
 
     logger.debug("Into atrium_html_head html head #{stylesheet_links.inspect}")
   end

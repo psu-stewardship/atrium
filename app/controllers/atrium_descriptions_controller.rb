@@ -54,6 +54,7 @@ class AtriumDescriptionsController < ApplicationController
 
   def edit
     @atrium_description = Atrium::Description.find(params[:id])
+     logger.debug("Desc: #{@atrium_description.inspect}, essay = #{@atrium_description.essay.inspect},summary = #{@atrium_description.summary.inspect}")
      @atrium_description.build_essay(:content_type=>"essay") unless @atrium_description.essay
      @atrium_description.build_summary(:content_type=>"summary") unless @atrium_description.summary
     #@atrium_desc_content= @atrium_description.contents.first
