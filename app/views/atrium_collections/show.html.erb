@@ -16,5 +16,9 @@
 
 <h2>Complete Sources</h2>
 <div id="complete_sources">
-  <%= render :partial=>'browse_index'%>
+  <%- if !@collection_items_documents.blank? -%>
+    <%= render :partial=>'collection_items_index' %>
+  <%- else -%>
+    <%= render :partial=>'browse_index'%>
+  <%- end -%>
 </div>

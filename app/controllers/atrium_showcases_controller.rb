@@ -87,6 +87,7 @@ class AtriumShowcasesController < ApplicationController
     @atrium_showcase.showcase_items[:solr_doc_ids]=selected_document_ids.join(',')
     @atrium_showcase.save
     session[:folder_document_ids] = session[:copy_folder_document_ids]
+    session[:copy_folder_document_ids]=nil
     logger.debug("@atrium_showcase: #{@atrium_showcase.inspect},Selected Highlight: #{selected_document_ids.inspect}, folders_selected: #{session[:folder_document_ids].inspect}")
     @response, @documents = get_solr_response_for_field_values("id",@atrium_showcase.showcase_items[:solr_doc_ids].split(',') || [])
     render :layout => false, :locals=>{:selected_document_ids=>selected_document_ids}

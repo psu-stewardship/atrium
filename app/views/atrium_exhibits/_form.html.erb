@@ -14,10 +14,29 @@
     <p>
       A exhibit is a subset of a collection or collection. The scope of the exhibit can be set to any possible query made in the search interface.
     </p>
+    <fieldset>
+      <legend>Current Scope</legend>
+      <%-if @exhibit.filter_query_params %>
+        <ul>
+          <%- @exhibit.filter_query_params.each do |key,value| %>
+            <li><label><%= key %>: </label><%= value %></li>
+            <%- end %>
+        </ul>
+      <%- end %>
+    </fieldset>
     <%- collection_id = @exhibit.atrium_collection_id if @exhibit.atrium_collection_id -%>
     <%- query_params = {:collection_id=>collection_id,:edit_exhibit_filter=>@exhibit.id, :exhibit_id=>@exhibit.id} -%>
     <%- query_params.merge!(@exhibit.filter_query_params) if @exhibit.filter_query_params -%>
-    <%= link_to("Set Exhibit Scope", catalog_index_path(query_params)).html_safe %>
+    <%- query_params.delete(:controller) %>
+    <%- query_params.delete(:action) %>
+    <%- query_params.delete(:solr_doc_ids) %>
+    <%# link_to("Set Exhibit Scope", catalog_index_path(query_params)).html_safe %>
+    <dl>
+      <dd>
+        <%= link_to("Set Exhibit Scope", atrium_set_exhibit_scope_path(query_params)).html_safe %>
+        <%= link_to("Remove Exhibit Scope", atrium_unset_exhibit_scope_path(@exhibit.id)).html_safe  %>
+      </dd>
+    </dl>
 
     <h3>Group Exhibit Items by Facets</h3>
     <p>
