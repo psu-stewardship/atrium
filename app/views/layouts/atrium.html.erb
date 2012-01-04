@@ -1,52 +1,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
   <head>
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <%= stylesheet_link_tag :all %>
-    <%= javascript_include_tag :defaults %>
-    <%= csrf_meta_tag %>
-
     <title><%= h(@page_title || application_name) %></title>
-    <link href="<%= opensearch_catalog_path %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
-
+    <link href="<%= opensearch_catalog_path(:format => 'xml', :only_path => false) %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
+    <%= favicon_link_tag asset_path('favicon.ico') %>
+    <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
     <%= raw(render_head_content) %>
-
   </head>
   <% if params[:q].to_s.empty? and params[:f].to_s.empty? and params[:id].nil? %>
   <body onload="$('input#q').focus();" class="<%= render_body_class %>">
     <% else %>
   <body class="<%= render_body_class.html_safe %>">
   <% end %>
-      <%= render :partial => 'shared/banner' %>
-      <div id="doc4" class="yui-t2">
-
-        <div id="hd">
-          <div class="yui-g">
-            <div class="yui-u first">
-              <% if @atrium_collection %>
+    <%= render :partial => 'shared/banner' %>
+    <div id="page">
+      <div id="hd">
+        <div id="logo">
+          <% if @atrium_collection %>
                 <h3><%= link_to @atrium_collection.title, atrium_collection_home_path(@atrium_collection) %></h3>
               <% else %>
                 <h1 class="site_title"><%= link_to application_name, "/" %><%= (params[:controller] == "catalog" and !params[:id]) ? "<span id='results_text'>Search Results</span>".html_safe : "" %></h1>
               <% end %>
-            </div>
-            <div class="yui-u user_util_links">
-              <%= render :partial=>'/user_util_links' %>
-            </div>
-          </div>
-          <%# render :partial => 'shared/top_navigation' %>
         </div>
-
-<div id="bd">
-
-       <div id="yui-main">
-          <div class="yui-b">
+        <div id="user_util_links">
+          <%= render :partial=>'/user_util_links' %>
+        </div>
+      </div>
+      <div id="bd">
+        <div id="main">
+          <div id="main_container">
             <%= render :partial=>'/flash_msg' %>
             <%= yield %>
           </div>
         </div>
-
-        <div class="yui-b sidebar">
+        <div id="sidebar">
           <%- if params[:controller] == "catalog" -%>
             <%- if (params[:atrium_collection_browse].blank? && params[:atrium_exhibit_browse].blank?) || params[:class] == "edit_collection" -%>
               <%- if params[:collection_id] -%>
@@ -74,8 +64,12 @@
           <%- end -%>
           <%= sidebar_items.join('').html_safe %>
         </div>
-<div id="ft"><%= raw(@footer) %></div>
-</div>
-    </body>
+      </div>
+      <div id="ft">
+        <%= raw(@footer) %>
+      </div>
+    </div>
 
-    </html>
+  </body>
+
+</html>

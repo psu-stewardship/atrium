@@ -7,7 +7,7 @@ class AtriumShowcasesController < ApplicationController
   include BlacklightHelper
   include AtriumHelper
 
-  before_filter :atrium_html_head
+  #before_filter :atrium_html_head
   layout 'atrium'
 
   before_filter :initialize_collection

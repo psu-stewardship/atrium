@@ -1,5 +1,7 @@
 module AtriumHelper
   include BlacklightHelper
+  #include Blacklight::Configurable
+  #include Blacklight::FacetsHelperBehavior
 
   def application_name
     'Atrium Application'
@@ -7,15 +9,15 @@ module AtriumHelper
 
   def atrium_html_head
     logger.debug("Into atrium_html_head html head")
-    if use_asset_pipeline?
-      stylesheet_links  << ["application"]
-      javascript_includes << ["application"]
-    else
-     # stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
+    #if use_asset_pipeline?
+    #  stylesheet_links  << ["application"]
+    #  javascript_includes << ["application"]
+    #else
+    #  stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
     #  javascript_includes << ['jquery.jeditable.mini','jquery.colorbox', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
-    end
-    stylesheet_links << ['colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
-    #javascript_includes << ['jquery.jeditable.mini', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
+    #end
+    stylesheet_links << ['application','colorbox', 'atrium/chosen', 'atrium/atrium', {:media=>'all'}]
+    javascript_includes << ["application",'jquery.jeditable.mini', 'atrium/chosen.jquery.min', 'ckeditor/ckeditor.js', 'jquery.ckeditor.min.js','ckeditor/jquery.generateId.js', 'ckeditor/jquery.jeditable.ckeditor.js','atrium/atrium']
 
     logger.debug("Into atrium_html_head html head #{stylesheet_links.inspect}")
   end
@@ -54,7 +56,7 @@ module AtriumHelper
   # Use the catalog_path RESTful route to create a link to the show page for a specific item.
   # catalog_path accepts a HashWithIndifferentAccess object. The solr query params are stored in the session,
   # so we only need the +counter+ param here. We also need to know if we are viewing to document as part of search results.
-  def link_to_document(doc, opts={:label=>Blacklight.config[:index][:show_link].to_sym, :counter => nil, :results_view => true})
+  def link_to_document(doc, opts={:label=>blacklight_config.index.show_link.to_sym, :counter => nil, :results_view => true})
     params[:controller] == "atrium_collections" ? collection_id = params[:id] : collection_id = params[:collection_id]
     params[:controller] == "atrium_showcases" ? exhibit_id = params[:id] : exhibit_id = params[:showcase_id]
     params[:controller] == "atrium_exhibits" ? exhibit_id = params[:id] : exhibit_id = params[:exhibit_id]
@@ -71,15 +73,21 @@ module AtriumHelper
     end
 
     if exhibit_id && collection_id
-      link_to_with_data(label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+      #link_to_with_data(label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+
+      label = render_document_index_label doc, opts
+      link_to label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), :'data-counter' => opts[:counter]
     #elsif exhibit_id
     #  link_to_with_data(label, atrium_exhibit_browse_path(exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
     elsif collection_id
       params[:controller] == "catalog" ? current_path = atrium_collection_catalog_path(collection_id, doc.id, args) : current_path = atrium_collection_browse_path(collection_id, doc.id, args)
-      link_to_with_data(label, current_path, {:method => :put, :class => label.parameterize, :data => opts}).html_safe
+      label = render_document_index_label doc, opts
+      link_to label, current_path, :'data-counter' => opts[:counter]
+      #link_to_with_data(label, current_path, {:method => :put, :class => label.parameterize, :data => opts}).html_safe
     else
       super
     end
+
   end
 
   # If collection is defined and in an collection browse view

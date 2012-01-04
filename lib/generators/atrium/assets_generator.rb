@@ -18,12 +18,15 @@ module Atrium
 
     def assets
       unless IO.read("app/assets/stylesheets/application.css").include?("Atrium")
-        insert_into_file "app/assets/stylesheets/application.css", :after => "/*" do
+        insert_into_file "app/assets/stylesheets/application.css", :before => "*/" do
   %q{
   * Required by Atrium:
-  *= require 'atrium/atrium'}
-        end
+  *= require 'colorbox'
+  *= require 'atrium/chosen'
+  *= require 'atrium/atrium'
+  }
       end
+    end
 
       unless IO.read("app/assets/javascripts/application.js").include?('atrium/atrium')
         insert_into_file "app/assets/javascripts/application.js", :after => "//= require jquery_ujs" do

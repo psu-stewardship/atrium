@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Atrium is a Rails Engine for for creating collections in either a Blacklight or Hydra context. The full hydra stack includes: Blacklight, Fedora, Solr, active-fedora, solrizer, and om}
 
   s.add_dependency 'rails', '~> 3.1.3'
-  s.add_dependency 'blacklight', '~> 3.1.2'
+  s.add_dependency 'blacklight', '~> 3.2'
   s.add_dependency 'active-fedora', '>= 2.3.3'
   s.add_dependency 'builder'
   s.add_dependency 'cancan'
@@ -48,8 +48,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'block_helpers'
   s.add_dependency 'sanitize'
 ### Remove after updating Blacklight
-  s.add_dependency 'rsolr',     '1.0.2'
-  s.add_dependency 'rsolr-ext', '1.0.3'
+  #s.add_dependency 'rsolr',     '1.0.2'
+  #s.add_dependency 'rsolr-ext', '1.0.3'
 ###
   s.add_development_dependency 'cucumber', '>=0.8.5'
   s.add_development_dependency 'cucumber-rails', '>=1.0.0'

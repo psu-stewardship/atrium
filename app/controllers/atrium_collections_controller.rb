@@ -10,7 +10,7 @@ class AtriumCollectionsController < ApplicationController
   layout 'atrium'
 
   before_filter :initialize_collection, :except=>[:index, :new]
-  before_filter :atrium_html_head
+  #before_filter :atrium_html_head
 
   def new
     create
@@ -96,6 +96,10 @@ class AtriumCollectionsController < ApplicationController
   end
   helper_method :facet_limit_hash
 =end
+end
+
+def blacklight_config
+    CatalogController.blacklight_config
 end
 
 private

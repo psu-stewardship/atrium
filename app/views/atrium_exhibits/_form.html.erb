@@ -69,10 +69,10 @@
     <%- @exhibit.atrium_collection_id = @atrium_collection.id %>
     <%= f.fields_for :browse_levels, @level do |level_fields| %>
       <%- if @exhibit.browse_levels.empty? -%>
-        <%- available_facets = Blacklight.config[:facet][:field_names] -%>
+        <%- available_facets = CatalogController.blacklight_config.facet_fields.keys -%>
       <%- else -%>
         <%- facet_names = @exhibit.browse_levels.collect {|level| level.solr_facet_name}-%>
-        <%- available_facets = Blacklight.config[:facet][:field_names].reject {|facet| facet_names.include?(facet)} -%>
+        <%- available_facets = CatalogController.blacklight_config.facet_fields.keys.reject {|facet| facet_names.include?(facet)} -%>
       <%- end -%>
       <%- @level.level_number = @exhibit.browse_levels.size + 1 -%>
       <%= level_fields.hidden_field :level_number %>

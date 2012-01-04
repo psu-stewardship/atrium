@@ -7,7 +7,7 @@ class AtriumExhibitsController < ApplicationController
   include Atrium::SolrHelper
   include Atrium::CollectionsHelper
 
-  before_filter :atrium_html_head
+  #before_filter :atrium_html_head
   layout 'atrium'
 
   before_filter :initialize_collection, :except=>[:index, :create]
@@ -71,5 +71,9 @@ class AtriumExhibitsController < ApplicationController
     Atrium::Exhibit.destroy(params[:id])
     flash[:notice] = 'Exhibit'+params[:id] +'was deleted successfully.'
     redirect_to :controller=>"atrium_collections", :action => "edit", :id=>@exhibit.atrium_collection_id
+  end
+
+  def blacklight_config
+    CatalogController.blacklight_config
   end
 end
