@@ -1,12 +1,13 @@
-<div id="collection-search">
-  <% params[:collection_id] ? collection_id = params[:collection_id] : collection_id = params[:id]%>
-  <% form_tag catalog_index_path, :method => :get do %>
+<div id="collection-search" class="search">
+  <%- params[:collection_id] ? collection_id = params[:collection_id] : collection_id = params[:id]%>
+   <%= form_tag catalog_index_path, :method => :get do %>
     <fieldset>
-      <h3><label for="q"><%= link_to("Search Complete Collection", atrium_collection_home_path(collection_id)) %></label></h3>
-      <%= text_field_tag :q, params[:q], :class => "search-box" %>
-      <%= hidden_field_tag :collection_id, collection_id%>
-      <%= search_as_hidden_fields(:omit_keys => [:q, :f, :search_field, :qt, :action, :id, :controller, :class]) %>
-      <%= submit_tag 'Search', :class=>'button' %>
+    <h3 class="search"><label for="q"><%= link_to("Search Complete Collection", atrium_collection_home_path(collection_id)) %></label></h3>
+    <%= text_field_tag :q, params[:q], :class => "q" %>
+    <%= hidden_field_tag :collection_id, collection_id%>
+    <%= search_as_hidden_fields(:omit_keys => [:q, :f, :search_field, :qt, :action, :id, :controller, :class]).html_safe %>
+    <%= submit_tag 'Search', :class=>'submit' %>
     </fieldset>
   <% end %>
 </div>
+
