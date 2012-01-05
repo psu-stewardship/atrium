@@ -59,7 +59,7 @@ class AtriumDescriptionsController < ApplicationController
      @atrium_description.build_summary(:content_type=>"summary") unless @atrium_description.summary
     #@atrium_desc_content= @atrium_description.contents.first
     #@atrium_desc_essay= @atrium_description.essays.first
-    render :layout => false
+    #render :layout => false
   end
 
   def update

@@ -1,5 +1,4 @@
-<%= raw(render_head_content) %>
-<li>
+<%# raw(render_head_content) %>
 <%= form_for(@atrium_description) do |f| %>
   <%= f.label :title, 'Description Title:' %>
   <%= f.text_field :title %>
@@ -21,7 +20,6 @@
   <% end %>
   <%= f.submit 'Update' %>
 <% end %>
-</li>
 
 
 

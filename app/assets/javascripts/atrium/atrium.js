@@ -9,9 +9,22 @@
 
 (function($){
   $(document).ready(function(){
+
+    CKEDITOR.config.toolbar_Basic = [ [ 'Source', '-', 'Bold', 'Italic' ] ];
+
     $('select.chosen').chosen();
 
-    $('.jquery-ckeditor').ckeditor();
+    $('.jquery-ckeditor').ckeditor(
+        {
+      toolbar: [
+        ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+        ['Bold','Italic','Underline','Strike'],
+        ['Format','-','NumberedList','BulletedList','Blockquote'],
+        ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
+        ['Source','ShowBlocks','Maximize']
+      ]
+    }
+    );
 
     $('.sortable').sortable({
       update: function(e, ui){

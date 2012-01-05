@@ -94,7 +94,13 @@ module AtriumHelper
   # then do not set limit on facet values displayed.
   # Otherwise use code lifted from catalog controller in blacklight plugin
   def facet_limit_for(facet_field)
-    (params[:collection_id] && !params[:render_search].blank?) ? nil : super
+
+    #if (params[:collection_id] && !params[:render_search].blank?)
+    if params[:controller] == "catalog"
+      super
+    else
+      nil
+    end
   end
 
   # Overriding so that it will not show facet constraints if selecting
