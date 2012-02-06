@@ -95,7 +95,7 @@ namespace :atrium do
       Dir.chdir(TEST_HOST_PATH)
       puts "Running cucumber features in test host app"
       puts %x[bundle exec rake atrium:cucumber]
-      # puts %x[cucumber --color --tags ~@pending --tags ~@overwritten features]
+      puts %x[cucumber --color --tags ~@pending --tags ~@overwritten features]
       raise "Cucumber tests failed" unless $?.success?
       FileUtils.cd('../../')
     end

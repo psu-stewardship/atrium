@@ -6,17 +6,18 @@ Feature: Collections
   I want to create and configure an collection
 
   Scenario: Listing collections in home page
+    Given I am logged in as "test"
     Given I am on the home page
-    Then I should see "Browse Current collections"
+    Then I should see "Collections"
     And I should see "No collections found."
 
   Scenario: Editor views the search results page and sees the add collection button
-    Given I am logged in as "archivist1"
+    Given I am logged in as "test"
     Given I am on the home page
     Then I should see a "Create New Collection" button
 
   Scenario: Adding an Collection
-    Given I am logged in as "archivist1"
+    Given I am logged in as "test"
     Given I am on the home page
     When I press "Create New Collection"
     Then I should be on the configure collection page

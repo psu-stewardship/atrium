@@ -3,8 +3,8 @@ class Atrium::Showcase < ActiveRecord::Base
 
   has_many :descriptions,     :class_name => 'Atrium::Description',              :foreign_key => 'atrium_showcase_id', :dependent => :destroy
   has_many :facet_selections, :class_name => 'Atrium::Showcase::FacetSelection', :foreign_key => 'atrium_showcase_id'
-  has_many :featured_items,   :class_name => 'Atrium::Showcase::Item::Featured', :foreign_key => 'atrium_showcase_id'
-  has_many :related_items,    :class_name => 'Atrium::Showcase::Item::Related',  :foreign_key => 'atrium_showcase_id'
+  #has_many :featured_items,   :class_name => 'Atrium::Showcase::Item::Featured', :foreign_key => 'atrium_showcase_id'
+  #has_many :related_items,    :class_name => 'Atrium::Showcase::Item::Related',  :foreign_key => 'atrium_showcase_id'
 
   belongs_to :showcases, :polymorphic => true
 
@@ -12,8 +12,8 @@ class Atrium::Showcase < ActiveRecord::Base
 
   accepts_nested_attributes_for :descriptions,    :allow_destroy => true
   accepts_nested_attributes_for :facet_selections
-  accepts_nested_attributes_for :featured_items,  :allow_destroy => true
-  accepts_nested_attributes_for :related_items,   :allow_destroy => true
+  #accepts_nested_attributes_for :featured_items,  :allow_destroy => true
+  #accepts_nested_attributes_for :related_items,   :allow_destroy => true
 
   def showcase_items
     read_attribute(:showcase_items) || write_attribute(:showcase_items, {})
