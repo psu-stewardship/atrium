@@ -5,7 +5,7 @@ require 'jettywrapper'
 
 namespace :atrium do
 
-  desc "Execute Continuous Integration build (docs, tests with coverage)"
+  desc "Execute Continuous Integration build (docs, tests with coverage) ... Pending"
   task :ci do
     Rake::Task["atrium:doc"].invoke
 
@@ -29,7 +29,7 @@ namespace :atrium do
 
   namespace :rspec do
 
-    desc "Run the hydra-head specs - need to have jetty running, test host set up and fixtures loaded."
+    desc "Run the atrium specs - need to have jetty running, test host set up and fixtures loaded."
     task :run => :use_test_app do
       puts "Running rspec tests"
       puts  %x[bundle exec rake atrium:spec:run]
