@@ -8,6 +8,8 @@
       </li>
     <%- end -%>
   </ul>
+<%- else -%>
+  <h2>No Collection defined</h2>
 <%- end -%>
 
 <%- if (current_user) && (can? :create, Atrium::Collection)  -%>

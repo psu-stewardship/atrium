@@ -15,9 +15,12 @@ module NavigationHelpers
     when /the new collection page/
       new_atrium_collection_path
 
-    when /the configure collection page/
-      '/atrium_collections/\./edit'
-      
+    when /the edit collection page for id (.+)/
+      edit_atrium_collection_path($1)
+
+    when /the collection home page for id (.+)/
+      atrium_collection_path($1)
+
     when /the catalog page/
       catalog_index_path
       
