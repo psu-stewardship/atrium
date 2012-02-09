@@ -31,6 +31,10 @@ Feature: Collections
     And I press "Update Collection Configuration"
     Then I should see "My Test Title"
     And I should see select list "select#atrium_collection_search_facet_names" with "Language" selected
+    When I am on the collection search page for id 1
+    Then I should see a "h3" element containing "Language"
+    And show me the page
+    And I should have "div.facet_limit" containing only 2 "h3"
 
     
   Scenario: Visiting collection scope page
@@ -67,6 +71,7 @@ Feature: Collections
     Given User exists with a login of "test"
     And I am on the edit collection page for id 1
     And I press "Add a Exhibit to this Collection"
+    #TODO id will be different if we have seed data
     Then I should see "Exhibit 1"
     And I should see "Configure" link
 
