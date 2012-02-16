@@ -27,8 +27,8 @@ module NavigationHelpers
     when /the collection page with id (.+) having showcase with id (.+)/
       atrium_collection_showcase_path($1, $2, nil)
 
-    when /the exhibit home page for id (.+)/
-      atrium_exhibit_path($1)
+    when /the exhibit home page for id (.+) with facet "([^\"]*)"/
+      atrium_exhibit_path($1, :f=>{"pub_date"=>[$2]})
 
     when /the exhibit edit page for id (.+)/
       edit_atrium_exhibit_path($1)

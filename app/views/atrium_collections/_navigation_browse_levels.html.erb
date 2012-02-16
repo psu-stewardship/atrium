@@ -7,7 +7,7 @@
     <h3 class="facet-heading"><%= browse_level.label %></h3>
     <ul>
       <%- browse_level.values.each do |value| -%>
-        <li>
+        <li id="<%= value %>">
 	  <%- @exhibit ? exhibit_set_from_params = @exhibit.set_number : exhibit_set_from_params = params[:id] -%>
           <%- if !browse_level.selected.nil? && browse_level.selected == value && exhibit_number.to_i == exhibit_set_from_params.to_i-%>
 	    <span class="selected">

@@ -164,8 +164,8 @@ namespace :atrium do
 
     puts "Running rake db:migrate"
     %x[bundle exec rake db:migrate]
-    %x[bundle exec rake db:migrate RAILS_ENV=test]
-    raise "Errors: #{errors.join("; ")}" unless errors.empty?
+    errors << 'Error Running rake db:migrate' unless $?.success?
+    #raise "Errors: #{errors.join("; ")}" unless errors.empty?
 
     puts "Installing cucumber in test app"
     %x[bundle exec rails g cucumber:install]
@@ -181,6 +181,10 @@ namespace :atrium do
 
     puts "Loading blacklight marc test data into Solr"
     %x[bundle exec rake solr:marc:index_test_data]
+
+    #puts "Ingest test data to test env"
+    #%x[bundle exec rake db:seed RAILS_ENV=test --trace]
+    #errors << 'Error Ingest test data' unless $?.success?
 
     FileUtils.cd('../../')
   end

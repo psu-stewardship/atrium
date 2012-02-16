@@ -95,11 +95,6 @@ class AtriumCollectionsController < ApplicationController
 
     respond_to do |format|
       if @atrium_collection.update_attributes(params[:atrium_collection])
-        unless params[:atrium_collection][:search_facet_names]
-          @atrium_collection.atrium_search_facets=nil
-          logger.debug("No Search Facet: #{params[:atrium_collection][:search_facet_names]}")
-          @atrium_collection.save
-        end
         refresh_collection
         flash[:notice] = 'Collection was successfully updated.'
         format.html  { render :action => "edit" }

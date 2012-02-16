@@ -27,7 +27,7 @@
       <h3 class="facet-heading"><%= link_to exhibit.title,  exhibit  %>
        </h3>
       <%- unless exhibit.browse_levels.nil? || exhibit.browse_levels.empty? -%>
-        <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.id, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>
+        <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>
       <%- end -%>
     <%- end -%>
   <%- end -%>

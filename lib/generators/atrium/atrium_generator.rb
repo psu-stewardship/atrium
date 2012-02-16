@@ -51,6 +51,14 @@ module Atrium
       ## directory "../../../../solr_conf", "solr_conf"
     end
 
+    def copy_seed_data
+      insert_into_file "db/seeds.rb", :after => " # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup)." do <<EOF
+include Atrium::TestData
+Atrium::TestData.load_data
+EOF
+      end
+    end
+
     # Copy all files in templates/public/ directory to public/
     # Call external generator in AssetsGenerator, so we can
     # leave that callable seperately too.

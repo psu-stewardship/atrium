@@ -21,10 +21,19 @@ begin
   require 'cucumber/rake/task'
 
   namespace :atrium do
+     desc 'load seed data'
+    task :load_seed_data => :environment do
+      Rake::Task["db:seed"].invoke
+    end
+
+    task :delete_seed_data => :environment do
+      Rake::Task["db:seed"].invoke
+    end
+
     desc 'Alias for atrium:cucumber:ok'
     task :cucumber => 'atrium:cucumber:ok'
     namespace :cucumber do
-      Cucumber::Rake::Task.new({:ok => 'db:test:prepare'}, 'Run features that should pass') do |t|
+      Cucumber::Rake::Task.new({:ok => 'db:test:prepare', :seed=>'atrium:load_seed_data'}, 'Run features that should pass') do |t|
         # Blacklight customization, call features from external location, pass
         # in feature location wtih cucumber_opts, yeah it's weird but that's how.
         t.cucumber_opts = atrium_features
