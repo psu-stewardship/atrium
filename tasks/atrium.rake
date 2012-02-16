@@ -162,6 +162,7 @@ namespace :atrium do
     %x[bundle install --local]
     errors << 'Error running bundle install in test app' unless $?.success?
 
+=begin
     puts "Running rake db:migrate"
     output = %x[bundle exec rake db:migrate]
     puts output
@@ -169,6 +170,7 @@ namespace :atrium do
 
     %x[bundle exec rake db:migrate RAILS_ENV=test]
     errors << 'Error running db:migrate RAILS_ENV=test in test app' unless $?.success?
+=end
 
     puts "Installing jQuery UJS in test app"
     %x[bundle exec rails g jquery:install]
@@ -186,8 +188,22 @@ namespace :atrium do
     %x[bundle exec rails g atrium -df] # using -f to force overwriting of solr.yml
     errors << 'Error generating default atrium install' unless $?.success?
 
+   FileUtils.cp('../../lib/generators/atrium/templates/db/seeds.rb','db/seeds.rb')
+
     puts "Loading blacklight marc test data into Solr"
     %x[bundle exec rake solr:marc:index_test_data]
+
+    puts "Running rake db:migrate"
+    output = %x[bundle exec rake db:migrate]
+    puts output
+    errors << 'Error running db:migrate in test app' unless $?.success?
+
+    %x[bundle exec rake db:migrate RAILS_ENV=test]
+    errors << 'Error running db:migrate RAILS_ENV=test in test app' unless $?.success?
+
+    puts "Running rake db:seed"
+    %x[bundle exec rake db:seed RAILS_ENV=test]
+    errors << 'Error running db:seed in test app' unless $?.success?
 
     FileUtils.cd('../../')
   end
@@ -204,7 +220,7 @@ namespace :atrium do
   desc "Run tests against test app"
   task :test => [:use_test_app]  do
     puts "Run Pending migrations"
-    puts  %x[bundle exec rake db:migrate]
+    puts  %x[bundle exec rake db:migrate RAILS_ENV=test]
 
     puts "Running rspec tests"
     puts  %x[bundle exec rake atrium:spec:rcov]
@@ -212,6 +228,12 @@ namespace :atrium do
 
     puts "Running cucumber tests"
     puts %x[bundle exec rake atrium:cucumber]
+
+    puts "Drop Tables"
+    puts  %x[bundle exec rake db:drop RAILS_ENV=test]
+
+    puts "Run rerun migrations"
+    puts  %x[bundle exec rake db:migrate RAILS_ENV=test]
 
     FileUtils.cd(File.expand_path(File.dirname(__FILE__)))
     puts "Completed test suite"
