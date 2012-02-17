@@ -51,12 +51,12 @@ describe Atrium::BrowseLevel do
 
   describe "#solr_filter_query" do
     it "should return nil if not set" do
-      @browse_level.solr_filter_query.nil?.should == true
+      @browse_level.filter_query_params.nil?.should == true
     end
 
     it "should return correct value if set" do
-      @browse_level.solr_filter_query = "id:testing"
-      @browse_level.solr_filter_query.should == "id:testing"
+      @browse_level.filter_query_params = "id:testing"
+      @browse_level.filter_query_params.should == "id:testing"
     end
   end
 
