@@ -219,8 +219,6 @@ namespace :atrium do
 
   desc "Run tests against test app"
   task :test => [:use_test_app]  do
-    puts "Run Pending migrations"
-    puts  %x[bundle exec rake db:migrate RAILS_ENV=test]
 
     puts "Running rspec tests"
     puts  %x[bundle exec rake atrium:spec:rcov]
@@ -228,12 +226,6 @@ namespace :atrium do
 
     puts "Running cucumber tests"
     puts %x[bundle exec rake atrium:cucumber]
-
-    puts "Drop Tables"
-    puts  %x[bundle exec rake db:drop RAILS_ENV=test]
-
-    puts "Run rerun migrations"
-    puts  %x[bundle exec rake db:migrate RAILS_ENV=test]
 
     FileUtils.cd(File.expand_path(File.dirname(__FILE__)))
     puts "Completed test suite"

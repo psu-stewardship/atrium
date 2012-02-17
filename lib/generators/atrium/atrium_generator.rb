@@ -67,13 +67,6 @@ Mime::Type.register_alias "text/html", :inline
 
 EOF
       end
-      puts "Into seed file"
-      insert_into_file "db/seeds.rb", :after => " # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup)." do <<EOF
-include Atrium::TestData
-Atrium::TestData.load_data
-EOF
-      end
-    puts "end of loading seed data"
     end
   
     #

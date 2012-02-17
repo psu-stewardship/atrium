@@ -15,9 +15,24 @@ module NavigationHelpers
     when /the new collection page/
       new_atrium_collection_path
 
-    when /the configure collection page/
-      '/atrium_collections/\./edit'
-      
+    when /the collection search page for id (.+)/
+        atrium_collection_home_path($1)
+
+    when /the edit collection page for id (.+)/
+      edit_atrium_collection_path($1)
+
+    when /the collection home page for id (.+)/
+      atrium_collection_path($1)
+
+    when /the collection page with id (.+) having showcase with id (.+)/
+      atrium_collection_showcase_path($1, $2, nil)
+
+    when /the exhibit home page for id (.+) with facet "([^\"]*)"/
+      atrium_exhibit_path($1, :f=>{"pub_date"=>[$2]})
+
+    when /the exhibit edit page for id (.+)/
+      edit_atrium_exhibit_path($1)
+
     when /the catalog page/
       catalog_index_path
       

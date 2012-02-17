@@ -8,6 +8,7 @@
 # location for Rails.root, even though we're going to give it features
 # from elsewhere. 
 ENV['RAILS_ROOT'] = Rails.root.to_s
+ENV['RAILS_ENV'] = 'test'
 
 # atrium_features, where to find features inside atrium source?
 atrium_features = File.expand_path("./test_support/features",Atrium.root)
@@ -24,7 +25,7 @@ begin
     desc 'Alias for atrium:cucumber:ok'
     task :cucumber => 'atrium:cucumber:ok'
     namespace :cucumber do
-      Cucumber::Rake::Task.new({:ok => 'db:test:prepare'}, 'Run features that should pass') do |t|
+      Cucumber::Rake::Task.new({:ok => ['db:test:prepare', 'db:seed']}, 'Run features that should pass') do |t|
         # Blacklight customization, call features from external location, pass
         # in feature location wtih cucumber_opts, yeah it's weird but that's how.
         t.cucumber_opts = atrium_features
@@ -38,13 +39,11 @@ begin
         # Blacklight customization, call features from external location, pass
         # in feature location wtih cucumber_opts, yeah it's weird but that's how.
         t.cucumber_opts = atrium_features
-        
-        
         t.binary = vendored_cucumber_bin
         t.fork = true # You may get faster startup if you set this to false
         t.profile = 'wip'
       end
-  
+
       Cucumber::Rake::Task.new({:rerun => 'db:test:prepare'}, 'Record failing features and run only them if any exist') do |t|
         # Blacklight customization, call features from external location, pass
         # in feature location wtih cucumber_opts, yeah it's weird but that's how.
@@ -106,8 +105,6 @@ begin
     
         
   end
-
-
   
 
   task :features => :cucumber do
