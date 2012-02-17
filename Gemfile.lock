@@ -3,7 +3,6 @@ PATH
   specs:
     atrium (0.0.1)
       RedCloth (= 4.2.3)
-      active-fedora (>= 2.3.3)
       blacklight (~> 3.2)
       block_helpers
       builder
@@ -20,6 +19,7 @@ PATH
       json_pure (> 1.4.3)
       launchy
       linecache
+      mediashelf-loggable
       mime-types
       multipart-post
       nokogiri
@@ -32,7 +32,6 @@ PATH
       sanitize
       solr-ruby
       solrizer (>= 1.1.0)
-      solrizer-fedora (>= 1.1.0)
       term-ansicolor
       trollop
       xml-simple
@@ -56,18 +55,6 @@ GEM
       rack-mount (~> 0.8.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.0.3)
-    active-fedora (2.3.3)
-      activeresource
-      equivalent-xml
-      facets
-      mediashelf-loggable
-      mime-types (>= 1.16)
-      multipart-post
-      nokogiri
-      om (>= 1.0)
-      solr-ruby (>= 0.0.6)
-      solrizer (> 1.0.0)
-      xml-simple (>= 1.0.12)
     activemodel (3.1.3)
       activesupport (= 3.1.3)
       builder (~> 3.0.0)
@@ -136,13 +123,10 @@ GEM
       orm_adapter (~> 0.0.3)
       warden (~> 1.1)
     diff-lcs (1.1.3)
-    equivalent-xml (0.2.8)
-      nokogiri (>= 1.4.3)
     erubis (2.7.0)
     facets (2.8.4)
     factory_girl (2.3.2)
       activesupport
-    fastercsv (1.5.4)
     ffi (1.0.11)
     fssm (0.2.7)
     gherkin (2.6.9)
@@ -265,12 +249,6 @@ GEM
       om (>= 1.4.0)
       stomp
       xml-simple
-    solrizer-fedora (1.1.3)
-      active-fedora (>= 2.3.0)
-      fastercsv
-      rsolr
-      solr-ruby (>= 0.0.6)
-      solrizer (>= 1.0.0)
     sprockets (2.0.3)
       hike (~> 1.2)
       rack (~> 1.0)

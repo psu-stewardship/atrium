@@ -1,2 +1,2 @@
-uva-only:
-public:
+admin:
+  - test@test.com

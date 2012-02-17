@@ -201,10 +201,6 @@ namespace :atrium do
     %x[bundle exec rake db:migrate RAILS_ENV=test]
     errors << 'Error running db:migrate RAILS_ENV=test in test app' unless $?.success?
 
-    puts "Running rake db:seed"
-    %x[bundle exec rake db:seed RAILS_ENV=test]
-    errors << 'Error running db:seed in test app' unless $?.success?
-
     FileUtils.cd('../../')
   end
 

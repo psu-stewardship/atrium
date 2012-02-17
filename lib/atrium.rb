@@ -6,6 +6,10 @@ module Atrium
   require 'atrium/routes'
 
   require 'ckeditor-rails'
+  require 'loggable'
+
+  include Loggable
+
 
   def self.version
     Atrium::VERSION
