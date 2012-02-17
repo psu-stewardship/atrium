@@ -59,7 +59,7 @@ describe Atrium::CollectionsHelper do
       helper.stubs(:params).returns(catalog_facet_params)
     end
     it "should redirect to exhibit action" do
-      response = helper.get_browse_facet_path("facet_solr_field", "item_value", ["facet_field_1","facet_field_2"], "exhibit_number")
+      response = CGI::unescape(helper.get_browse_facet_path("facet_solr_field", "item_value", ["facet_field_1","facet_field_2"], "exhibit_number"))
       response.should == "/atrium_exhibits/exhibit_number?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1&f[facet_field_2][]=value2&f[facet_field_2][]=value2a&f[facet_solr_field][]=item_value"
     end
 
@@ -77,7 +77,8 @@ describe Atrium::CollectionsHelper do
       #                     {:solr_facet_name=>"facet_field_2",:label=>"my_label2",:selected=>"value2a",:values=>["value2","value2a"]}]
       #test making link for something not currently selected that should have child facet selection removed
       browse_facets = ["facet_field_1","facet_field_2"]
-      helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"exhibit_number").should == "/atrium_exhibits/exhibit_number?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1a"
+      response = CGI::unescape(helper.get_browse_facet_path("facet_field_1","value1a",browse_facets,"exhibit_number"))
+      response.should == "/atrium_exhibits/exhibit_number?class=browse_facet_select&collection_id=collection_PID&f[facet_field_1][]=value1a"
     end
   end
 
@@ -99,8 +100,8 @@ describe Atrium::CollectionsHelper do
       #helper.stubs(:remove_facet_params).returns({"f" => {"facet_field_1" => ["value1"], "facet_field_2" => ["value2", "value2a"]},
       #          "id" => 'collection_PID',
       #          "controller" => "atrium_collections"
-      #})      
-      response = helper.get_selected_browse_facet_path("facet_field_1", item, ["facet_field_1", "browse_facet"],"exhibit_number")
+      #})
+      response = CGI::unescape(helper.get_selected_browse_facet_path("facet_field_1", item, ["facet_field_1", "browse_facet"],"exhibit_number"))
       #all browse facets should be removed since at the top, and the only current facet in the params is facet_field_1, so facet_field_2 stays
       response.should == "/atrium_exhibits/exhibit_number?collection_id=collection_PID&f[facet_field_2][]=value2&f[facet_field_2][]=value2a"
     end
