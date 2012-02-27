@@ -3,14 +3,15 @@
     <li>
       <%- if desc.page_display.nil? || desc.page_display == "newpage" -%>
         <h3><em>
-          <%= link_to "#{desc.title}", atrium_description_path(desc.id), :label=>("Essay: \"#{desc.title}\"") %>
+          <%- path = params[:controller] == "atrium_exhibits" ?  atrium_description_path(desc.id, :f=>params[:f], :exhibit_id=>params[:id]) : atrium_description_path(desc.id, :collection_id=>params[:id]) %>
+          <%= link_to "#{desc.pretty_title}", path, :label=>("Essay: \"#{desc.pretty_title}\"") %>
         </em></h3>
         <blockquote>
           <%= desc.summary.content.html_safe unless desc.summary.nil? %>
         </blockquote>
-        <%= link_to "#{desc.title}", atrium_description_path(desc.id), :label=>("[Read the complete essay]")%>
+        <%= link_to "#{desc.pretty_title}", path, :label=>("[Read the complete essay]")%>
       <%- else -%>
-        <h3> <em><%= "Essay: #{desc.title}"%></em> </h3>
+        <h3> <em><%= "Essay: #{desc.pretty_title}"%></em> </h3>
          <blockquote class="intro"><%= truncate( desc.essay.content.html_safe, :length =>50, :ommision => "....")%></blockquote>
          <%- if desc.essay.content.html_safe.length>50 -%>
            <a class="heading" href="#">[Read the complete essay]</a>
@@ -18,11 +19,11 @@
              <%= desc.essay.content.html_safe %>
            </div>
          <%- end -%>
-         <%- if session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Description) %>
-           <%= link_to 'Edit Description', edit_atrium_description_path(desc.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_showcase.id) %>
-           <a class="destroy_description button" href=# action="<%= atrium_description_path(desc.id)%>" title="Remove Description"> Delete this description</a>
-         <%- end %>
       <%- end -%>
+     <%- if session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Description) %>
+       <%= link_to 'Edit Description', edit_atrium_description_path(desc.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_showcase.id) %>
+       <a class="destroy_description button" href=# action="<%= atrium_description_path(desc.id)%>" title="Remove Description"> Delete this description</a>
+     <%- end %>
     </li>
   <%- end -%>
 </ul>

@@ -1,5 +1,9 @@
-
-<%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
+<%# debug params.inspect %>
+<%- if params[:exhibit_id] %>
+  <%= link_to "Back to Browse Exhibit",atrium_exhibit_path(:id=>params[:exhibit_id], :f=>params[:f]) %>
+<%- else %>
+  <%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
+<%- end %>
 
 
 <%- if @atrium_description && @atrium_description.essay && @atrium_description.essay.content %>

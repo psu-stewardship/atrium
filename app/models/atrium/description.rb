@@ -10,4 +10,8 @@ class Atrium::Description < ActiveRecord::Base
   accepts_nested_attributes_for :essay,    :allow_destroy => true
   accepts_nested_attributes_for :summary,    :allow_destroy => true
 
+  def pretty_title
+    title.blank? ? "Description #{id}" : label
+  end
+
 end
