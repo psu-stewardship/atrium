@@ -10,7 +10,7 @@
   <h3><%= @atrium_description.title%></h3>
   <%= @atrium_description.essay.content.html_safe  %>
 
-  <%- if session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Description) %>
+  <%- if (can? :create, Atrium::Description) && is_editing? %>
     <%= link_to 'Edit Description', edit_atrium_description_path(@atrium_description.atrium_showcase_id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_description.atrium_showcase_id) %>
     <a class="destroy_description button" href=# action="<%= atrium_description_path(@atrium_description.id)%>" title="Remove Description"> Delete this description</a>
   <%- end %>

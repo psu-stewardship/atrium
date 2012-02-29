@@ -1,49 +1,49 @@
 # -*- encoding : utf-8 -*-
 require 'rails/generators'
-require 'rails/generators/migration'     
+require 'rails/generators/migration'
 
 # require "generators/blacklight/blacklight_generator"
 
 module Atrium
   class AtriumGenerator < Rails::Generators::Base
     include Rails::Generators::Migration
-    
+
     source_root File.expand_path('../templates', __FILE__)
-    
+
     argument     :model_name, :type => :string , :default => "user"
-    
+
     desc """
   This generator makes the following changes to your application:
     1. Creates several database migrations if they do not exist in /db/migrate
-    2. Adds additional mime types to you application in the file '/config/initializers/mime_types.rb'   
+    2. Adds additional mime types to you application in the file '/config/initializers/mime_types.rb'
     3. Creates config/solr.yml which you may need to modify to tell atrium where to find fedora & solr
-    6. Creates a number of role_map config files that are used in the placeholder user roles implementation 
+    6. Creates a number of role_map config files that are used in the placeholder user roles implementation
   Enjoy!
 
          """
     #
     # Config Files & Initializers
-    #     
+    #
     # Copy all files in templates/config directory to host config
     def create_configuration_files
       # Initializers
       #copy_file "config/initializers/fedora_config.rb", "config/initializers/fedora_config.rb"
       #copy_file "config/initializers/hydra_config.rb", "config/initializers/hydra_config.rb"
       #copy_file "config/initializers/blacklight_config.rb", "config/initializers/blacklight_config.rb"
-      
+
       # Role Mappings
       copy_file "config/role_map_cucumber.yml", "config/role_map_cucumber.yml"
       copy_file "config/role_map_development.yml", "config/role_map_development.yml"
       copy_file "config/role_map_production.yml", "config/role_map_production.yml"
       copy_file "config/role_map_test.yml", "config/role_map_test.yml"
-      
+
       # Solr Mappings
       #copy_file "config/solr_mappings.yml", "config/solr_mappings.yml"
-      
+
       # Fedora & Solr YAML files
       #copy_file "config/fedora.yml", "config/fedora.yml"
       copy_file "config/solr.yml", "config/solr.yml"
-      
+
       # Fedora & Solr Config files
       #directory "fedora_conf"
       #directory "solr_conf"
@@ -68,7 +68,7 @@ Mime::Type.register_alias "text/html", :inline
 EOF
       end
     end
-  
+
     #
     # Migrations
     #
@@ -83,7 +83,7 @@ EOF
           @previous_migration_nr = "%.3d" % (current_migration_number(dirname) + 1).to_i
         end
       else
-        @previous_migration_nr +=1 
+        @previous_migration_nr +=1
       end
       @previous_migration_nr.to_s
     end
@@ -92,6 +92,7 @@ EOF
     def inject_atrium_helper_behavior
       insert_into_file "app/helpers/application_helper.rb", :after => 'module ApplicationHelper' do
         "\n  # Adds a atrium collections behaviors into the application helper \n " +
+          "  include Atrium::ApplicationHelper\n" +
           "  include Atrium::CollectionsHelper\n" +
           "  include CatalogHelper\n"
       end
@@ -116,11 +117,11 @@ EOF
     end
 
     # Add Hydra to the application controller
-    def inject_atrium_controller_behavior    
+    def inject_atrium_controller_behavior
       inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
-        "  # Adds Atrium behaviors into the application controller \n " +        
+        "  # Adds Atrium behaviors into the application controller \n " +
           "  include Atrium::Controller\n"
-          
+
       end
     end
 
@@ -147,8 +148,8 @@ EOF
       better_migration_template "create_atrium_essays.rb"
     end
 
-    private  
-  
+    private
+
     def better_migration_template (file)
       begin
         migration_template "migrations/#{file}", "db/migrate/#{file}"

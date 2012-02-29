@@ -11,7 +11,10 @@ class Atrium::Description < ActiveRecord::Base
   accepts_nested_attributes_for :summary,    :allow_destroy => true
 
   def pretty_title
-    title.blank? ? "Description #{id}" : label
+    title.blank? ? "Description #{id}" : title
   end
 
+  def show_on_this_page?
+    page_display.nil? || page_display == "newpage"
+  end
 end
