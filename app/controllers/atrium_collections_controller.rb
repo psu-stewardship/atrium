@@ -1,16 +1,6 @@
-class AtriumCollectionsController < ApplicationController
-
-  include CatalogHelper
-  include BlacklightHelper
-  include Blacklight::SolrHelper
-  include AtriumHelper
-  include Atrium::SolrHelper
-  include Atrium::CollectionsHelper
-
-  layout 'atrium'
+class AtriumCollectionsController < AtriumController
 
   before_filter :initialize_collection, :except=>[:index, :new]
-  #before_filter :atrium_html_head
 
   def new
     create

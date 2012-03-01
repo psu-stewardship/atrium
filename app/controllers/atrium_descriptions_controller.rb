@@ -1,14 +1,4 @@
-class AtriumDescriptionsController < ApplicationController
-
-  include Blacklight::SolrHelper
-  include Atrium::CollectionsHelper
-  include Atrium::SolrHelper
-  include CatalogHelper
-  include BlacklightHelper
-  include AtriumHelper
-
-  #before_filter :atrium_html_head
-  layout 'atrium'
+class AtriumDescriptionsController < AtriumController
 
   before_filter :initialize_collection
 
