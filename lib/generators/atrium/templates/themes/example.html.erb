@@ -1,0 +1,15 @@
+<%#
+  Theming atrium isn't very sophisticated.
+  When a collection is given a theme it renders all the atrium views using a different layout file.
+  A custom layout file can be as simple as this one which fills in the optional content blocks present in the default layout and little else.
+  Alternatively you could copy the default layout from within the gem to the 'atrium_layouts' directory and make whatever changes you want to it.
+  For more information about nesting layouts see: http://guides.rubyonrails.org/layouts_and_rendering.html#using-nested-layouts
+%>
+<% content_for :theme_styles do %>
+  <style type="text/css">
+    /* Theme-specific styles */
+  </style>
+<% end %>
+<%# content_for :main_header do %>
+<%# end %>
+<%= render :template => 'layouts/atrium' %>

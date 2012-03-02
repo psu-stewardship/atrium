@@ -39,7 +39,6 @@ namespace :atrium do
     desc "Sets up test host, loads fixtures, then runs specs - need to have jetty running."
     task :setup_and_run => ["atrium:setup_test_app"] do
       puts "Reloading fixtures"
-      #puts %x[rake atrium:fixtures:refresh RAILS_ENV=test] # calling hydra:fixtures:refresh from the root of the test app
       Rake::Task["atrium:rspec:run"].invoke
     end
 
@@ -82,29 +81,17 @@ namespace :atrium do
   # Cucumber
   #
 
-
-  # desc "Easieset way to run cucumber tests. Sets up test host, refreshes fixtures and runs cucumber tests"
-  # task :cucumber => "cucumber:setup_and_run"
   task :cucumber => "cucumber:run"
 
-
   namespace :cucumber do
-
     desc "Run cucumber tests for atrium - need to have jetty running, test host set up and fixtures loaded."
     task :run => :set_test_host_path do
       Dir.chdir(TEST_HOST_PATH)
       puts "Running cucumber features in test host app"
       puts %x[bundle exec rake atrium:cucumber]
-      # puts %x[cucumber --color --tags ~@pending --tags ~@overwritten features]
       raise "Cucumber tests failed" unless $?.success?
       FileUtils.cd('../../')
     end
-
-    # desc "Sets up test host, loads fixtures, then runs cucumber features - need to have jetty running."
-    # task :setup_and_run => ["atrium:setup_test_app", "atrium:remove_features_from_host", "atrium:copy_features_to_host"] do
-    #   system("rake hydra:fixtures:refresh environment=test")
-    #   Rake::Task["atrium:cucumber:run"].invoke
-    # end
   end
 
   #
@@ -113,9 +100,6 @@ namespace :atrium do
 
   desc "Creates a new test app"
   task :setup_test_app => [:set_test_host_path] do
-    # Thor::Util.load_thorfile('tasks/test_app_builder.thor', nil, nil)
-    # klass, task = Thor::Util.find_class_and_task_by_namespace("hydra:test_app_builder:build")
-    # klass.start([task])
     path = TEST_HOST_PATH
     errors = []
 
@@ -162,16 +146,6 @@ namespace :atrium do
     %x[bundle install --local]
     errors << 'Error running bundle install in test app' unless $?.success?
 
-=begin
-    puts "Running rake db:migrate"
-    output = %x[bundle exec rake db:migrate]
-    puts output
-    errors << 'Error running db:migrate in test app' unless $?.success?
-
-    %x[bundle exec rake db:migrate RAILS_ENV=test]
-    errors << 'Error running db:migrate RAILS_ENV=test in test app' unless $?.success?
-=end
-
     puts "Installing jQuery UJS in test app"
     %x[bundle exec rails g jquery:install]
     errors << 'Error installing jquery-rails in test app' unless $?.success?
@@ -188,7 +162,7 @@ namespace :atrium do
     %x[bundle exec rails g atrium -df] # using -f to force overwriting of solr.yml
     errors << 'Error generating default atrium install' unless $?.success?
 
-   FileUtils.cp('../../lib/generators/atrium/templates/db/seeds.rb','db/seeds.rb')
+    FileUtils.cp('../../lib/generators/atrium/templates/db/seeds.rb','db/seeds.rb')
 
     puts "Loading blacklight marc test data into Solr"
     %x[bundle exec rake solr:marc:index_test_data]

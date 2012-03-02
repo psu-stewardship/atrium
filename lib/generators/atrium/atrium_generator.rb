@@ -10,7 +10,7 @@ module Atrium
 
     source_root File.expand_path('../templates', __FILE__)
 
-    argument     :model_name, :type => :string , :default => "user"
+    argument :model_name, :type => :string , :default => "user"
 
     desc """
   This generator makes the following changes to your application:
@@ -20,35 +20,23 @@ module Atrium
     6. Creates a number of role_map config files that are used in the placeholder user roles implementation
   Enjoy!
 
-         """
+    """
     #
     # Config Files & Initializers
     #
     # Copy all files in templates/config directory to host config
     def create_configuration_files
-      # Initializers
-      #copy_file "config/initializers/fedora_config.rb", "config/initializers/fedora_config.rb"
-      #copy_file "config/initializers/hydra_config.rb", "config/initializers/hydra_config.rb"
-      #copy_file "config/initializers/blacklight_config.rb", "config/initializers/blacklight_config.rb"
-
       # Role Mappings
       copy_file "config/role_map_cucumber.yml", "config/role_map_cucumber.yml"
       copy_file "config/role_map_development.yml", "config/role_map_development.yml"
       copy_file "config/role_map_production.yml", "config/role_map_production.yml"
       copy_file "config/role_map_test.yml", "config/role_map_test.yml"
 
-      # Solr Mappings
-      #copy_file "config/solr_mappings.yml", "config/solr_mappings.yml"
-
-      # Fedora & Solr YAML files
-      #copy_file "config/fedora.yml", "config/fedora.yml"
+      # Solr config
       copy_file "config/solr.yml", "config/solr.yml"
 
-      # Fedora & Solr Config files
-      #directory "fedora_conf"
-      #directory "solr_conf"
-      ## directory "../../../../fedora_conf", "fedora_conf"
-      ## directory "../../../../solr_conf", "solr_conf"
+      # Themes
+      copy_file "themes/example.html.erb", "app/views/layouts/atrium_themes/example.html.erb"
     end
 
     # Copy all files in templates/public/ directory to public/
@@ -91,10 +79,10 @@ EOF
     # Add Atrium behaviors and Filters to ApplicationHelper
     def inject_atrium_helper_behavior
       insert_into_file "app/helpers/application_helper.rb", :after => 'module ApplicationHelper' do
-        "\n  # Adds a atrium collections behaviors into the application helper \n " +
-          "  include Atrium::ApplicationHelper\n" +
-          "  include Atrium::CollectionsHelper\n" +
-          "  include CatalogHelper\n"
+      "\n  # Adds a atrium collections behaviors into the application helper \n " +
+        "  include Atrium::ApplicationHelper\n" +
+        "  include Atrium::CollectionsHelper\n" +
+        "  include CatalogHelper\n"
       end
     end
 
@@ -105,23 +93,22 @@ EOF
       file_path = "app/controllers/#{controller_name.underscore}.rb"
       if File.exists?(file_path)
         insert_into_file file_path, :after => "require 'blacklight/catalog'" do
-            "\nrequire 'atrium/catalog'"
+          "\nrequire 'atrium/catalog'"
         end
         insert_into_file file_path, :after => 'include Blacklight::Catalog' do
           "\n  # Extend Blacklight::Catalog with Atrium behaviors (primarily editing)." +
-            "\n  include Atrium::Catalog"
+          "\n  include Atrium::Catalog"
         end
       else
         puts " \e[31mFailure\e[0m Could not find #{model_name.underscore}.rb. To add Atrium behaviors to your Blacklight::Catalog Controllers, you must include the Atrium::Controller module in the Controller class definition."
       end
     end
 
-    # Add Hydra to the application controller
+    # Add Atrium to the application controller
     def inject_atrium_controller_behavior
       inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
         "  # Adds Atrium behaviors into the application controller \n " +
-          "  include Atrium::Controller\n"
-
+        "  include Atrium::Controller\n"
       end
     end
 
@@ -129,7 +116,7 @@ EOF
     def inject_atrium_routes
       puts "here"
       insert_into_file "config/routes.rb", :after => 'Blacklight.add_routes(self)' do
-        "\n  # Add Hydra routes.  For options, see API docs for HydraHead.routes"
+        "\n  # Add Atrium routes."
         "\n  Atrium.add_routes(self)"
       end
     end
@@ -150,7 +137,7 @@ EOF
 
     private
 
-    def better_migration_template (file)
+    def better_migration_template(file)
       begin
         migration_template "migrations/#{file}", "db/migrate/#{file}"
         sleep 1 # ensure scripts have different time stamps
