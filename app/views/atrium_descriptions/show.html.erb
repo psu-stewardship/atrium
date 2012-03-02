@@ -1,17 +1,16 @@
-<%# debug params.inspect %>
-<%- if params[:exhibit_id] %>
+<% if params[:exhibit_id] %>
   <%= link_to "Back to Browse Exhibit",atrium_exhibit_path(:id=>params[:exhibit_id], :f=>params[:f]) %>
-<%- else %>
+<% else %>
   <%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
-<%- end %>
+<% end %>
 
-
-<%- if @atrium_description && @atrium_description.essay && @atrium_description.essay.content %>
+<% if @atrium_description && @atrium_description.essay && @atrium_description.essay.content %>
   <h3><%= @atrium_description.title%></h3>
-  <%= @atrium_description.essay.content.html_safe  %>
+  <%= @atrium_description.essay.content.html_safe %>
+<% end %>
 
-  <%- if session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Description) %>
-    <%= link_to 'Edit Description', edit_atrium_description_path(@atrium_description.atrium_showcase_id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_description.atrium_showcase_id) %>
-    <a class="destroy_description button" href=# action="<%= atrium_description_path(@atrium_description.id)%>" title="Remove Description"> Delete this description</a>
-  <%- end %>
-<%- end %>
+<% if params[:exhibit_id] %>
+  <%= link_to "Back to Browse Exhibit",atrium_exhibit_path(:id=>params[:exhibit_id], :f=>params[:f]) %>
+<% else %>
+  <%= link_to "Back to Browse #{@atrium_collection.pretty_title}", @atrium_collection %>
+<% end %>

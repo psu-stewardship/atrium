@@ -35,5 +35,6 @@ module Atrium
 
 end
 
+require 'atrium/application_helper.rb'
 require 'atrium/collections_helper.rb'
 require 'atrium/solr_helper.rb'

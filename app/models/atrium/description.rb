@@ -8,8 +8,8 @@ class Atrium::Description < ActiveRecord::Base
 
   validates_presence_of :atrium_showcase_id
 
-  accepts_nested_attributes_for :essay,    :allow_destroy => true
-  accepts_nested_attributes_for :summary,    :allow_destroy => true
+  accepts_nested_attributes_for :essay,   :allow_destroy => true
+  accepts_nested_attributes_for :summary, :allow_destroy => true
 
   after_save    :update_solr unless ENV['DO_NOT_INDEX']
   after_destroy :remove_from_solr
@@ -61,6 +61,14 @@ class Atrium::Description < ActiveRecord::Base
   def update_solr
     to_solr
     Blacklight.solr.commit
+  end
+
+  def show_on_this_page?
+    page_display.nil? || page_display == "newpage"
+  end
+
+  def blank?
+    title.blank? && essay.blank?
   end
 
   private
