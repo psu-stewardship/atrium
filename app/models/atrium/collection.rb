@@ -47,6 +47,10 @@ class Atrium::Collection < ActiveRecord::Base
     end
   end
 
+  def layout
+    'atrium_themes/custom'
+  end
+
   private
 
   def add_collection_of_facets_by_name(collection_of_facet_names)

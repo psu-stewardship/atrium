@@ -1,11 +1,12 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><%= h(@page_title || application_name) %></title>
     <link href="<%= opensearch_catalog_path(:format => 'xml', :only_path => false) %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
     <%= favicon_link_tag asset_path('favicon.ico') %>
     <%= stylesheet_link_tag    "application" %>
+    <%= yield :theme_styles%>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
     <%= raw(render_head_content) %>
@@ -19,11 +20,15 @@
     <div id="page">
       <div id="hd">
         <div id="logo">
-          <% if @atrium_collection %>
-                <h3><%= link_to @atrium_collection.title, atrium_collection_home_path(@atrium_collection) %></h3>
-              <% else %>
-                <h1 class="site_title"><%= link_to application_name, "/" %><%= (params[:controller] == "catalog" and !params[:id]) ? "<span id='results_text'>Search Results</span>".html_safe : "" %></h1>
-              <% end %>
+          <% if content_for? :main_header %>
+            <%= yield :main_header %>
+          <% else %>
+            <% if @atrium_collection %>
+              <h3><%= link_to @atrium_collection.title, atrium_collection_home_path(@atrium_collection) %></h3>
+            <% else %>
+              <h1 class="site_title"><%= link_to application_name, "/" %><%= (params[:controller] == "catalog" and !params[:id]) ? "<span id='results_text'>Search Results</span>".html_safe : "" %></h1>
+            <% end %>
+          <% end %>
         </div>
         <div id="user_util_links">
           <%= render :partial=>'/user_util_links' %>
@@ -37,31 +42,31 @@
           </div>
         </div>
         <div id="sidebar">
-          <%- if params[:controller] == "catalog" -%>
-            <%- if (params[:atrium_collection_browse].blank? && params[:atrium_exhibit_browse].blank?) || params[:class] == "edit_collection" -%>
-              <%- if params[:collection_id] -%>
+          <% if params[:controller] == "catalog" %>
+            <% if (params[:atrium_collection_browse].blank? && params[:atrium_exhibit_browse].blank?) || params[:class] == "edit_collection" %>
+              <% if params[:collection_id] %>
                 <h3><%= link_to("Back to Browse Collection", atrium_collection_path(params[:collection_id])) %></h3>
-              <%- end -%>
-            <%- else -%>
+              <% end %>
+            <% else %>
 	      <%= render :partial => 'shared/collection_search_form' %>
               <%= render :partial => 'atrium_collections/navigation' %>
-            <%- end -%>
-          <%- elsif params[:controller] == "atrium_collections" && !(params[:action] == "show")-%>
+            <% end %>
+          <% elsif params[:controller] == "atrium_collections" && !(params[:action] == "show")%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
-          <%- elsif params[:controller] == "atrium_exhibits"&& !(params[:action] == "show")-%>
+          <% elsif params[:controller] == "atrium_exhibits"&& !(params[:action] == "show")%>
             <%= render :partial => 'atrium_collections/edit_navigation' %>
-          <%- elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && session[:edit_showcase]-%>
+          <% elsif params[:controller] == "atrium_exhibits" && params[:action] == "show" && session[:edit_showcase]%>
              <%= render :partial => 'atrium_showcases/showcase_navigation' %>
-          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show" && session[:edit_showcase]-%>
+          <% elsif params[:controller] == "atrium_collections" && params[:action] == "show" && session[:edit_showcase]%>
              <%= render :partial => 'atrium_showcases/showcase_navigation' %>
-          <%- elsif params[:controller] == "atrium_collections" && params[:action] == "show"-%>
+          <% elsif params[:controller] == "atrium_collections" && params[:action] == "show"%>
             <%= render :partial => 'shared/collection_search_form' %>
             <%= render :partial => 'atrium_collections/navigation' %>
-          <%- elsif params[:controller] == "atrium_descriptions"-%>
-          <%- elsif params[:controller] != "user_sessions" && !(params[:controller] == "atrium_collections" && params[:action] == "index")-%>
+          <% elsif params[:controller] == "atrium_descriptions"%>
+          <% elsif params[:controller] != "user_sessions" && !(params[:controller] == "atrium_collections" && params[:action] == "index")%>
             <%= render :partial => 'shared/collection_search_form' %>
             <%= render :partial => 'atrium_collections/navigation' %>
-          <%- end -%>
+          <% end %>
           <%= sidebar_items.join('').html_safe %>
         </div>
       </div>
@@ -71,5 +76,4 @@
     </div>
 
   </body>
-
 </html>

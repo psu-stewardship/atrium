@@ -10,6 +10,6 @@ class AtriumController < ApplicationController
   layout :custom_layout
 
   def custom_layout
-    'atrium'
+    @atrium_collection ? @atrium_collection.layout : 'atrium'
   end
 end
