@@ -1,0 +1,27 @@
+<% # container for a single doc -%>
+<div class="document <%= render_document_class document %>">
+      
+  <% # header bar for doc items in index view -%>
+  <div class="documentHeader">
+   <%- if params[:CKEditor] %>
+    <% # main title container for doc partial view -%>
+    <div class="ckeditor">
+      <h3 class="index_title"><%= document_counter + 1 + @response.params[:start].to_i %>.
+        <%= link_to_document document, :label=>document_show_link_field, :counter => (document_counter + 1 + @response.params[:start].to_i) %>
+      </h3>
+    </div>
+    <% else %>
+      <% # bookmark/folder functions for items/docs are hidden in collection and exhibit view-%>
+      <%= render_index_doc_actions document %>
+      <div class="yui-u">
+      <h3 class="index_title"><%= document_counter + 1 + @response.params[:start].to_i %>.
+        <%= render_document_index_label document, :label=>document_show_link_field %>
+      </h3>
+    </div>
+    <% end %>
+  </div>
+      
+  <% # main container for doc partial view -%>
+  <%= render_document_partial document, :index %>
+
+</div>

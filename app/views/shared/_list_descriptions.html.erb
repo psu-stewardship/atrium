@@ -1,4 +1,5 @@
 <% descriptions.each do |desc| %>
+ <% if !desc.blank? && !is_editing?%>
   <% if desc.show_on_this_page? %>
     <h3>
       <% path = params[:controller] == "atrium_exhibits" ?  atrium_description_path(desc.id, :f=>params[:f], :exhibit_id=>params[:id]) : atrium_description_path(desc.id, :collection_id=>params[:id]) %>
@@ -13,13 +14,18 @@
     <blockquote class="intro"><%= truncate( desc.essay.content.html_safe, :length =>50, :ommision => "....").html_safe%></blockquote>
     <% if desc.essay.content.html_safe.length>50 %>
       <a class="heading" href="#">[Read the complete essay]</a>
-      <div style="display: none"class="content <%= session[:edit_showcase]&&(current_user) && (can? :create, Atrium::Collection) ?  "edit-textarea": "no-edit"%>" id="<%= desc.id %>" data-column-name="[essay_attributes[content]]" data-update-uri=<%=atrium_description_path(desc)%>>
+      <div style="display: none"class="content" id="<%= desc.id %>">
         <%= desc.essay.content.html_safe %>
       </div>
     <% end %>
   <% end %>
-  <%- if (can? :create, Atrium::Description) && is_editing? -%>
-    <%= link_to 'Edit Description', edit_atrium_description_path(desc.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_showcase.id) %>
-    <a class="destroy_description button" href=# action="<%= atrium_description_path(desc.id)%>" title="Remove Description"> Delete this description</a>
-  <% end %>
+<% elsif is_editing?%>
+    <h3><%= "Essay: #{desc.pretty_title}"%></h3>
+    <h4>Summary: </h4> <blockquote> <%= desc.summary.content.html_safe unless desc.summary.nil? %> </blockquote>
+    <h4>Essay: </h4><blockquote> <%= desc.essay.content.html_safe unless desc.essay.nil? %> </blockquote>
+    <% if (can? :create, Atrium::Description)%>
+      <%= link_to 'Edit Description', edit_atrium_description_path(desc.id), :class => 'description_colorbox button', :action=> atrium_descriptions_path(@atrium_showcase.id) %>
+      <a class="destroy_description button" href=# action="<%= atrium_description_path(desc.id)%>" title="Remove Description"> Delete this description</a>
+    <% end %>
+<% end %>
 <% end %>

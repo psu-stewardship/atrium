@@ -45,12 +45,11 @@ class Atrium::Description < ActiveRecord::Base
   end
 
   def summary_text
-    #puts ::Sanitize.clean(summary.content).squish
-    ::Sanitize.clean(summary.content).squish
+    ::Sanitize.clean(summary.content).squish unless summary.blank?
   end
 
   def essay_text
-    ::Sanitize.clean(essay.content).squish
+    ::Sanitize.clean(essay.content).squish unless essay.blank?
   end
 
   def to_solr

@@ -137,6 +137,10 @@ module Atrium::Catalog
       @filters = params[:f] || []
       search_session[:total] = @response.total unless @response.nil?
 
+      if params[:CKEditor] || params[:edit_exhibit_filter] ||  params[:edit_collection_filter] || params[:edit_browse_level_filter] || params[:add_featured]
+        render "list_item", :layout=> "item_listing"
+      end
+
       respond_to do |format|
         format.html { save_current_search_params unless params[:edit_exhibit_filter] ||  params[:edit_collection_filter] || params[:edit_browse_level_filter]}
         format.rss  { render :layout => false }

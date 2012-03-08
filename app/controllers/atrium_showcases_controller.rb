@@ -108,10 +108,8 @@ class AtriumShowcasesController < ApplicationController
     set_edit_showcase_in_session
     if @atrium_showcase.showcases_type=="Atrium::Exhibit"
       redirect_to atrium_exhibit_path(:id=>@atrium_showcase.showcases_id, :f=>params[:f])
-      #redirect_to atrium_collection_path(:id=>@exhibit.atrium_collection_id, :exhibit_number=>@exhibit.id, :showcase_id=>params[:id], :f=>params[:f])
     else
       @atrium_collection= Atrium::Collection.find_by_id(@atrium_showcase.showcases_id)
-      #redirect_to atrium_collection_path(:id=>@atrium_showcase.showcases_id, :showcase_id=>params[:id], :f=>params[:f])
       redirect_to atrium_collection_showcase_path(@atrium_showcase.showcases_id, params[:id], :f=>params[:f])
     end
   end

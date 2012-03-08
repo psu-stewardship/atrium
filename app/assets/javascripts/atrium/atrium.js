@@ -10,19 +10,22 @@
 (function($){
   $(document).ready(function(){
 
-    CKEDITOR.config.toolbar_Basic = [ [ 'Source', '-', 'Bold', 'Italic' ] ];
+    CKEDITOR.config.toolbar_Basic = [[ 'Source', '-', 'Bold', 'Italic' ] ];
+    CKEDITOR.config.toolbar_full = [ ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+                                     ['Bold','Italic','Underline','Strike'],
+                                     ['Format','-','NumberedList','BulletedList','Blockquote'],
+                                     ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
+                                     ['Source','ShowBlocks','Maximize'],
+                                     ['Button','Button','linkItem'] ]
+    //CKEDITOR.config.menu_groups = 'googlemaps';
+    CKEDITOR.config.extraPlugins = 'linkItem';
+   // CKEDITOR.config.toolbar_map = [ ['Button','Button','linkItem'] ];
 
     $('select.chosen').chosen();
 
     $('.jquery-ckeditor').ckeditor(
         {
-      toolbar: [
-        ['Cut','Copy','Paste','PasteText','PasteFromWord'],
-        ['Bold','Italic','Underline','Strike'],
-        ['Format','-','NumberedList','BulletedList','Blockquote'],
-        ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
-        ['Source','ShowBlocks','Maximize']
-      ]
+      toolbar:'full'
     }
     );
 
@@ -152,14 +155,14 @@
            });
          }
        });
-     });
+    });
 
-     $('.edit-text').editable(submitEditableText,{
+    $('.edit-text').editable(submitEditableText,{
          indicator : 'Saving...',
          tooltip   : 'Click to edit...'
-     });
+    });
 
-     function submitEditableText(value, settings) {
+    function submitEditableText(value, settings) {
        var edits = new Object();
        var result = value;
        edits[settings.name] = [value];
@@ -184,9 +187,9 @@
          }
       });
       return value;
-     }
+    }
 
-     function submitEditableTextArea(value, settings) {
+    function submitEditableTextArea(value, settings) {
        var edits = new Object();
        var result = value;
        edits[settings.name] = [value];
@@ -211,9 +214,9 @@
          }
       });
       return value;
-     }
+    }
 
-     $('.edit-textarea').editable(submitEditableTextArea, {
+    $('.edit-textarea').editable(submitEditableTextArea, {
           method    : "PUT",
           type      : "ckeditor",
           submit    : "OK",
@@ -225,22 +228,28 @@
           indicator : 'Saving...',
           tooltip   : 'Click to edit...',
           height    : "100",
-          ckeditor  : { toolbar:
-                        [
-                            ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'linkItem'],
-                            ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
-                            ['UIColor', 'PageBreak'], ['Source'], ['Maximize', 'ShowBlocks','-','About']
-                        ]
+          ckeditor  : { toolbar:'full'
                       }
-     });
+    });
 
-     $("div.content").hide();
+    $("div.content").hide();
 
-     $("a.heading").click(function(){
+    $("a.heading").click(function(){
         $(this).siblings(".intro").toggle()
         $(this).next("div.content").slideToggle(300);
         $(this).text($(this).text() == '[Read the complete essay]' ? '[Hide essay]' : '[Read the complete essay]');
-     });
+    });
+
+    $("div.ckeditor h3.index_title a").click( function(){
+      var href = $(this).attr('href');
+      var dialog = window.opener.CKEDITOR.dialog.getCurrent();
+      var parent = window.opener.document;
+      dialog.setValueOf('info','url',href);  // Populates the URL field in the Links dialogue.
+      dialog.setValueOf('info','protocol','');  // This sets the Link's Protocol to Other which loads the file from the same folder the link is on
+      dialog.setValueOf('info','displayField',$(this).html());  // Populates the display field in the Links dialogue
+      window.close(); // closes the popup window
+      return false;
+    });
 
   });
 })(jQuery);

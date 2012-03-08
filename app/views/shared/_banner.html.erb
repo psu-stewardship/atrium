@@ -1,4 +1,4 @@
-<%- if @atrium_showcase && session[:edit_showcase] %>
+<%- if @atrium_showcase && is_editing? %>
   <div id="banner">
     <%= render :partial=>'shared/showcase_configure_menu' %>
   </div>

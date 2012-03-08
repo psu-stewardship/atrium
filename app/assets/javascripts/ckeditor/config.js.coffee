@@ -1,9 +1,6 @@
 CKEDITOR.editorConfig = (config) ->
-  config.toolbar = [
-    ['Cut','Copy','Paste','PasteText','PasteFromWord'],
-    ['Bold','Italic','Underline','Strike'],
-    ['Format','-','NumberedList','BulletedList','Blockquote'],
-    ['Link','Unlink','Anchor','-','SelectAll','RemoveFormat'],
-    ['Source','ShowBlocks','Maximize']
-  ]
+  config.language = "fr"
+  config.uiColor = "#AADC6E"
+  config.width = "850"
+  config.height = "600"
   true
