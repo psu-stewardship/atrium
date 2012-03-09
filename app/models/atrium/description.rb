@@ -14,6 +14,14 @@ class Atrium::Description < ActiveRecord::Base
   after_save    :update_solr unless ENV['DO_NOT_INDEX']
   after_destroy :remove_from_solr
 
+
+
+  def self.get_description_from_solr_id(solr_id)
+    atrium_description=Atrium::Description.find(solr_id.split('_').last)
+    atrium_showcase=Atrium::Showcase.find(atrium_description.atrium_showcase_id)
+    return atrium_description , atrium_showcase
+  end
+
   def pretty_title
     title.blank? ? "Description #{id}" : title
   end
@@ -28,17 +36,17 @@ class Atrium::Description < ActiveRecord::Base
 
   def as_solr
     doc= {
-      :id                               => solr_id,
-      :format                           => "Description",
-      :description_title_t              => title,
-      :description_title_facet          => title,
-      :description_title_display        => title,
-      :summary_display                  => summary_text,
-      :essay_display                    => essay_text,
-      :summary_t                        => summary_text,
-      :essay_t                          => essay_text,
-      :atrium_showcase_id_t             => get_atrium_showcase_id,
-      :atrium_showcase_id_display       => get_atrium_showcase_id
+      :id                          => solr_id,
+      :format                      => "Description",
+      :title_t                     => pretty_title,
+      :title_facet                 => pretty_title,
+      :title_display               => pretty_title,
+      :summary_display             => summary_text,
+      :essay_display               => essay_text,
+      :summary_t                   => summary_text,
+      :essay_t                     => essay_text,
+      :atrium_showcase_id_t        => get_atrium_showcase_id,
+      :atrium_showcase_id_display  => get_atrium_showcase_id
     }.reject{|key, value| value.blank?}
     puts "Doc: #{doc.inspect}"
     return doc
@@ -69,6 +77,8 @@ class Atrium::Description < ActiveRecord::Base
   def blank?
     title.blank? && essay.blank?
   end
+
+
 
   private
 

@@ -76,11 +76,11 @@ module AtriumHelper
       #link_to_with_data(label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
 
       label = render_document_index_label doc, opts
-      link_to label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args), :'data-counter' => opts[:counter]
+      link_to label, atrium_collection_exhibit_browse_path(collection_id, exhibit_id, doc.id, args, :'data-counter' => opts[:counter]), :'data-counter' => opts[:counter]
     #elsif exhibit_id
     #  link_to_with_data(label, atrium_exhibit_browse_path(exhibit_id, doc.id, args), {:method => :put, :class => label.parameterize, :data => opts}).html_safe
     elsif collection_id
-      params[:controller] == "catalog" ? current_path = atrium_collection_catalog_path(collection_id, doc.id, args) : current_path = atrium_collection_browse_path(collection_id, doc.id, args)
+      params[:controller] == "catalog" ? current_path = atrium_collection_catalog_path(collection_id, doc.id, args, :'data-counter' => opts[:counter]) : current_path = atrium_collection_browse_path(collection_id, doc.id, args, :'data-counter' => opts[:counter])
       label = render_document_index_label doc, opts
       link_to label, current_path, :'data-counter' => opts[:counter]
       #link_to_with_data(label, current_path, {:method => :put, :class => label.parameterize, :data => opts}).html_safe

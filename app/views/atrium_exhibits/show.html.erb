@@ -1,6 +1,6 @@
 <h2>
   <div class="<%= params[:edit_showcase] && (can? :create, Atrium::Exhibit) ?  "edit-text": "no-edit"%>" id="div_1" data-column-name="atrium_exhibit[label]" data-update-uri=<%=atrium_exhibit_path(@exhibit)%>>
-    <%= @exhibit.title %>
+    <%= @exhibit.pretty_title %>
   </div>
 </h2>
 

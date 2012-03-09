@@ -2,7 +2,7 @@
 <div class="yui-g">
   <ul id="exhibit-menu">
     <% @atrium_collection.exhibits.each do |exhibit| %>
-      <li><%= link_to exhibit.title, atrium_exhibit_path(exhibit) %></li>
+      <li><%= link_to exhibit.pretty_title, atrium_exhibit_path(exhibit) %></li>
     <% end %>
   </ul>
 </div>

@@ -11,7 +11,7 @@ class Atrium::Exhibit < ActiveRecord::Base
 
   serialize :filter_query_params
 
-  def title
+  def pretty_title
     label.blank? ? "Exhibit #{set_number}" : label
   end
 

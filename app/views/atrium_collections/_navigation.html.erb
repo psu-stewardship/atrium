@@ -15,7 +15,7 @@
         <%- @atrium_collection.exhibits.each do |exhibit| -%>
           <%- if current_user -%>
           <li>
-            <%= link_to "Customize Exhibit: #{exhibit.title}", new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection=>params[:f]),:class=>"customize"%>
+            <%= link_to "Customize Exhibit: #{exhibit.pretty_title}", new_atrium_exhibit_atrium_showcases_path(exhibit, :facet_selection=>params[:f]),:class=>"customize"%>
           </li>
           <%- end -%>
         <%- end %>
@@ -23,7 +23,7 @@
   <%- else %>
     <!-- recursively render the browse sets-->
     <%- @exhibit_navigation_data.each do |exhibit| -%>
-      <h3 class="facet-heading"><%= link_to exhibit.title,  exhibit  %>
+      <h3 class="facet-heading"><%= link_to exhibit.pretty_title,  exhibit  %>
        </h3>
       <%- unless exhibit.browse_levels.nil? || exhibit.browse_levels.empty? -%>
         <%= render :partial => 'atrium_collections/navigation_browse_levels', :locals=>{:exhibit_number=>exhibit.set_number, :browse_levels=>exhibit.browse_levels, :browse_facets=>exhibit.browse_facet_names}%>

@@ -38,8 +38,25 @@ class Atrium::Showcase < ActiveRecord::Base
     end
   end
 
+  def parent_title
+    parent.pretty_title
+  end
+
   def for_exhibit?
     showcases_type == "Atrium::Exhibit"
+  end
+
+  def get_parent_path
+    if for_exhibit?
+      facet={}
+      unless facet_selections.blank?
+        facet[facet_selections.first.solr_facet_name]=facet_selections.first.value
+      end
+      path= Rails.application.routes.url_helpers.atrium_exhibit_path(parent, :f=>facet)
+      return path
+    else
+      return parent
+    end
   end
 
   # This method will select showcase objects that have exactly the selected facets passed in (but no more or no less) and is tied to the given exhibit id

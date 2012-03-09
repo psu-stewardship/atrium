@@ -1,0 +1,26 @@
+<%# default partial to display solr document fields in catalog show view -%>
+
+<dl class="defList">
+  <% document_show_fields.each do |solr_fname, field| -%>
+    <% if document.has? solr_fname %>
+	    <dt class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_label :field => solr_fname %></dt>
+	    <dd class="blacklight-<%= solr_fname.parameterize %>"><%= render_document_show_field_value :document => document, :field => solr_fname %></dd>
+    <% end -%>
+  <% end -%>
+</dl>
+
+<% desc, showcase = Atrium::Description.get_description_from_solr_id(document[:id]) %>
+
+<% if desc && desc.summary && !desc.summary.content.blank? %>
+  <em>Summary</em>
+  <%= desc.summary.content.html_safe %>
+<% end %>
+
+
+<% if desc && desc.essay && !desc.essay.content.blank? %>
+  <em>Essay</em>
+  <%= desc.essay.content.html_safe %>
+<% end %>
+
+Related To: <%= link_to showcase.parent_title, showcase.get_parent_path %>
+
