@@ -7,9 +7,9 @@ class AtriumController < ApplicationController
   include Atrium::SolrHelper
   include Atrium::CollectionsHelper
 
-  layout :custom_layout
+  layout :current_layout
 
-  def custom_layout
-    @atrium_collection ? @atrium_collection.layout : 'atrium'
+  def current_layout
+    @atrium_collection ? @atrium_collection.theme_path : 'atrium'
   end
 end

@@ -3,6 +3,7 @@ class CreateAtriumCollections < ActiveRecord::Migration
     create_table :atrium_collections do |t|
       t.string :title
       t.string :filter_query_params
+      t.string :theme
       t.text :collection_description
       t.text :collection_items
     end
