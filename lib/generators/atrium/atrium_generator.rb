@@ -108,7 +108,7 @@ EOF
     def inject_atrium_controller_behavior
       inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
         "  # Adds Atrium behaviors into the application controller \n " +
-        "  include Atrium::Controller\n"
+        "  include Atrium::Controller\n\n"
       end
     end
 

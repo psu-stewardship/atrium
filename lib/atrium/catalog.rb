@@ -1,4 +1,5 @@
 require 'blacklight/catalog'
+require 'atrium/layout_helper'
 
 # Include this module into any of your Blacklight Catalog classes (ie. CatalogController) to add Atrium functionality
 #
@@ -15,10 +16,12 @@ module Atrium::Catalog
   extend ActiveSupport::Concern
   include Blacklight::Catalog
   include Atrium::SolrHelper
+  include Atrium::LayoutHelper
   include BlacklightHelper
 
   def self.included(klass)
     klass.before_filter :initialize_collection
+    klass.layout :collection_theme_if_present
   end
 
   def show
@@ -26,13 +29,11 @@ module Atrium::Catalog
     if params[:atrium_collection_browse] || params[:atrium_exhibit_browse]
       @exhibit_navigation_data = get_exhibit_navigation_data
 
-      #render :layout => "atrium"
-      render "browse_show", :layout=> "atrium"
+      render "browse_show"
     end
   end
 
   def browse_show
-    render :layout => "atrium"
   end
 
   def index

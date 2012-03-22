@@ -6,10 +6,10 @@
     <link href="<%= opensearch_catalog_path(:format => 'xml', :only_path => false) %>" title="<%= application_name%>" type="application/opensearchdescription+xml" rel="search"/>
     <%= favicon_link_tag asset_path('favicon.ico') %>
     <%= stylesheet_link_tag    "application" %>
-    <%= yield :theme_styles%>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
     <%= raw(render_head_content) %>
+    <%= yield :theme_styles%>
   </head>
   <% if params[:q].to_s.empty? and params[:f].to_s.empty? and params[:id].nil? %>
   <body onload="$('input#q').focus();" class="<%= render_body_class %>">
@@ -23,7 +23,8 @@
           <% if content_for? :main_header %>
             <%= yield :main_header %>
           <% else %>
-            <% if @atrium_collection %>
+            <%# NOTE: There shouldn't be a new collection object hanging around here but one is present in the root catalog page when logged in. %>
+            <% if @atrium_collection && !@atrium_collection.new_record? %>
               <h3><%= link_to @atrium_collection.title, atrium_collection_home_path(@atrium_collection) %></h3>
             <% else %>
               <h1 class="site_title"><%= link_to application_name, "/" %><%= (params[:controller] == "catalog" and !params[:id]) ? "<span id='results_text'>Search Results</span>".html_safe : "" %></h1>

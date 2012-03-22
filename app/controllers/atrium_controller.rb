@@ -1,3 +1,5 @@
+require 'atrium/layout_helper'
+
 class AtriumController < ApplicationController
 
   include CatalogHelper
@@ -5,11 +7,9 @@ class AtriumController < ApplicationController
   include Blacklight::SolrHelper
   include AtriumHelper
   include Atrium::SolrHelper
+  include Atrium::LayoutHelper
   include Atrium::CollectionsHelper
 
   layout :current_layout
 
-  def current_layout
-    @atrium_collection ? @atrium_collection.theme_path : 'atrium'
-  end
 end
