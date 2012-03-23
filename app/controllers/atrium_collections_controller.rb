@@ -91,6 +91,7 @@ class AtriumCollectionsController < ApplicationController
 
   def update
     @atrium_collection = Atrium::Collection.find(params[:id])
+    if
     respond_to do |format|
       if @atrium_collection.update_attributes(params[:atrium_collection])
         refresh_collection

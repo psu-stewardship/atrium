@@ -8,7 +8,7 @@
   <%- unless @exhibit_navigation_data.nil? || @exhibit_navigation_data.empty? -%>
     <dl id="exhibits">
       <%- @exhibit_navigation_data.each do |exhibit| -%>
-        <dt><%= exhibit.title%></dt>
+        <dt><%= exhibit.pretty_title%></dt>
         <dd><%= link_to 'Configure Exhibit', edit_atrium_exhibit_path(exhibit) %></dd>
         <dd>
           <%= link_to 'Customize Exhibit Home Page',  new_atrium_exhibit_atrium_showcases_path(exhibit)%>
