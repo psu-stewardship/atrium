@@ -11,7 +11,7 @@
 
 
 <span id="show_selected">
-<%- if !@documents.blank? -%>
+<%- if !@documents.blank? && @documents.any? -%>
   <%= render :partial=>'shared/featured_sources' %>
 <%- end -%>
 </span>

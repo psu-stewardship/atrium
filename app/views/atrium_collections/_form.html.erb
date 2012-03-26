@@ -64,7 +64,7 @@
     <% @atrium_collection.exhibits.each do |exhibit| %>
       <li data-id="<%= exhibit.id %>" data-order="<%= exhibit.set_number %>" class="ui-state-default">
         <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
-        <%= exhibit.title %>
+        <%= exhibit.pretty_title %>
         <span class="controls">
           <%= link_to 'Configure', edit_atrium_exhibit_path(exhibit) %>
         </span>

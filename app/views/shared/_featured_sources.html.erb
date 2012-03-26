@@ -1,7 +1,7 @@
 
 <h1>Featured Sources</h1>
 
-<div id="documents">  
+<div id="documents">
   <% @documents.each_with_index do |document, i| %>
     <% # container for a single doc -%>
     <div class="document <%= render_document_class document %>">

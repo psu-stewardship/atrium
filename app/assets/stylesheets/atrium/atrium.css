@@ -21,9 +21,11 @@ a.button {
 /** Banner **/
 
 #banner {
-  background-color:#F00;
+  background-color:#EFEFEF;
+  box-shadow:0 2px 3px #EFEFEF;
   font-size: 1.2em;
   line-height:3.2em;
+  opacity:.95;
   padding:.1em .6em;
   position:relative;
   text-align:left;
@@ -43,13 +45,15 @@ a.button {
 }
 
 #banner .button {
-  background-color:#CCC;
-  border-color: #FFF #000 #000 #FFF;
+  background-color:#DDD;
+  border-color: #EEE #999 #999 #EEE;
   border-style:solid;
   border-width:1px;
+  color:#333;
   display:inline-block;
   line-height:1.2em;
   padding:.3em .5em;
+  border-radius:3px;
 }
 
 /** Navigation menu **/
