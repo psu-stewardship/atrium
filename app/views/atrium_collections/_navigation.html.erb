@@ -1,10 +1,11 @@
 <!--this was id="facets" but removed for now so items below are always unhidden, will style more later-->
-<li>
-  <%- if current_user && (can? :create, Atrium::Collection) -%>
-    <%# link_to "Configure Collection #{@atrium_exhbit}" , new_atrium_collection_atrium_showcases_path(@atrium_collection,:atrium_showcase_type=>"atrium_collection"), :class=>"customize"%>
+
+<%- if current_user && (can? :create, Atrium::Collection) -%>
+  <li>
     <%= link_to "Configure Collection #{@atrium_exhbit}" ,edit_atrium_collection_path(@atrium_collection.id, :class=>"customize")%>
-  <%- end %>
-</li>
+  </li>
+<%- end %>
+
 <li>
   <%= link_to 'View Collection',  @atrium_collection  %>
 </li>

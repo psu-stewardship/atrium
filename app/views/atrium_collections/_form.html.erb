@@ -16,7 +16,7 @@
       </li>
       <li>
         <%= f.label :search_facet_names, 'Collection Search Facets:' %>
-        <%= f.collection_select :search_facet_names, blacklight_config.facet_fields.map {|key, facet| Atrium::Search::FacetSelection.new(:field_name => facet.field)}, :field_name, :label, {}, :multiple => true, :class => 'chosen', :'data-placeholder' => 'Select desired facets from the Collection' %>
+        <%= f.collection_select :search_facet_names, blacklight_config.facet_fields.map {|key, facet| Atrium::Search::FacetSelection.new(:field_name => facet.field)}, :field_name, :label, {}, :multiple => true, :include_blank => true, :class => 'chosen', :'data-placeholder' => 'Select desired facets from the Collection' %>
 
       <li/>
       <li>
